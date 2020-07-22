@@ -1,0 +1,623 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+<head>
+	<title>万由里教</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=10" />
+	<meta name="description" content="欢迎来到万由里教的官方网站。" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="keywords" content="HTML5, Crepper" />
+	<meta name="theme-color" content="#0078D7" />
+	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+	<meta http-equiv="X-UA-Compatible" content="IE-edge,chrome=1" />
+	<link href="alternateURL" rel="alternate" hreflang="zh-Hans">
+	<link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="shortcut icon">
+	<link href="src/img/favicon.png" mce_href="favicon.png" type="image/x-icon" rel="bookmark">
+	<link href="src/img/favicon.png" mce_href="favicon.png" type="image/x-icon" rel="icon">
+	<script src="src/js/jquery-3.2.1.min.js"></script>
+	<script src="src/js/jquery.nicescroll.js"></script>
+
+	<style>
+		:root {
+			--main: rgb(231,27,100);
+		}
+		body {
+			margin: 0;
+		}
+		#main {
+			position: relative;
+			height: 100vh;
+			width: 100%;
+		    font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
+		}
+		#background-contain {
+			position: fixed;
+			height: 100vh;
+			width: 100vw;
+		}
+		#background {
+			background-image: url(src/img/background.jpg);
+			opacity: 0;
+			background-position: center;
+			background-size: cover !important;
+			height: 104%;
+			width: 104%;
+			margin: -1% -2%;
+			display: block;
+		}
+		#background-cover {
+			position: fixed;
+			height: 100vh;
+			width: 100%;
+			background: rgba(0,0,0,.5);
+			background: radial-gradient(#00000080, transparent);
+		}
+		#body-1 {
+			position: absolute;
+			color: white;
+			height: 100px;
+			width: 220px;
+			left: calc(50% - 110px);
+			top: calc(50% - 50px);
+			text-shadow: 0 1px 3px white;
+			cursor: default;
+		}
+		#body-1>h1 {
+			line-height: 64px;
+			margin: 0;
+			height: 64px;
+			font-size: 64px;
+			font-weight: normal;
+		}
+		#body-1>h3 {
+			margin: 0;
+			position: relative;
+			float: right;
+			height: 32px;
+			font-size: 32px;
+			line-height: 32px;
+			font-weight: normal;
+		}
+		footer {
+			position: absolute;
+			bottom: 0;
+			color: white;
+			width: 100%;
+			text-align: right;
+			border-radius: 100% 0 0 0;
+			background: rgba(255,255,255,.3);
+			height: 90px;
+		}
+		footer>p {
+			position: absolute;
+			display: block;
+			text-shadow: 0 0 1px #000;
+			width: 60%;
+			top: 20px;
+			right: 60px;
+			font-size: 18px;
+			z-index: 1;
+		}
+		footer>p>a {
+			text-shadow: none;
+			text-decoration: none;
+			color: var(--main, rgb(231,27,100));
+		}
+		footer>p>a:hover {
+			text-decoration: underline;
+		}
+		#footer-down {
+			position: relative;
+			top: 35px;
+			right: 15px;
+			z-index: 3;
+		}
+		#footer-down>svg {
+			cursor: pointer;
+			fill: white;
+		}
+		#footer-down-menu {
+			position: absolute;
+			color: black;
+			width: 128px;
+			right: 0;
+			bottom: 48px;
+			background: white;
+			box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+		}
+		#footer-down-menu>div {
+		    position: relative;
+			cursor: pointer;
+			padding: 8px;
+			height: 24px;
+			transition: all .3s;
+		}
+		#footer-down-menu>div:hover {
+			background: #EEE;
+		}
+		#footer-down-menu>div>svg {
+		    position: relative;
+			float: left;
+		}
+		#footer-down-menu>div>p {
+			display: inline;
+			position: relative;
+		}
+		#body-2 {
+			position: absolute;
+			top: 100%;
+			width: calc(100% - 100px);
+			padding: 100px 50px 50px 50px;
+			background: rgba(255,255,255,.9);
+			overflow-x: hidden;
+		}
+		#body-2 h1 {
+			font-weight: normal;
+			border-left: 4px solid var(--main, rgb(231,27,100));
+			padding-left: 15px;
+		}
+		#body-2 a {
+			color: var(--main, rgb(231,27,100));
+		}
+		#body-2 span {
+			color: var(--main, rgb(231,27,100));
+		}
+		#body-2 h3 {
+			font-weight: normal;
+			font-size: 22px;
+			margin: 0;
+		}
+		#body-2-project>div {
+			display: flow-root;
+			margin-bottom: 16px;
+		}
+		#body-2-project>div>div	{
+			display: flow-root;
+		}
+		#body-2-project>div>img {
+			position: relative;
+			float: left;
+			width: 128px;
+			margin-right: 20px;
+		}
+		header {
+			position: absolute;
+			top: 100%;
+			z-index: 2;
+			width: 100%;
+			background: white;
+			border-bottom: 2px solid var(--main, rgb(231,27,100));
+		}
+		header>a {
+			text-decoration: none;
+			float: left;
+			color: gray;
+			height: 60px;
+			position: relative;
+			display: inline-block;
+			line-height: 60px;
+			font-size: 24px;
+			padding: 0 24px;
+			transition: all .3s;
+		}
+		header>a:hover {
+			background: #EEE;
+		}
+		header>a:active {
+			box-shadow: 0 3px 5px #CCC inset;
+		}
+		.developers>img {
+			float: left;
+			border-radius: 50%;
+			margin-right: 20px;
+		}
+		.developers>h3 {
+			font-weight: normal;
+			font-size: 28px !important;
+			margin: 0;
+		}
+		.developers>p {
+			margin: 10px 0 24px 0;
+		}
+		#canvas {
+			position: absolute;
+			width: 100%;
+			height: 200px;
+			bottom: 0;
+			left: 0;
+			opacity: .2;
+			image-rendering: pixelated;
+			z-index: 0;
+		}
+		.fade-in {
+			opacity: 0;
+		}
+		.come-in {
+			transform: translateX(150px);
+			animation: come-in 0.5s cubic-bezier(0, -0.01, 0, 0.99) forwards;
+		}
+		.come-in:nth-child(odd) {
+			animation-delay: 0.1s;
+			animation-duration: 0.75s;
+		}
+		.leave {
+			transform: translateX(150px);
+			animation: leave 0.5s cubic-bezier(0, -0.01, 0, 0.99) forwards;
+		}
+		.leave:nth-child(odd) {
+			animation-delay: 0.1s;
+			animation-duration: 0.75s;
+		}
+		.already-visible {
+			transform: translateY(0);
+			animation: none;
+			opacity: 1;
+		}
+		@keyframes come-in {
+			to {
+				transform: translateX(0);
+				opacity: 1;
+			}
+		}
+		@keyframes leave {
+			to {
+				transform: translateX(-150);
+				opacity: 0;
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="background-contain">
+		<div id="background"></div>
+	</div>
+	<div id="background-cover"></div>
+	<div id="main">
+		<div id="body-1" style="display: none">
+			<h1>万由里</h1>
+			<h3>天下第一</h3>
+		</div>
+		<footer>
+			<p>Copyright &copy; 2020 <a href="https://Crepper.club/">Crepper</a>.</p>
+			<div id="footer-down">
+				<svg xmlns="" xmlns:xlink="" version="1.1" x="0px" y="0px" width="30px" height="30px" viewBox="0 0 284.929 284.929" xml:space="preserve" onclick="toNext()" oncontextmenu="showMenu()" id="footer-down-button">
+					<g>
+						<g>
+							<path d="M135.899,167.877c1.902,1.902,4.093,2.851,6.567,2.851s4.661-0.948,6.562-2.851L282.082,34.829    c1.902-1.903,2.847-4.093,2.847-6.567s-0.951-4.665-2.847-6.567L267.808,7.417c-1.902-1.903-4.093-2.853-6.57-2.853    c-2.471,0-4.661,0.95-6.563,2.853L142.466,119.622L30.262,7.417c-1.903-1.903-4.093-2.853-6.567-2.853    c-2.475,0-4.665,0.95-6.567,2.853L2.856,21.695C0.95,23.597,0,25.784,0,28.262c0,2.478,0.953,4.665,2.856,6.567L135.899,167.877z"/>
+							<path d="M267.808,117.053c-1.902-1.903-4.093-2.853-6.57-2.853c-2.471,0-4.661,0.95-6.563,2.853L142.466,229.257L30.262,117.05    c-1.903-1.903-4.093-2.853-6.567-2.853c-2.475,0-4.665,0.95-6.567,2.853L2.856,131.327C0.95,133.23,0,135.42,0,137.893    c0,2.474,0.953,4.665,2.856,6.57l133.043,133.046c1.902,1.903,4.093,2.854,6.567,2.854s4.661-0.951,6.562-2.854l133.054-133.046    c1.902-1.903,2.847-4.093,2.847-6.565c0-2.474-0.951-4.661-2.847-6.567L267.808,117.053z"/>
+						</g>
+					</g>
+				</svg>
+				<div id="footer-down-menu" style="display: none">
+					<div id="start-audio" onclick="audioVisualizer()">
+						<svg xmlns="" width="24" height="24" viewBox="0 0 24 24">
+							<path d="M8 5v14l11-7z"/>
+							<path d="M0 0h24v24H0z" fill="none"/>
+						</svg>
+						<p>播放音乐</p>
+					</div>
+					<div id="pause-audio" onclick="pauseAudio()" style="display: none">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+							<path d="M0 0h24v24H0z" fill="none"/>
+						</svg>
+						<p>暂停音乐</p>
+					</div>
+					<div id="change-audio" onclick="changeAudio()" style="display: none">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+							<path d="M0 0h24v24H0z" fill="none"/>
+							<path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/>
+						</svg>
+						<p>换一首</p>
+					</div>
+				</div>
+			</div>
+			<canvas id="canvas"></canvas>
+			<audio id="audio"></audio>
+		</footer>
+		<header ondragstart="return false;">
+			<a href="https://Crepper.club/">首页</a>
+		
+		</header>
+		<div id="body-2">
+			<div class="fade-in">
+				<h1>简介</h1>
+				<p>这里是<span>万由里教</span>官网</p>
+				<p>万由里教起源于公元2019由万由里创立</p>
+			        <p>主要分布于互联网各地</p>
+                                <p><span>万由里天下第一，万由里天下第一，万由里天下第一</span></p>
+			</div>
+			<div class="fade-in">
+				<h1>主要领袖</h1>
+				<div class="developers">
+					<img src="https://i.ibb.co/x7NJmt3/333.png">
+					<h3>万由里</h3>
+					<p>万由里教教皇</p>
+				</div>
+				<div class="developers">
+					<img src="https://i.ibb.co/YBk4Srd/QQ-20200721214445.png">
+					<h3>Guass</h3>
+					<p>万由里教都主教</p>
+				</div>
+                               
+			</div>
+			<div id="body-2-project" class="fade-in">
+				<h1>相关</h1>
+				<div>
+					<img src="./src/img/favicon.png">
+					<div>
+						<h3>基本信仰</h3>
+						<p>万由里是你的信仰，万由里天下第一！</p>
+						
+					</div>
+				</div>
+				<div>
+					<img src="./src/img/233.png">
+					<div>
+						<h3>核心教义</h3>
+						<p>万由里中心论，万物都围绕着万由里旋转，万由里是宇宙的中心。</p>
+						<p>万由里永远的神！</p>
+					</div>
+				</div>
+				<div>
+                                        <img src="https://i.ibb.co/XFFXwDz/1.png">
+					<h3>禁忌</h3>
+					<p>万由里是你的神，除了万由里以外，你不可有别的神。</p>
+                                        <p>万由里是你的一切，你与她关系根深蒂固，你永远不可脱离她。</p>
+					<p>永远不可背叛万由里。</p>
+				</div>
+				<div>
+                                        <img src="https://i.ibb.co/LhMmKGx/wyl.png">
+					<h3>世界观理论</h3>
+					<p>万由里论</p>
+					<p>人们只能无条件服从听取万由里才能改造世界。世间万物必须在万由里之下才能远转起来。</p>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+window.onload = function() {
+	$("#background").animate({"opacity":"1"}, 1000);
+}
+$(function(){
+	if (!window.applicationCache) alert("您的浏览器不支持 HTML5，请更换现代浏览器。");
+	checkScroll();
+	checkFadeIn();
+	var nice = $("html").scroll();
+	$("#body-1>h1").css({"margin-left":"-50px"});
+	$("#body-1>h3").css({"margin-right":"-50px"});
+	$("#body-1").fadeIn(1000);
+	$("#body-1>h1").animate({"margin-left":"0"}, 1000);
+	$("#body-1>h3").animate({"margin-right":"0"}, 1000);
+    $("body").mousemove(function(e){
+		var x = window.innerWidth / 2 - e.clientX
+		var y = window.innerHeight / 2 - e.clientY
+        $("#background").css("background", "url(src/img/background.jpg) calc(50% + " + (x / 50) + "px) calc(50% + "+ (y / 50) + "px) no-repeat")
+    })
+	window.onscroll = function() {
+		checkScroll();
+		checkFadeIn();
+	}
+	c = window.innerHeight;
+	window.onresize = function() {
+		c = window.innerHeight;
+		checkScroll();
+	}
+	window.onclick = function(e) {
+		var e = e || window.event;
+		if (e.button == "0") {
+			$("#footer-down-menu").slideUp(100);
+		}
+	}
+})
+function checkScroll() {
+	var a = window.innerHeight + $(document).scrollTop() - 140;
+	var b = $(document).scrollTop() / window.innerHeight + 0.3;
+	var c = 1 - $(document).scrollTop() / window.innerHeight;
+	var d = window.innerHeight - $(document).scrollTop();
+	if (b < 0.3) b = 0.3; 
+	$("#body-1").css("top", a / 2 + "px");
+	$("#body-1").css("opacity", c);
+	$("footer").css("background", "rgba(255,255,255," + b +")");
+	if (b > 0.7) {
+		$("footer").css("color", "gray");
+		$("#footer-down>svg").css("fill", "gray");
+		$("footer>p").css("text-shadow", "none");
+	} else {
+		$("footer").css("color", "white");
+		$("#footer-down>svg").css("fill", "white");
+		$("footer>p").css("text-shadow", "0 0 1px #000");
+	}
+	if ($(document).scrollTop() > window.innerHeight) {
+		$("header").css("position", "fixed");
+		$("header").css("top", "0");
+	} else {
+		$("header").css("position", "absolute");
+		$("header").css("top", "100%");
+	}
+	if ($(document).scrollTop() > window.innerHeight - 90) {
+		$("#footer-down-menu").css("display", "none");
+		$("#footer-down").css("position", "fixed");
+		$("#footer-down").css("transform", "rotate(" + (180 - (d / 90 * 180)) + "deg)");
+		if ($(document).scrollTop() > window.innerHeight - 25) {
+			if (d > 0) {
+				$("#footer-down").css("top", d + 10 + "px");
+			} else {
+				$("#footer-down").css("top", "10px");
+				$("#footer-down").css("transform", "rotate(180deg)");
+				$("#footer-down>svg").attr("onclick", "toTop()");
+			}
+		}
+	} else {
+		$("#footer-down").css("position", "absolute");
+		$("#footer-down").css("top", "35px");
+		$("#footer-down").css("transform", "rotate(0deg)");
+		$("#footer-down>svg").attr("onclick", "toNext()");
+	}
+}
+function checkFadeIn() {
+	$.fn.visible = function(partial) {
+		var viewTop = $(window).scrollTop(),
+			viewBottom = viewTop + $(window).height(),
+			_top = $(this).offset().top,
+			_bottom = _top + $(this).height(),
+			compareTop = partial === true ? _bottom : _top,
+			compareBottom = partial === true ? _top : _bottom;
+		return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+	}
+	$(".fade-in").each(function(i, el) {
+		if ($(el).visible(true)) $(el).addClass("come-in");
+	})
+}
+var touchY = 0;
+var longClick =0;
+$("#footer-down-button").on({
+    touchstart: function(e){
+        longClick=0;
+        timeOutEvent = setTimeout(function(){
+			if ($("#footer-down-menu").css("display") == "none") $("#footer-down-menu").slideDown(100);
+			else $("#footer-down-menu").slideUp(100);
+            longClick=1;
+        },500);
+        var touch = e.touches[0];
+        touchY = touch.clientY;
+    },
+    touchmove: function(){
+        clearTimeout(timeOutEvent);
+        timeOutEvent = 0;
+        var touch = e.touches[0]
+        if(Math.abs(touch.clientY - touchY) < 10){
+            e.preventDefault();
+        }
+    },
+    touchend: function(e){
+        clearTimeout(timeOutEvent);
+    }
+});
+function toNext() {
+	$('body,html').animate({
+		scrollTop: c
+	}, 1000);
+	return false;
+}
+function toTop() {
+	$('body,html').animate({
+		scrollTop: 0
+	}, 1000);
+	return false;
+}
+function showMenu() {
+	var e = window.event;
+	e.preventDefault();
+	if (e.button != "0") {
+		if ($("#footer-down-menu").css("display") == "none") $("#footer-down-menu").slideDown(100);
+		else $("#footer-down-menu").slideUp(100);
+	}
+}
+function audioVisualizer() {
+	$("#start-audio").css("display", "none");
+	$("#start-audio").attr("onclick", "startAudio()");
+	$("#pause-audio").css("display", "block");
+	$("#change-audio").css("display", "block");
+	var title = document.getElementById("body-1");
+	var audio = document.getElementById("audio");
+    audio.src = "https://Crepper.club" + parseInt(Math.random() * 74 + 1) + ".mp3";
+    audio.load();
+    audio.play();
+    var context = new (window.AudioContext || window.webkitAudioContext)() || false; 
+	if (!context) alert("浏览器不支持音频可视化");
+    try {
+		audio.addEventListener('ended', function () {
+			$("#start-audio").css("display", "block");
+			$("#pause-audio").css("display", "none");
+		}, false);
+		var src = context.createMediaElementSource(audio);
+		var analyser = context.createAnalyser();
+
+		var canvas = document.getElementById("canvas");
+		canvas.width = window.innerWidth;
+		canvas.height = 200;
+		var ctx = canvas.getContext("2d");
+
+		src.connect(analyser);
+		analyser.connect(context.destination);
+
+		analyser.fftSize = 2048;
+
+		var bufferLength = analyser.frequencyBinCount;
+
+		var freqDataArray = new Uint8Array(bufferLength);
+
+		var WIDTH = canvas.width;
+		var HEIGHT = canvas.height;
+
+		var barWidth = 20;
+		var barHeight;
+		var x = 0;
+		
+		window.addEventListener("resize", function() {
+			canvas.width = window.innerWidth;
+			WIDTH = canvas.width;
+		})
+		if (analyser.getFloatTimeDomainData) {
+			var dataArray = new Float32Array(analyser.fftSize);
+		} else {
+			var dataArray = new Uint8Array(analyser.fftSize);
+		}
+
+		function renderFrame() {
+			requestAnimationFrame(renderFrame);
+			if (analyser.getFloatTimeDomainData) {
+				analyser.getFloatTimeDomainData(dataArray);
+			} else {
+				analyser.getByteTimeDomainData(dataArray);
+			}
+			var sampleAverage = 0;
+			if (analyser.getFloatTimeDomainData) {
+				for (var i = 0; i < dataArray.length; i++) {
+					sampleAverage += Math.abs(dataArray[i]);
+				}
+			} else {
+				for (var i = 0; i < dataArray.length; i++) {
+					sampleAverage += Math.abs(dataArray[i] - 128) / 128;
+				}
+			}
+			sampleAverage /= dataArray.length;
+			var shadow = 2 * (Math.exp(sampleAverage) - 1);
+			var shadowInner = 2 * (Math.exp(sampleAverage / 2) - 1);
+			if (shadowInner == 0) title.style['text-shadow'] = "0px 1px 3px white, 0px 1px 3px white";
+			else title.style['text-shadow'] = "0px 1px " + shadow + "em white, 0px 1px " + shadowInner + "em white";
+			x = 0;
+			analyser.getByteFrequencyData(freqDataArray);
+			ctx.clearRect(0, 0, WIDTH, HEIGHT);
+			for (var i = 0; i < bufferLength; i++) {
+				barHeight = freqDataArray[i];
+				ctx.fillStyle = "white";
+				ctx.fillRect(x, 300 - barHeight*1, barWidth, barHeight*1);
+
+				x += barWidth + 5;
+			}
+		}
+		renderFrame();
+	} catch(e) {
+		//
+	}
+};
+function startAudio() {
+	$("#start-audio").css("display", "none");
+	$("#pause-audio").css("display", "block");
+	$("#change-audio").css("display", "block");
+	document.getElementById("audio").play();
+}
+function pauseAudio() {
+	$("#start-audio").css("display", "block");
+	$("#pause-audio").css("display", "none");
+	document.getElementById("audio").pause();
+}
+function changeAudio() {
+	document.getElementById("audio").pause();
+	audioVisualizer();
+}
+</script>
