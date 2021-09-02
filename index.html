@@ -613,15 +613,48 @@ div.menuopen {
       </div>
     </div>
     
-    　 <!--
-　 function loopy(){
-　　 var sWord ="";
-　　 while(sWord!="guass"){sWord=prompt("高斯中国   请输入访问密码");}
-　　 alert("登陆成功！");
-　 }
-　 loopy()
-　 //-->
-　 </script>
+    <SCRIPT language=JavaScript> 
+ 
+function password() { 
+ 
+var testV = 1; 
+
+var pass1 = prompt('高斯中国   请输入访问密码:',''); 
+ 
+while (testV < 3) { 
+ 
+if (!pass1) 
+ 
+history.go(-1); 
+ 
+if (pass1 == "cngssnd") { 
+ 
+alert('密码正确!'); 
+ 
+break; 
+ 
+} 
+ 
+testV+=-1; 
+ 
+var pass1 = prompt('密码错误!请重新输入:'); 
+ 
+} 
+ 
+if (pass1!="password" & testV ==3) 
+ 
+history.go(-1); 
+ 
+return " "; 
+ 
+} 
+ 
+document.write(password()); 
+ 
+</SCRIPT>
+————————————————
+版权声明：本文为CSDN博主「麻木博客」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/qq_44708572/article/details/106832660
 
 			
 			</div>
