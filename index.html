@@ -38,7 +38,7 @@
 			width: 100vw;
 		}
 		#background {
-			background-image: url(src/img/background.png);
+			background-image: url();
 			opacity: 0;
 			background-position: center;
 			background-size: cover !important;
@@ -159,7 +159,7 @@
 			top: 100%;
 			width: calc(100% - 100px);
 			padding: 50px;
-			background: url(src/img/background.png);
+			background: url();
 			overflow-x: hidden;
 			height: 500px;
 			background-size: cover;
@@ -758,7 +758,7 @@ $(function(){
 		}
 		var x = window.innerWidth / 2 - e.clientX
 		var y = window.innerHeight / 2 - e.clientY
-        $("#background").css("background", "url(src/img/background.png) calc(50% + " + (x / 50) + "px) calc(50% + "+ (y / 50) + "px) no-repeat")
+        $("#background").css("background", "url(https://6775-guass-7g91aol69cd6205b-1251937821.tcb.qcloud.la/background.png?sign=dc0db623a87f0be5054217e66c391b54&t=1632051239) calc(50% + " + (x / 50) + "px) calc(50% + "+ (y / 50) + "px) no-repeat")
     })
 	window.onscroll = function() {
 		checkScroll();
