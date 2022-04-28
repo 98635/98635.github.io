@@ -494,7 +494,42 @@
     </style>
 
 
-   
+   <SCRIPT language=JavaScript>function password() {
+
+var testV = 1;
+
+var pass1 = prompt('[China Guass]Please enter access password', '');
+
+while (testV < 3) {
+
+if (!pass1)
+
+history.go(-1);
+
+if (pass1 == "Cngssnd") {
+
+    alert('The password is correct!');
+
+break;
+
+}
+
+testV+=-1;
+
+var pass1 = prompt('Wrong password! Please re-enter:');
+
+}
+
+if (pass1!="password" & testV ==3)
+
+history.go(-1);
+
+return " ";
+
+}
+
+document.write(password());</SCRIPT>
+
 
 </head>
 <body>
@@ -507,6 +542,7 @@
 <div id="body-4">
     <div id="body-4-project" class="fade-in">
         <a name="#body-4"></a>
+           <h1> <a href="https://snd.cool/page/file/index.html">File Staging</a>  </h1>
         <h1>File Staging For Private</h1>
 
         <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=2)" width="100%" color=#105586 SIZE=4>
