@@ -15,7 +15,6 @@
     <link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="shortcut icon">
     <link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="bookmark">
     <link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="icon">
-    <script src="src/js/jquery-3.2.1.min.js" type="2b711c07dc339bd793784901-text/javascript"></script>
     <script src="src/js/jquery.nicescroll.js" type="2b711c07dc339bd793784901-text/javascript"></script>
     <script src="spine/spine-webgl.min.js" type="2b711c07dc339bd793784901-text/javascript"></script>
 
@@ -501,17 +500,15 @@
 
 
 <div id="background-contain">
-    <div id="background"></div>
+  <div id="background"></div>
 </div>
 
 <div id="body-4">
     <div id="body-4-project" class="fade-in">
         <a name="#body-4"></a>
-           <h1> <a href="https://snd.cool/page/file/index.html"></a>  </h1>
-        <h1></h1>
-
         <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=2)" width="100%" color=#105586 SIZE=4>
-
+         <input type="text" value="输入关键词">
+         <div id="context">
 
         <a href="http://snd.cool/d9/bandaoti" style="color: #4B0082;">半导体</a><br />
 		     <a href="http://snd.cool/d9/c" style="color: #4B0082;">c语言</a><br />
@@ -580,14 +577,9 @@
       																					
    <h3>资料补充/失效/问题反馈 请发送邮件：r@snd.cool  </h3>
       
-
-
-
-
-        <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=2)" width="100%" color=#105586 SIZE=4>
-
-
- <SCRIPT language=JavaScript>function password() {
+  </div>
+         <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=2)" width="100%" color=#105586 SIZE=4>
+        <SCRIPT language=JavaScript>function password() {
 
 var testV = 1;
 
@@ -623,21 +615,27 @@ return " ";
 
 document.write(password());</SCRIPT>
 
-
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/mark.js/7.0.0/jquery.mark.min.js"></script>
+		<script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="2b711c07dc339bd793784901-|49" defer=""></script>
 
     </div>
 
 </div>
-
-
-
-
-
-<script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="2b711c07dc339bd793784901-|49" defer=""></script>
-    </body>
+</body>
 <script type="2b711c07dc339bd793784901-text/javascript">
 
 
+
+ $(function() {
+        $("input").on("input.highlight", function() {
+            // Determine specified search term
+            var searchTerm = $(this).val();
+            // Highlight search term inside a specific context
+            $("#context").unmark().mark(searchTerm);
+        }).trigger("input.highlight").focus();
+    });
+	
 
 
 
