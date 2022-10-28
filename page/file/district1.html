@@ -1,791 +1,206 @@
-﻿
-<!DOCTYPE html>
-<html lang="zh-cmn-Hans">
-<head>
-    <title>高斯中国</title>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=10" />
-    <meta name="description" content="CNguass" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="keywords" content="HTML5" />
-    <meta name="theme-color" content="#0078D7" />
-    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
-    <meta http-equiv="X-UA-Compatible" content="IE-edge,chrome=1" />
-    <link href="alternateURL" rel="alternate" hreflang="zh-Hans">
-    <link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="shortcut icon">
-    <link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="bookmark">
-    <link href="src/img/favicon.png" mce_href="favicon.ico" type="image/x-icon" rel="icon">
-    <script src="src/js/jquery-3.2.1.min.js" type="2b711c07dc339bd793784901-text/javascript"></script>
-    <script src="src/js/jquery.nicescroll.js" type="2b711c07dc339bd793784901-text/javascript"></script>
-    <script src="spine/spine-webgl.min.js" type="2b711c07dc339bd793784901-text/javascript"></script>
-
-
-    <style>
-        :root {
-            // --main: rgb(231,27,100);
-            --main: dodgerblue;
-        }
-
-        body {
-            margin: 0;
-        }
-
-        #main {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            font-family: Arial,"Helvetica Neue",Helvetica,sans-serif;
-        }
-
-        #background-contain {
-            position: fixed;
-            height: 100vh;
-            width: 100vw;
-        }
-
-        #background {
-            background-image: url();
-            opacity: 0;
-            background-position: center;
-            background-size: cover !important;
-            height: 104%;
-            width: 104%;
-            margin: -1% -2%;
-            display: block;
-        }
-
-        #background-cover {
-            position: fixed;
-            height: 100vh;
-            width: 100%;
-            background: rgba(0,0,0,.5);
-            background: radial-gradient(#00000080, transparent);
-        }
-
-        #body-1 {
-            position: absolute;
-            color: white;
-            height: 100px;
-            width: 220px;
-            left: calc(50% - 110px);
-            top: calc(50% - 50px);
-            text-shadow: 0 1px 3px white;
-            cursor: default;
-        }
-
-
-
-
-            #body-1 > h1 {
-                line-height: 64px;
-                margin: 0;
-                height: 64px;
-                font-size: 64px;
-                font-weight: normal;
-            }
-
-            #body-1 > h3 {
-                margin: 0;
-                position: relative;
-                float: right;
-                height: 32px;
-                font-size: 32px;
-                line-height: 32px;
-                font-weight: normal;
-            }
-
-        footer {
-            position: absolute;
-            bottom: 0;
-            color: white;
-            width: 100%;
-            text-align: right;
-            border-radius: 100% 0 0 0;
-            background: rgba(255,255,255,.3);
-            height: 90px;
-        }
-
-            footer > p {
-                position: absolute;
-                display: block;
-                text-shadow: 0 0 1px #000;
-                width: 60%;
-                top: 20px;
-                right: 60px;
-                font-size: 18px;
-                z-index: 1;
-            }
-
-                footer > p > a {
-                    text-shadow: none;
-                    text-decoration: none;
-                    color: var(--main, rgb(231,27,100));
-                }
-
-                    footer > p > a:hover {
-                        text-decoration: underline;
-                    }
-
-        #footer-down {
-            position: relative;
-            top: 35px;
-            right: 15px;
-            z-index: 3;
-        }
-
-            #footer-down > svg {
-                cursor: pointer;
-                fill: white;
-            }
-
-        #footer-down-menu {
-            position: absolute;
-            color: black;
-            width: 128px;
-            right: 0;
-            bottom: 48px;
-            background: white;
-            box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
-        }
-
-            #footer-down-menu > div {
-                position: relative;
-                cursor: pointer;
-                padding: 8px;
-                height: 24px;
-                transition: all .3s;
-            }
-
-                #footer-down-menu > div:hover {
-                    background: #EEE;
-                }
-
-                #footer-down-menu > div > svg {
-                    position: relative;
-                    float: left;
-                }
-
-                #footer-down-menu > div > p {
-                    display: inline;
-                    position: relative;
-                }
-
-        #body-2 {
-            position: relative;
-            top: 100%;
-            width: calc(100% - 100px);
-            padding: 100px 50px 50px 50px;
-            background: rgba(255,255,255,.9);
-            overflow-x: hidden;
-            border-bottom: 2px solid var(--main, rgb(231,27,100));
-        }
-
-        #body-3 {
-            position: relative;
-            top: 100%;
-            width: calc(100% - 100px);
-            padding: 50px;
-            background: url();
-            overflow-x: hidden;
-            height: 500px;
-            background-size: cover;
-            background-attachment: fixed;
-        }
-
-        #body-4 {
-            position: relative;
-            top: 100%;
-            width: calc(100% - 100px);
-            padding: 50px;
-            background: rgba(255,255,255,.9);
-            overflow-x: hidden;
-        }
-
-            #body-2 h1, #body-4 h1 {
-                font-weight: normal;
-                border-left: 4px solid var(--main, rgb(231,27,100));
-                padding-left: 15px;
-            }
-
-            #body-4 h9 {
-                font-weight: normal;
-                padding-left: 15px;
-            }
-
-            #body-2 a, #body-4 a {
-                color: var(--main, rgb(231,27,100));
-            }
-
-            #body-2 span, #body-4 span {
-                color: var(--main, rgb(231,27,100));
-            }
-
-            #body-2 h3, #body-4 h3 {
-                font-weight: normal;
-                font-size: 22px;
-                margin: 0;
-            }
-
-        #body-4-project > div {
-            display: inline-block;
-            margin-bottom: 16px;
-            width: 100%;
-        }
-
-            #body-4-project > div > div {
-                display: flow-root;
-            }
-
-            #body-4-project > div > img {
-                position: relative;
-                width: 128px;
-                margin-bottom: 15px;
-            }
-
-        .body-4-project-card {
-            width: calc(33.3% - 30px) !important;
-            float: left;
-            height: auto;
-            padding: 15px;
-            text-align: center;
-            transition: box-shadow .3s, background .3s, margin-top .3s, padding .3s, width .3s;
-            display: flow-root;
-            cursor: pointer;
-        }
-
-            .body-4-project-card > div > svg {
-                fill: var(--main, rgb(231,27,100));
-                position: relative;
-                bottom: 0;
-            }
-
-        .body-4-project-card-link {
-            display: none;
-        }
-
-        .body-4-project-card:hover {
-            box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
-            background: white;
-            margin-top: -5px;
-        }
-
-        .body-4-project-card.upgrade {
-            height: 250px;
-        }
-
-        #body-footer {
-            position: relative;
-            top: 100%;
-            width: calc(100% - 100px);
-            padding: 0 50px;
-            background: white;
-            overflow-x: hidden;
-            border-top: 2px solid var(--main, rgb(231,27,100));
-        }
-
-            #body-footer > p {
-                text-align: center;
-            }
-
-                #body-footer > p > a {
-                    text-decoration: none;
-                    color: var(--main, rgb(231,27,100));
-                }
-
-                    #body-footer > p > a:hover {
-                        text-decoration: underline;
-                    }
-
-        @media (min-width: 500px) and (max-width: 1000px) {
-            .body-4-project-card {
-                width: 100% !important;
-                float: left;
-                height: auto;
-                padding: 0;
-                text-align: left;
-                margin-bottom: 16px;
-            }
-
-                .body-4-project-card > iv > svg {
-                    right: 0;
-                    float: right;
-                }
-
-                .body-4-project-card.upgrade {
-                    height: auto;
-                }
-
-                .body-4-project-card:hover {
-                    width: calc(100% - 30px) !important;
-                    padding: 15px;
-                }
-
-            #body-4-project > div > img {
-                float: left;
-                margin-right: 20px;
-                margin-bottom: 0;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .body-4-project-card {
-                width: calc(100% - 30px) !important;
-                height: auto !important;
-            }
-
-                .body-4-project-card:hover {
-                    margin-top: 0;
-                }
-        }
-
-        header {
-            position: absolute;
-            top: 100%;
-            z-index: 2;
-            width: 100%;
-            background: white;
-            border-bottom: 2px solid var(--main, rgb(231,27,100));
-        }
-
-            header > a {
-                text-decoration: none;
-                float: left;
-                color: gray;
-                height: 60px;
-                position: relative;
-                display: inline-block;
-                line-height: 60px;
-                font-size: 24px;
-                padding: 0 24px;
-                transition: all .3s;
-            }
-
-                header > a:hover {
-                    background: #EEE;
-                }
-
-                header > a:active {
-                    box-shadow: 0 3px 5px #CCC inset;
-                }
-
-        .developers > img {
-            float: left;
-            border-radius: 50%;
-            margin-right: 20px;
-        }
-
-        9i
-
-        .developers > h3 {
-            font-weight: normal;
-            font-size: 28px !important;
-            margin: 0;
-        }
-
-        .developers > p {
-            margin: 10px 0 24px 0;
-        }
-
-        #canvas {
-            position: absolute;
-            width: 100%;
-            height: 200px;
-            bottom: 0;
-            left: 0;
-            opacity: .2;
-            image-rendering: pixelated;
-            z-index: 0;
-        }
-
-        .fade-in {
-            opacity: 0;
-        }
-
-        .come-in {
-            transform: translateX(150px);
-            animation: come-in 0.5s cubic-bezier(0, -0.01, 0, 0.99) forwards;
-        }
-
-            .come-in:nth-child(odd) {
-                animation-delay: 0.1s;
-                animation-duration: 0.75s;
-            }
-
-        .leave {
-            transform: translateX(150px);
-            animation: leave 0.5s cubic-bezier(0, -0.01, 0, 0.99) forwards;
-        }
-
-            .leave:nth-child(odd) {
-                animation-delay: 0.1s;
-                animation-duration: 0.75s;
-            }
-
-        .already-visible {
-            transform: translateY(0);
-            animation: none;
-            opacity: 1;
-        }
-
-        @keyframes come-in {
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        @keyframes leave {
-            to {
-                transform: translateX(-150);
-                opacity: 0;
-            }
-        }
-
-        #body-6 {
-            position: absolute;
-            top: 100%;
-            width: calc(100% - 100px);
-            padding: 100px 50px 50px 50px;
-            background: rgba(255,255,255,.9);
-            overflow-x: hidden;
-        }
-
-            #body-6 h1 {
-                font-weight: normal;
-                border-left: 4px solid var(--main, rgb(231,27,100));
-                padding-left: 15px;
-            }
-
-            #body-6 a {
-                color: var(--main, rgb(231,27,100));
-            }
-
-            #body-6 span {
-                color: var(--main, rgb(231,27,100));
-            }
-
-            #body-6 h3 {
-                font-weight: normal;
-                font-size: 22px;
-                margin: 0;
-            }
-
-        #body-6-project > div {
-            display: flow-root;
-            margin-bottom: 16px;
-        }
-
-            #body-6-project > div > div {
-                display: flow-root;
-            }
-
-            #body-6-project > div > img {
-                position: relative;
-                float: left;
-                width: 128px;
-                margin-right: 20px;
-            }
-
-        #body-4-project > span {
-            background: yellow;
-        }
-
-       
-    </style>
-
-
-   
-
+<!DOCTYPE html><html>
+<!-- 移动端 --><!-- PC端 --><!-- 二维码扫码登录 --><!-- 兼容性登录 --><!-- 帐号登录或动态码登录 --><head>
+	<meta charset="utf-8"/><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/><title>统一身份认证平台</title>
+	<script>
+	    var inputUserNameTip = "\u8BF7\u8F93\u5165\u7528\u6237\u540D";
+	    var inputPasswordTip = "\u8BF7\u8F93\u5165\u5BC6\u7801";
+	    var inputCodeTip = "\u8BF7\u8F93\u5165\u9A8C\u8BC1\u7801";
+	    
+	    var inputMobileTip = "\u8BF7\u8F93\u5165\u624B\u673A\u53F7\u6216\u5B66\u53F7";
+	    var inputDynamicTip = "\u8BF7\u8F93\u5165\u52A8\u6001\u7801";
+	    //不转码，防止参数丢失
+	    var service = ["http:\/\/ehall.gdou.edu.cn\/xsfw\/sys\/swmxsqjapp\/*default\/index.do"];
+	    var type = null;
+	</script>
+	<script type="text/javascript">
+		if(service == '' || !service){
+	        service = '';//saml后缀
+	    }
+		var isQrLogin = "true";
+		var needCaptcha = "";
+		var is_dynamicLogin = "true";
+	    var contextPath = "/authserver";
+	    var cllt = "";
+	</script>
+	<link rel="stylesheet" type="text/css" href="/authserver/gdouThemeDz/static/css/toastr.min.css?v=20210618.194511"><link rel="stylesheet" type="text/css" href="/authserver/gdouThemeDz/static/web/css/login.css?v=20210618.194511"/><link rel="stylesheet" type="text/css" href="/authserver/gdouThemeDz/static/web/iconfont/iconfont.css?v=20210618.194511"/><link rel="stylesheet" type="text/css" href="/authserver/gdouThemeDz/static/web/css/fido.css?v=20210618.194511"/><script type="text/javascript" src="/authserver/gdouThemeDz/static/common/jquery-latest.min.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/js/plugin/toastr.min.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/common/utils.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/common/common-header.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/common/encrypt.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/web/js/fido.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/web/js/schoolCombinedLogin.js?v=20210618.194511"></script>
+	<script type="text/javascript" src="/authserver/gdouThemeDz/static/web/js/login.js?v=20210618.194511"></script>
 </head>
 <body>
+	<div class="container">
+		<div class="imgWrap">
+			<img class="mainbg" id="backgroundd" src="/authserver/gdouThemeDz/static/dzimages/one1.png"/></div>
+		<div class="wrap">
+			<a style="display: none;" id="qrCodeA" class="qrcode" href="/authserver/login?type=qrcode"></a>
+			<section class="main">
+				<div class="logo"><img src="/authserver/gdouThemeDz/static/dzimages/logo.png" alt=""/></div>
+				<div class="tabHead" style="display: none">
+					<span id="fidoLoginSpan"><a id="fidoLogin_a" href="/authserver/login?type=fidoLogin" class="loginFont_a">生物识别登录</a></span>
+					<span id="pwdLoginSpan"><a id="userNameLogin_a" href="/authserver/login?type=userNameLogin" class="loginFont_a">帐号登录</a></span>
+					<span id="phoneLoginSpan"><a id="dynamicLogin_a" href="/authserver/login?type=dynamicLogin" class="loginFont_a">动态码登录</a></span>
+					<!-- <span id="qrLoginSpan"><a id="qrLogin_a" class="loginFont_a" th:text="#{ids.qr.login}" onclick="showQrLogin()"></a></span> --></div>
+				<div class="login-pc">
+					<!-- fido登录 --><div id="fidoLoginDiv" style="display: none"><div style="height: 260px;margin-top: 50px">
+		<a href="javascript:void(0);" onclick="startAssertion();">
+			<img class="img " src="/authserver/gdouThemeDz/static/web/images/ukey.png"></a>
+		<div class="text">
+			<p id="ukey_info">请点击UKEY图标登录</p>
+		</div>
+		<form class="loginFromClass" method="post" id="loginFromId" action="/authserver/login">
+			<div style="color: red;margin: 5px auto;">
+				<span id="showErrorTip"></span>
+			</div>
+			<input type="hidden" id="_eventId" name="_eventId" value="submit" /><input type="hidden" id="username-fido" name="username" value=""><input type="hidden" id="responseJson-fido" name="responseJson" value=""><input type="hidden" id="cllt" name="cllt" value="fidoLogin"><input type="hidden" id="dllt" name="dllt" value="generalLogin"><input type="hidden" name="lt" id="lt" value="" /><input type="hidden" id="execution" name="execution" value="61836241-d4b9-461e-817b-1eb09fc75874_ZXlKaGJHY2lPaUpJVXpVeE1pSjkudWZQREhleDRtSm8rQXE0dVRtS3NYdlhCRmIra21BM1JXL0NUWGlLU0ZCWUZUVVVEOWswNkVqb3VHUW9GcDJiYkZMZW9ZOTdMWlhOZ1JrSjV0RzRPaklyQkprOUNFeEhGYUdtbEdnMDZaQUZqK0E0MkdhOFZRS04zTXpZb2pyNm9DaGZHSGlncTdmOWNXdHdFdTlmNFcvYjVUclpIblozNG9qOEw0bUtoN0NDcllYaTJ3N0RWT3ZKZkVlV0RFYVNBQzE2R2RoTmsrM1V0OXpqdy8vemhlZGdzRHRYTlA5V3JBdWxJWEhPWWlCMERaeExnUGY5Sjc1dFN4Tjc5WWdGNnFkRTZGQ241eFhCNFJPbWR6M1BYUXlSWEoxeHJMNmJSL1VTSWYxMW9NdGFnWEJCdk1XR0RnTjZzOEtja3FZMnFDVkQ3Yzhrc3BGRjh3eHRRWXlQM2c1R3ppYmUrc1V1elNoRGZ0cnZLNDZUKzVIdE8wVzY5MDQ0enhvbURmY1dRc0J0UDdCY2RBSXZ4RXdRb3ExYkN1S3lwZUJpWkd5MzJ3VkFuUG0wZDR1K09TU3V4a0plUG93ZWRFUCtocjBqUktTTUlkTEtUTXQwSFFoTnpaZ3dMSVZPZllTYWVTcE1oeDVOMjI0eStuUW1FbUkranRSaWVoRGxrMjhVTEdoQ0dMVjhYd3FhbFMrb3RtVFcwZWZ0MnNBcnEyR3ViSmNsUEE3ZjV6RFo2V29nNW1BWCt1V2dXVmZycVlkZlpJY05qN2R1UmMrcEtUajJSVk9kRDFiRU1ndEtkdHJNeG45YkQ2aG9rZE56ZDEvaU9Wb21aYkcwR1ByQmpQQXl4TEVrbkxIK3lENVViSUg1TjZBejZ3UlY0ZFliSUwxdndRQkQxUG0xRkE4cWtXYU9yRDBDN3RRc1ViclhMQSs3UGFGcmZmQlFUUnYzMDJ6NnFqQVlUUGY3bHliTGJiSzd0OWxjeHF5RjJoWCs2S2piMXUrMjJodkFrYnJrRE40YW5xZ2ZjRFhUSUFqYUs4N2JWdlpVYzBhdEZvM0xSMFVKRzR1Nm80SUJKZmxXRFZEVkRvMkV4MmxFTzF1OWQwMnUySE03eGN2a2FZOU83RGpWV0M3blZrOWFYaTQvN21CS001L3VZNndiaXp5dk1EeWpRNDBzVS9TOHpyRGcxRjl1VWF6M3NhZlk4a3kvUXkrOSt2MHRWWk96SjhQcEIreUVwWFhqUmJTN3FVbGFJbG90TlM2Z2JJTkhobVY2RGVYMTF6aXk1em9VeGluZWR5azF1WVJEaHRuSHZWejI5ejJpQW5RK1FpeVNxSlNEeFFFUFowcTIxSHc5RGx5L051RjlQQndibVZhcld3enVHQVEzQk9XcjlUbXU3SmFYVHdyMGU0SEkyMzlFVHltWmc0NjVzSjQ1clZXWHpzdXlTZnpUQ2NmUEYvVXZxdnY0RHlOWTRrSWl0UWtncHJUQkYzNTJyYVN1cHNTN2paVjBYNGk1aWhNU2lvakZ3NTNmK0xjVVcrdFR6Mms2Mm5sb2pvTTk5NllxMHBUV1l1cE0zRDFmdk9jamptR2NnWnNvY21RRWszYUhDNmxNRTIrb0xBSDAwSGNEMGJpYlhkcm1FSStRNUozeS96Y0hSQU1FanZYV1AvdVdlUERSZ2dsdjN1Uy8xZFpxUjQ0Q1NPbVdvVUNmdlVTUWZHaHdjL2xMSy9IekJrZzZTTHM1YUJYWkx3a3owNGZtS3VQRDBkOFZ6UlZqbUxjYkx5Y2ZSMGhTVnBYUHZnNUl0K0x1dmJyNU9hRXhJSk54NU03SWEyYjJieTFKcEpyZ0h4NlEyRVFVOUJFWVRPeFJ0SE5WNC9EMFJkTU96OXovVDh5cm1ERnY3QTQyL1U2T2l5eGE1d3h3QlFoSTlnMnZYTm5Wd3M2alVvWXZ2UVA3V3lFSkhBK01Ta0lhRHVDM2ZxNklDemhIaXk4SmdFai9kaVZEelZ0QnFTU3pDdmxrY3FPZkc2bytiMWVMcFNUNm5TUUovME5hQ3IzSSs1WFJieU9DcWRBcStSS0d0K094ZmNEdWlwZHkxNFUyMGlhdUh5NnlVYkk0UjVWMjVpTS9SQTRTYU15bzdjYVRLalJCRWlxN3Z6dEV2Tmx1WnlmdE5PTkZ6QzQ1RTJMdi9PenBVYXFKeWRUaS80WnZqcGdBOU1ibHE0d1dCMk9FZlhOVXIrOTZZeGJocUJVci9nRVlQUHVMd2NXdUtqVjlpMGwxRWJjb3FkdVZEelBKQWxqRTBjdThtcnhwOHl1Sm9nUHJyalFGVXBaWjFUdW8rNUlQd3NSOFJGaTRzaVIxTXI2cS81ZjFEdFN6MVB6WFZmb1Q4ZktFVWw0SkJFa0FpZEp6UFRGWlJwcFFmVWZkZ1ppYkVKU3BlZkY5MFBNU1ZpL3ZCSmg3Q1ZMNlptT25ZUWxHS3EzSkszMG9nMkxrNHlIWXpWRmpibFJ5eHlXY0J6L05Ba3NKVUgzZkY2aWlZaWtaS29vV0QwTUl1UmhKVGE3Z29BdmpEcm9iYnFDTEJJNklKNWw4WTVhck5ZYnZhMkpQRmVwMFhNTTdCM2NVeXdqNndlb0JaV3oxdTYxT2ZGNXVHME94S2RmaEkvblEwNVdYajAvZndYcE8vNjg5a1hWZCtmTlNJVG85ZkNrTXI1eEJ4TnFNTXRjRXI0NW1CVnlvL1FpMWRYbGJKbU5zdGdSTXR0NWZwZ3BhajMwejU0R1FERE11aCtkYytaSm9zVGhxYjAyMVdBc2txUEJYRUh1Tk56aEZiM1Q4RForWllQK3d6TDE3NVJDRmxrd2gxa3A0ckxjUGo3R2lyZVFPRnF0N3JVaHB1M1M4QkFZMm1kM3BnWTl1WDhiYjQ1QkNVTml3ZTlwTFVyOHVzb05rTTkrNmtrQWhDTHlSd0kvQUVwbGtzcDFPaVZobUZiQUlxS0xjS0VqWkdnN21UMWxUT1dWWk1WZWRWWjFnd05aWEs0SDhrSENuTzJKWkdZcktLTnhKVEIyUVVpSHhrdHp1NEpzWWRkKzNzZmxQMmNxOHdtV0pZSmtXaTFoVUpTaEkvejMwUGNwcDNsQmpaRFpUbFc4dGJHdFRzNjhRT0sxRWVDRWU3elRHOEx3aWJCNXdQaEFwNHdLNG10SGhGT21UU3BxcEhYK1licnRIUEFLeWM1TXl3STN3bktjSUVRaVJvMmQ2NXJyMU80UUk3WktVd0Q3YXNJNFlNSlZKU2tQS2h2S0ZIVGtoMnFvaEhjSTdkVjNmODlMTU85NkpVZ1RQMjVmdG1wSFc0U3QwMGkyVUc0MGdJRHdqdDhsRzkwZEhETENqSlFRV1c1RTdGUXdSOE5QakZFWFczODdKMlZVWUZSdVVlcU1BSWtUWWhrR3V2RStsKzZBcGNGYWdPZGdjcVFzWnVOQ3g2Z2V5cklOK3hkaFB3a1k5aitvVFEycUpkTTZZOHBuQjFkVlFQM25vTW5ONUZDWUhYNjhmaGtqbjhFMDNuRnRldTNScDRsNGNUbElYNnlkTVNoU3U5Wm0zNzBnQmhiUy9KYkRCSk9TZjJDZjRsWGFXblBXV0w1TFp1SldlZy9Vd21PUFQvbHdWZXRrWVBLZS9TMnlCeThzNHJPQ3dDVVZxS3ZZeDRRSUd5TFIzZHNTdFhuQjN4cFBXbEh6R200enF1dDhOam1Ha0syaXJVYkxIVXdRdVV5NnFKTVhUbWh2MmxsUk9wa2V1K3lPaHI5UG5XK0NETlgybE1wdklnQURpN0tDTmtuMnh2aEgycXQ5YjlUQUk1N1Q1VWVLWmZldXVtb3FSNzZYdUdOeVpBSmx3YkkwbFFXMkR0L3pvQm82Y25HaTRHK1lSdzZnNkxNRTRZU3p3ZjNBai9QZ01qa1JvSFBPWEFEK3hmU01xNHlmYWJrTW9hVkNlOURJODlGYWUrN2lVb0hzeE9Hb1pWbEducXVmQm1ldEttdlhvaitIcm0yaWtCbm11NWlsVVRVQzA2RTBSUU9SaTJsRitrRkMrdk8xTHhseEUzem53S1hFcTlSbFpDMFhNZEZkcnpqVG91QTlUZm1vYXlrN1Y4cTZnMUUyVE9qdEt5ckFKbVZMdnpzSkM5clUyMzJxcDYwL1NPbEozZXlzZ3NLRXpDcUgzN0ROVjg5Rm1RakpXQmZEWElJSEp1OU1nODVMQ1RRamJLbEJmNE44OG5VMmp5cDdWM2FTOE14UkFjQnFNcUZ2YXlMblRiMitJWTNoT3BaNjNxNzVtaml1TllMazIxYWRwQnBGbWs1MHRDRHp1UThGVklTZjB0Mml3Rmg3amNPcHJROTExOFhNbkZRcDJ2ZEU5TUU4WjhQVDFUdlZZSWxqQU1scTQwUWFLTmYwck1UdGlieXUzU2poaGllK1N5cGlObEdJY2lLbHdxc0FUM3pHRVJUMWJEeWY1SWw2MjNJRjJhcjVsay9GM0JiVjVhS0swVHJIRk5KZU9ZaHpsTXpKSGtESDNrdlphZW8yNnExR1BUL2Q5VVJCS2dXZ0Zzdy9KS1RKK1VvMVRhcjRnZlBzQ1h5TGFhbGtkQlYwZDRqVnpQWjNaUWFRZS9OTkdtMTBXRmdRdFRNcGJtVktIYWYvejNqTWN5cnFhUitXQU5SckQ5TmI3MGdZRnRKelVhdDVhOWI5N3JacXI0V2FNTmxYZGZVcjMramxuZVNnQkxCUFk5MlE3VGttY1dtM0FmYWNZWkt3QXRia2FLY2NvOU1RSmh2V3piZ1d2T2x3S2ZUVE5ES2F1cWxiNzhjOHcyQ3l6b0Nua1RnMGQ0dHdkcER2c3MzbFc2UU9NOTltMTVLclBzWG1TVUNsWVkwWHVHWXAwbU5IMit2Rktjd09zMG9LZ0Vld3IwOW9zZTVIZVRsZEpGNGphYjZHMTQvaU5TRW5nL1dqQWt2dEhQVi8xVnE2SUcwMWZYczFUNUpOaXhqZ3FHTUMxUkZ2dytDUFFmNHVXNGIxMWhiK0RRekhROXN5VW9UMnhUZjNDZjJVbVkyVGlXRlE5L3c4b3NvTGZmVXJ2dmZSb0t3V1Y3bHpURENsbUl2MWxYRUNYS0krenpqZ1FhTTJvTEpObTBWRHc4dUFhRlJKQkV5dkYyajJraVZjRmJTajkwWUJKQXBEalNET21FQTY3WVRTND0uVnpKeFpMNURLOE9EVjQxQkQ4bjk2OVlsVGJ6S2UzQ2NqOEtqZlpISzg5TlhrWkZISTBOWEtwb1FLekMzd3VGeWZpWndOZXBUbVVpTlRYbjRYNTJKS1E=" /></form>
+		<div style="color: red;margin: 5px auto; display: none;" id="showFidoErrorTip">
+			<span id="showFidoErrorTipSpan"></span>
+		</div>
+	</div></div>
+					<!-- 手机动态码登录 --><div id="phoneLoginDiv" style="display: none"><div>
+		<div class="methods">
+		</div>
+		<form class="loginFromClass" method="post" id="phoneFromId" action="/authserver/login">
+			<div>
+				<div class="form">
+					<!-- 动态码登录 --><div class="m-phone">
+						<div class="username item">
+							<span class="prex-icon"><img src="/authserver/gdouThemeDz/static/web/images/user1.png" class="login-icon"/></span>
+							<input type="text" id="username" name="username" autocomplete="off" placeholder="请输入手机号/学号" title="请输入手机号/学号" value=""></div>
+						<div class="captcha item" id="captchaDiv">
+							<span class="prex-icon"><img src="/authserver/gdouThemeDz/static/web/images/captcha1.png" class="login-icon"/></span>
+							<input type="text" id="captcha" name="captcha" placeholder="请输入验证码" title="请输入验证码" maxlength="10"><span class="captcha-img"> 
+								<img id="captchaImg" alt="验证码错误" height="30px"><a class="mask-inner captcha-refresh" onclick="reloadCaptcha(true)" href="javascript:void(0);">刷新</a>
+							</span>
+						</div>
+						<div class="code item">
+							<span class="prex-icon"><img src="/authserver/gdouThemeDz/static/web/images/pass1.png" class="login-icon"/></span>
+							<i class="auth_icon auth_icon_bar"></i> 
+							<input type="text" id="dynamicCode" name="dynamicCode" placeholder="请输入短信动态码" title="请输入短信动态码" maxlength="10"><a class="get-code" href="javascript:void(0)"><em class="getCodeText">获取动态码</em></a>
+						</div>
+					</div>
+				</div>
+				<div id="formErrorTip" class="form-errorTip">
+					<span id="showErrorTip" class="form-error"></span>
+					<span id="showWarnTip" class="form-warn"></span>
+				</div>
+				<div class="btn">
+					<a href="javascript:void(0);" class="login-btn" id="login_submit">登录</a>
+				</div>
+			</div>
+			<input type="hidden" id="_eventId" name="_eventId" value="submit" /><input type="hidden" id="cllt" name="cllt" value="dynamicLogin"><input type="hidden" id="dllt" name="dllt" value="generalLogin"><input type="hidden" name="lt" id="lt" value="" /><input type="hidden" id="encryptSalt" value="" /><input type="hidden" id="execution" name="execution" value="61836241-d4b9-461e-817b-1eb09fc75874_ZXlKaGJHY2lPaUpJVXpVeE1pSjkudWZQREhleDRtSm8rQXE0dVRtS3NYdlhCRmIra21BM1JXL0NUWGlLU0ZCWUZUVVVEOWswNkVqb3VHUW9GcDJiYkZMZW9ZOTdMWlhOZ1JrSjV0RzRPaklyQkprOUNFeEhGYUdtbEdnMDZaQUZqK0E0MkdhOFZRS04zTXpZb2pyNm9DaGZHSGlncTdmOWNXdHdFdTlmNFcvYjVUclpIblozNG9qOEw0bUtoN0NDcllYaTJ3N0RWT3ZKZkVlV0RFYVNBQzE2R2RoTmsrM1V0OXpqdy8vemhlZGdzRHRYTlA5V3JBdWxJWEhPWWlCMERaeExnUGY5Sjc1dFN4Tjc5WWdGNnFkRTZGQ241eFhCNFJPbWR6M1BYUXlSWEoxeHJMNmJSL1VTSWYxMW9NdGFnWEJCdk1XR0RnTjZzOEtja3FZMnFDVkQ3Yzhrc3BGRjh3eHRRWXlQM2c1R3ppYmUrc1V1elNoRGZ0cnZLNDZUKzVIdE8wVzY5MDQ0enhvbURmY1dRc0J0UDdCY2RBSXZ4RXdRb3ExYkN1S3lwZUJpWkd5MzJ3VkFuUG0wZDR1K09TU3V4a0plUG93ZWRFUCtocjBqUktTTUlkTEtUTXQwSFFoTnpaZ3dMSVZPZllTYWVTcE1oeDVOMjI0eStuUW1FbUkranRSaWVoRGxrMjhVTEdoQ0dMVjhYd3FhbFMrb3RtVFcwZWZ0MnNBcnEyR3ViSmNsUEE3ZjV6RFo2V29nNW1BWCt1V2dXVmZycVlkZlpJY05qN2R1UmMrcEtUajJSVk9kRDFiRU1ndEtkdHJNeG45YkQ2aG9rZE56ZDEvaU9Wb21aYkcwR1ByQmpQQXl4TEVrbkxIK3lENVViSUg1TjZBejZ3UlY0ZFliSUwxdndRQkQxUG0xRkE4cWtXYU9yRDBDN3RRc1ViclhMQSs3UGFGcmZmQlFUUnYzMDJ6NnFqQVlUUGY3bHliTGJiSzd0OWxjeHF5RjJoWCs2S2piMXUrMjJodkFrYnJrRE40YW5xZ2ZjRFhUSUFqYUs4N2JWdlpVYzBhdEZvM0xSMFVKRzR1Nm80SUJKZmxXRFZEVkRvMkV4MmxFTzF1OWQwMnUySE03eGN2a2FZOU83RGpWV0M3blZrOWFYaTQvN21CS001L3VZNndiaXp5dk1EeWpRNDBzVS9TOHpyRGcxRjl1VWF6M3NhZlk4a3kvUXkrOSt2MHRWWk96SjhQcEIreUVwWFhqUmJTN3FVbGFJbG90TlM2Z2JJTkhobVY2RGVYMTF6aXk1em9VeGluZWR5azF1WVJEaHRuSHZWejI5ejJpQW5RK1FpeVNxSlNEeFFFUFowcTIxSHc5RGx5L051RjlQQndibVZhcld3enVHQVEzQk9XcjlUbXU3SmFYVHdyMGU0SEkyMzlFVHltWmc0NjVzSjQ1clZXWHpzdXlTZnpUQ2NmUEYvVXZxdnY0RHlOWTRrSWl0UWtncHJUQkYzNTJyYVN1cHNTN2paVjBYNGk1aWhNU2lvakZ3NTNmK0xjVVcrdFR6Mms2Mm5sb2pvTTk5NllxMHBUV1l1cE0zRDFmdk9jamptR2NnWnNvY21RRWszYUhDNmxNRTIrb0xBSDAwSGNEMGJpYlhkcm1FSStRNUozeS96Y0hSQU1FanZYV1AvdVdlUERSZ2dsdjN1Uy8xZFpxUjQ0Q1NPbVdvVUNmdlVTUWZHaHdjL2xMSy9IekJrZzZTTHM1YUJYWkx3a3owNGZtS3VQRDBkOFZ6UlZqbUxjYkx5Y2ZSMGhTVnBYUHZnNUl0K0x1dmJyNU9hRXhJSk54NU03SWEyYjJieTFKcEpyZ0h4NlEyRVFVOUJFWVRPeFJ0SE5WNC9EMFJkTU96OXovVDh5cm1ERnY3QTQyL1U2T2l5eGE1d3h3QlFoSTlnMnZYTm5Wd3M2alVvWXZ2UVA3V3lFSkhBK01Ta0lhRHVDM2ZxNklDemhIaXk4SmdFai9kaVZEelZ0QnFTU3pDdmxrY3FPZkc2bytiMWVMcFNUNm5TUUovME5hQ3IzSSs1WFJieU9DcWRBcStSS0d0K094ZmNEdWlwZHkxNFUyMGlhdUh5NnlVYkk0UjVWMjVpTS9SQTRTYU15bzdjYVRLalJCRWlxN3Z6dEV2Tmx1WnlmdE5PTkZ6QzQ1RTJMdi9PenBVYXFKeWRUaS80WnZqcGdBOU1ibHE0d1dCMk9FZlhOVXIrOTZZeGJocUJVci9nRVlQUHVMd2NXdUtqVjlpMGwxRWJjb3FkdVZEelBKQWxqRTBjdThtcnhwOHl1Sm9nUHJyalFGVXBaWjFUdW8rNUlQd3NSOFJGaTRzaVIxTXI2cS81ZjFEdFN6MVB6WFZmb1Q4ZktFVWw0SkJFa0FpZEp6UFRGWlJwcFFmVWZkZ1ppYkVKU3BlZkY5MFBNU1ZpL3ZCSmg3Q1ZMNlptT25ZUWxHS3EzSkszMG9nMkxrNHlIWXpWRmpibFJ5eHlXY0J6L05Ba3NKVUgzZkY2aWlZaWtaS29vV0QwTUl1UmhKVGE3Z29BdmpEcm9iYnFDTEJJNklKNWw4WTVhck5ZYnZhMkpQRmVwMFhNTTdCM2NVeXdqNndlb0JaV3oxdTYxT2ZGNXVHME94S2RmaEkvblEwNVdYajAvZndYcE8vNjg5a1hWZCtmTlNJVG85ZkNrTXI1eEJ4TnFNTXRjRXI0NW1CVnlvL1FpMWRYbGJKbU5zdGdSTXR0NWZwZ3BhajMwejU0R1FERE11aCtkYytaSm9zVGhxYjAyMVdBc2txUEJYRUh1Tk56aEZiM1Q4RForWllQK3d6TDE3NVJDRmxrd2gxa3A0ckxjUGo3R2lyZVFPRnF0N3JVaHB1M1M4QkFZMm1kM3BnWTl1WDhiYjQ1QkNVTml3ZTlwTFVyOHVzb05rTTkrNmtrQWhDTHlSd0kvQUVwbGtzcDFPaVZobUZiQUlxS0xjS0VqWkdnN21UMWxUT1dWWk1WZWRWWjFnd05aWEs0SDhrSENuTzJKWkdZcktLTnhKVEIyUVVpSHhrdHp1NEpzWWRkKzNzZmxQMmNxOHdtV0pZSmtXaTFoVUpTaEkvejMwUGNwcDNsQmpaRFpUbFc4dGJHdFRzNjhRT0sxRWVDRWU3elRHOEx3aWJCNXdQaEFwNHdLNG10SGhGT21UU3BxcEhYK1licnRIUEFLeWM1TXl3STN3bktjSUVRaVJvMmQ2NXJyMU80UUk3WktVd0Q3YXNJNFlNSlZKU2tQS2h2S0ZIVGtoMnFvaEhjSTdkVjNmODlMTU85NkpVZ1RQMjVmdG1wSFc0U3QwMGkyVUc0MGdJRHdqdDhsRzkwZEhETENqSlFRV1c1RTdGUXdSOE5QakZFWFczODdKMlZVWUZSdVVlcU1BSWtUWWhrR3V2RStsKzZBcGNGYWdPZGdjcVFzWnVOQ3g2Z2V5cklOK3hkaFB3a1k5aitvVFEycUpkTTZZOHBuQjFkVlFQM25vTW5ONUZDWUhYNjhmaGtqbjhFMDNuRnRldTNScDRsNGNUbElYNnlkTVNoU3U5Wm0zNzBnQmhiUy9KYkRCSk9TZjJDZjRsWGFXblBXV0w1TFp1SldlZy9Vd21PUFQvbHdWZXRrWVBLZS9TMnlCeThzNHJPQ3dDVVZxS3ZZeDRRSUd5TFIzZHNTdFhuQjN4cFBXbEh6R200enF1dDhOam1Ha0syaXJVYkxIVXdRdVV5NnFKTVhUbWh2MmxsUk9wa2V1K3lPaHI5UG5XK0NETlgybE1wdklnQURpN0tDTmtuMnh2aEgycXQ5YjlUQUk1N1Q1VWVLWmZldXVtb3FSNzZYdUdOeVpBSmx3YkkwbFFXMkR0L3pvQm82Y25HaTRHK1lSdzZnNkxNRTRZU3p3ZjNBai9QZ01qa1JvSFBPWEFEK3hmU01xNHlmYWJrTW9hVkNlOURJODlGYWUrN2lVb0hzeE9Hb1pWbEducXVmQm1ldEttdlhvaitIcm0yaWtCbm11NWlsVVRVQzA2RTBSUU9SaTJsRitrRkMrdk8xTHhseEUzem53S1hFcTlSbFpDMFhNZEZkcnpqVG91QTlUZm1vYXlrN1Y4cTZnMUUyVE9qdEt5ckFKbVZMdnpzSkM5clUyMzJxcDYwL1NPbEozZXlzZ3NLRXpDcUgzN0ROVjg5Rm1RakpXQmZEWElJSEp1OU1nODVMQ1RRamJLbEJmNE44OG5VMmp5cDdWM2FTOE14UkFjQnFNcUZ2YXlMblRiMitJWTNoT3BaNjNxNzVtaml1TllMazIxYWRwQnBGbWs1MHRDRHp1UThGVklTZjB0Mml3Rmg3amNPcHJROTExOFhNbkZRcDJ2ZEU5TUU4WjhQVDFUdlZZSWxqQU1scTQwUWFLTmYwck1UdGlieXUzU2poaGllK1N5cGlObEdJY2lLbHdxc0FUM3pHRVJUMWJEeWY1SWw2MjNJRjJhcjVsay9GM0JiVjVhS0swVHJIRk5KZU9ZaHpsTXpKSGtESDNrdlphZW8yNnExR1BUL2Q5VVJCS2dXZ0Zzdy9KS1RKK1VvMVRhcjRnZlBzQ1h5TGFhbGtkQlYwZDRqVnpQWjNaUWFRZS9OTkdtMTBXRmdRdFRNcGJtVktIYWYvejNqTWN5cnFhUitXQU5SckQ5TmI3MGdZRnRKelVhdDVhOWI5N3JacXI0V2FNTmxYZGZVcjMramxuZVNnQkxCUFk5MlE3VGttY1dtM0FmYWNZWkt3QXRia2FLY2NvOU1RSmh2V3piZ1d2T2x3S2ZUVE5ES2F1cWxiNzhjOHcyQ3l6b0Nua1RnMGQ0dHdkcER2c3MzbFc2UU9NOTltMTVLclBzWG1TVUNsWVkwWHVHWXAwbU5IMit2Rktjd09zMG9LZ0Vld3IwOW9zZTVIZVRsZEpGNGphYjZHMTQvaU5TRW5nL1dqQWt2dEhQVi8xVnE2SUcwMWZYczFUNUpOaXhqZ3FHTUMxUkZ2dytDUFFmNHVXNGIxMWhiK0RRekhROXN5VW9UMnhUZjNDZjJVbVkyVGlXRlE5L3c4b3NvTGZmVXJ2dmZSb0t3V1Y3bHpURENsbUl2MWxYRUNYS0krenpqZ1FhTTJvTEpObTBWRHc4dUFhRlJKQkV5dkYyajJraVZjRmJTajkwWUJKQXBEalNET21FQTY3WVRTND0uVnpKeFpMNURLOE9EVjQxQkQ4bjk2OVlsVGJ6S2UzQ2NqOEtqZlpISzg5TlhrWkZISTBOWEtwb1FLekMzd3VGeWZpWndOZXBUbVVpTlRYbjRYNTJKS1E=" /></form>
+	</div></div>
+					<!-- 用户名密码登录 --><div id="pwdLoginDiv" style="display: none"><div>
+		<div class="methods">
+		</div>
+		<form class="loginFromClass" method="post" id="pwdFromId" action="/authserver/login">
+			<div class="form">
+				<!-- 用户名密码登录 --><div class="m-account">
+					<div class="username item">
+						<span class="prex-icon"><img src="/authserver/gdouThemeDz/static/web/images/user1.png" class="login-icon"/></span> 
+						<input id="username" name="username" type="text" readonly="readonly" placeholder="请输入学号/工号/身份证号" title="请输入学号/工号/身份证号" value=""></div>
+					<div class="password item">
+						<span class="prex-icon"><img src="/authserver/gdouThemeDz/static/web/images/pass1.png" class="login-icon"/></span>
+						<input id="password" name="passwordText" type="password" readonly="readonly" placeholder="请输入密码" title="请输入密码"><input id="saltPassword" name="password" type="hidden"><!-- <a class="input_eye suffix-icon eyehide"></a> --></div>
+					<div class="captcha item hide" id="captchaDiv">
+						<span class="prex-icon"><img src="/authserver/gdouThemeDz/static/web/images/captcha1.png" class="login-icon"/></span> 
+						<input type="text" id="captcha" name="captcha" placeholder="请输入验证码" title="请输入验证码" maxlength="10"><span class="captcha-img">
+							<img id="captchaImg" alt="验证码错误" height="30px"><a class="mask-inner captcha-refresh" onclick="reloadCaptcha(true)" href="javascript:void(0);">刷新</a>
+						</span>
+					</div>
+					<div class="m-rememberMe">
+						<input type="checkbox" name="rememberMe" id="rememberMe" value="true" style="width:15px;margin-right:5px;"/><span>7天免登录</span>
+					</div>
+				</div>
+				<div id="formErrorTip" class="form-errorTip">
+					<span id="showErrorTip" class="form-error text-ellipsis"></span>
+					<span id="showWarnTip" class="form-warn"></span>
+				</div>
+				<div class="btn">
+					<a id="login_submit" href="javascript:void(0);" class="login-btn">登录</a>
+				</div>
+			</div>
+			<input type="hidden" id="_eventId" name="_eventId" value="submit" /><input type="hidden" id="cllt" name="cllt" value="userNameLogin"><input type="hidden" id="dllt" name="dllt" value="generalLogin"><input type="hidden" name="lt" id="lt" value="" /><input type="hidden" id="pwdEncryptSalt" value="MbO7PMpjYj49KDS6" /><input type="hidden" id="execution" name="execution" value="61836241-d4b9-461e-817b-1eb09fc75874_ZXlKaGJHY2lPaUpJVXpVeE1pSjkudWZQREhleDRtSm8rQXE0dVRtS3NYdlhCRmIra21BM1JXL0NUWGlLU0ZCWUZUVVVEOWswNkVqb3VHUW9GcDJiYkZMZW9ZOTdMWlhOZ1JrSjV0RzRPaklyQkprOUNFeEhGYUdtbEdnMDZaQUZqK0E0MkdhOFZRS04zTXpZb2pyNm9DaGZHSGlncTdmOWNXdHdFdTlmNFcvYjVUclpIblozNG9qOEw0bUtoN0NDcllYaTJ3N0RWT3ZKZkVlV0RFYVNBQzE2R2RoTmsrM1V0OXpqdy8vemhlZGdzRHRYTlA5V3JBdWxJWEhPWWlCMERaeExnUGY5Sjc1dFN4Tjc5WWdGNnFkRTZGQ241eFhCNFJPbWR6M1BYUXlSWEoxeHJMNmJSL1VTSWYxMW9NdGFnWEJCdk1XR0RnTjZzOEtja3FZMnFDVkQ3Yzhrc3BGRjh3eHRRWXlQM2c1R3ppYmUrc1V1elNoRGZ0cnZLNDZUKzVIdE8wVzY5MDQ0enhvbURmY1dRc0J0UDdCY2RBSXZ4RXdRb3ExYkN1S3lwZUJpWkd5MzJ3VkFuUG0wZDR1K09TU3V4a0plUG93ZWRFUCtocjBqUktTTUlkTEtUTXQwSFFoTnpaZ3dMSVZPZllTYWVTcE1oeDVOMjI0eStuUW1FbUkranRSaWVoRGxrMjhVTEdoQ0dMVjhYd3FhbFMrb3RtVFcwZWZ0MnNBcnEyR3ViSmNsUEE3ZjV6RFo2V29nNW1BWCt1V2dXVmZycVlkZlpJY05qN2R1UmMrcEtUajJSVk9kRDFiRU1ndEtkdHJNeG45YkQ2aG9rZE56ZDEvaU9Wb21aYkcwR1ByQmpQQXl4TEVrbkxIK3lENVViSUg1TjZBejZ3UlY0ZFliSUwxdndRQkQxUG0xRkE4cWtXYU9yRDBDN3RRc1ViclhMQSs3UGFGcmZmQlFUUnYzMDJ6NnFqQVlUUGY3bHliTGJiSzd0OWxjeHF5RjJoWCs2S2piMXUrMjJodkFrYnJrRE40YW5xZ2ZjRFhUSUFqYUs4N2JWdlpVYzBhdEZvM0xSMFVKRzR1Nm80SUJKZmxXRFZEVkRvMkV4MmxFTzF1OWQwMnUySE03eGN2a2FZOU83RGpWV0M3blZrOWFYaTQvN21CS001L3VZNndiaXp5dk1EeWpRNDBzVS9TOHpyRGcxRjl1VWF6M3NhZlk4a3kvUXkrOSt2MHRWWk96SjhQcEIreUVwWFhqUmJTN3FVbGFJbG90TlM2Z2JJTkhobVY2RGVYMTF6aXk1em9VeGluZWR5azF1WVJEaHRuSHZWejI5ejJpQW5RK1FpeVNxSlNEeFFFUFowcTIxSHc5RGx5L051RjlQQndibVZhcld3enVHQVEzQk9XcjlUbXU3SmFYVHdyMGU0SEkyMzlFVHltWmc0NjVzSjQ1clZXWHpzdXlTZnpUQ2NmUEYvVXZxdnY0RHlOWTRrSWl0UWtncHJUQkYzNTJyYVN1cHNTN2paVjBYNGk1aWhNU2lvakZ3NTNmK0xjVVcrdFR6Mms2Mm5sb2pvTTk5NllxMHBUV1l1cE0zRDFmdk9jamptR2NnWnNvY21RRWszYUhDNmxNRTIrb0xBSDAwSGNEMGJpYlhkcm1FSStRNUozeS96Y0hSQU1FanZYV1AvdVdlUERSZ2dsdjN1Uy8xZFpxUjQ0Q1NPbVdvVUNmdlVTUWZHaHdjL2xMSy9IekJrZzZTTHM1YUJYWkx3a3owNGZtS3VQRDBkOFZ6UlZqbUxjYkx5Y2ZSMGhTVnBYUHZnNUl0K0x1dmJyNU9hRXhJSk54NU03SWEyYjJieTFKcEpyZ0h4NlEyRVFVOUJFWVRPeFJ0SE5WNC9EMFJkTU96OXovVDh5cm1ERnY3QTQyL1U2T2l5eGE1d3h3QlFoSTlnMnZYTm5Wd3M2alVvWXZ2UVA3V3lFSkhBK01Ta0lhRHVDM2ZxNklDemhIaXk4SmdFai9kaVZEelZ0QnFTU3pDdmxrY3FPZkc2bytiMWVMcFNUNm5TUUovME5hQ3IzSSs1WFJieU9DcWRBcStSS0d0K094ZmNEdWlwZHkxNFUyMGlhdUh5NnlVYkk0UjVWMjVpTS9SQTRTYU15bzdjYVRLalJCRWlxN3Z6dEV2Tmx1WnlmdE5PTkZ6QzQ1RTJMdi9PenBVYXFKeWRUaS80WnZqcGdBOU1ibHE0d1dCMk9FZlhOVXIrOTZZeGJocUJVci9nRVlQUHVMd2NXdUtqVjlpMGwxRWJjb3FkdVZEelBKQWxqRTBjdThtcnhwOHl1Sm9nUHJyalFGVXBaWjFUdW8rNUlQd3NSOFJGaTRzaVIxTXI2cS81ZjFEdFN6MVB6WFZmb1Q4ZktFVWw0SkJFa0FpZEp6UFRGWlJwcFFmVWZkZ1ppYkVKU3BlZkY5MFBNU1ZpL3ZCSmg3Q1ZMNlptT25ZUWxHS3EzSkszMG9nMkxrNHlIWXpWRmpibFJ5eHlXY0J6L05Ba3NKVUgzZkY2aWlZaWtaS29vV0QwTUl1UmhKVGE3Z29BdmpEcm9iYnFDTEJJNklKNWw4WTVhck5ZYnZhMkpQRmVwMFhNTTdCM2NVeXdqNndlb0JaV3oxdTYxT2ZGNXVHME94S2RmaEkvblEwNVdYajAvZndYcE8vNjg5a1hWZCtmTlNJVG85ZkNrTXI1eEJ4TnFNTXRjRXI0NW1CVnlvL1FpMWRYbGJKbU5zdGdSTXR0NWZwZ3BhajMwejU0R1FERE11aCtkYytaSm9zVGhxYjAyMVdBc2txUEJYRUh1Tk56aEZiM1Q4RForWllQK3d6TDE3NVJDRmxrd2gxa3A0ckxjUGo3R2lyZVFPRnF0N3JVaHB1M1M4QkFZMm1kM3BnWTl1WDhiYjQ1QkNVTml3ZTlwTFVyOHVzb05rTTkrNmtrQWhDTHlSd0kvQUVwbGtzcDFPaVZobUZiQUlxS0xjS0VqWkdnN21UMWxUT1dWWk1WZWRWWjFnd05aWEs0SDhrSENuTzJKWkdZcktLTnhKVEIyUVVpSHhrdHp1NEpzWWRkKzNzZmxQMmNxOHdtV0pZSmtXaTFoVUpTaEkvejMwUGNwcDNsQmpaRFpUbFc4dGJHdFRzNjhRT0sxRWVDRWU3elRHOEx3aWJCNXdQaEFwNHdLNG10SGhGT21UU3BxcEhYK1licnRIUEFLeWM1TXl3STN3bktjSUVRaVJvMmQ2NXJyMU80UUk3WktVd0Q3YXNJNFlNSlZKU2tQS2h2S0ZIVGtoMnFvaEhjSTdkVjNmODlMTU85NkpVZ1RQMjVmdG1wSFc0U3QwMGkyVUc0MGdJRHdqdDhsRzkwZEhETENqSlFRV1c1RTdGUXdSOE5QakZFWFczODdKMlZVWUZSdVVlcU1BSWtUWWhrR3V2RStsKzZBcGNGYWdPZGdjcVFzWnVOQ3g2Z2V5cklOK3hkaFB3a1k5aitvVFEycUpkTTZZOHBuQjFkVlFQM25vTW5ONUZDWUhYNjhmaGtqbjhFMDNuRnRldTNScDRsNGNUbElYNnlkTVNoU3U5Wm0zNzBnQmhiUy9KYkRCSk9TZjJDZjRsWGFXblBXV0w1TFp1SldlZy9Vd21PUFQvbHdWZXRrWVBLZS9TMnlCeThzNHJPQ3dDVVZxS3ZZeDRRSUd5TFIzZHNTdFhuQjN4cFBXbEh6R200enF1dDhOam1Ha0syaXJVYkxIVXdRdVV5NnFKTVhUbWh2MmxsUk9wa2V1K3lPaHI5UG5XK0NETlgybE1wdklnQURpN0tDTmtuMnh2aEgycXQ5YjlUQUk1N1Q1VWVLWmZldXVtb3FSNzZYdUdOeVpBSmx3YkkwbFFXMkR0L3pvQm82Y25HaTRHK1lSdzZnNkxNRTRZU3p3ZjNBai9QZ01qa1JvSFBPWEFEK3hmU01xNHlmYWJrTW9hVkNlOURJODlGYWUrN2lVb0hzeE9Hb1pWbEducXVmQm1ldEttdlhvaitIcm0yaWtCbm11NWlsVVRVQzA2RTBSUU9SaTJsRitrRkMrdk8xTHhseEUzem53S1hFcTlSbFpDMFhNZEZkcnpqVG91QTlUZm1vYXlrN1Y4cTZnMUUyVE9qdEt5ckFKbVZMdnpzSkM5clUyMzJxcDYwL1NPbEozZXlzZ3NLRXpDcUgzN0ROVjg5Rm1RakpXQmZEWElJSEp1OU1nODVMQ1RRamJLbEJmNE44OG5VMmp5cDdWM2FTOE14UkFjQnFNcUZ2YXlMblRiMitJWTNoT3BaNjNxNzVtaml1TllMazIxYWRwQnBGbWs1MHRDRHp1UThGVklTZjB0Mml3Rmg3amNPcHJROTExOFhNbkZRcDJ2ZEU5TUU4WjhQVDFUdlZZSWxqQU1scTQwUWFLTmYwck1UdGlieXUzU2poaGllK1N5cGlObEdJY2lLbHdxc0FUM3pHRVJUMWJEeWY1SWw2MjNJRjJhcjVsay9GM0JiVjVhS0swVHJIRk5KZU9ZaHpsTXpKSGtESDNrdlphZW8yNnExR1BUL2Q5VVJCS2dXZ0Zzdy9KS1RKK1VvMVRhcjRnZlBzQ1h5TGFhbGtkQlYwZDRqVnpQWjNaUWFRZS9OTkdtMTBXRmdRdFRNcGJtVktIYWYvejNqTWN5cnFhUitXQU5SckQ5TmI3MGdZRnRKelVhdDVhOWI5N3JacXI0V2FNTmxYZGZVcjMramxuZVNnQkxCUFk5MlE3VGttY1dtM0FmYWNZWkt3QXRia2FLY2NvOU1RSmh2V3piZ1d2T2x3S2ZUVE5ES2F1cWxiNzhjOHcyQ3l6b0Nua1RnMGQ0dHdkcER2c3MzbFc2UU9NOTltMTVLclBzWG1TVUNsWVkwWHVHWXAwbU5IMit2Rktjd09zMG9LZ0Vld3IwOW9zZTVIZVRsZEpGNGphYjZHMTQvaU5TRW5nL1dqQWt2dEhQVi8xVnE2SUcwMWZYczFUNUpOaXhqZ3FHTUMxUkZ2dytDUFFmNHVXNGIxMWhiK0RRekhROXN5VW9UMnhUZjNDZjJVbVkyVGlXRlE5L3c4b3NvTGZmVXJ2dmZSb0t3V1Y3bHpURENsbUl2MWxYRUNYS0krenpqZ1FhTTJvTEpObTBWRHc4dUFhRlJKQkV5dkYyajJraVZjRmJTajkwWUJKQXBEalNET21FQTY3WVRTND0uVnpKeFpMNURLOE9EVjQxQkQ4bjk2OVlsVGJ6S2UzQ2NqOEtqZlpISzg5TlhrWkZISTBOWEtwb1FLekMzd3VGeWZpWndOZXBUbVVpTlRYbjRYNTJKS1E=" /></form>
+		<script type="text/javascript">
+			$(function () {
+				$("input").on("focus",function(){
+					$(this).removeAttr('readonly');
+				}).each(function(index){
+					$(this).attr('autocomplete','off');
+					$(this).attr('readonly','readonly');
+				});
+			});
+		</script>
+	</div></div>
+					
+					<div class="lianjie">
+						<span>
+							<!--<a id="retrievePassId" th:href="@{../retrieve-password/retrievePassword/index.html#/}" class="fo-password" th:text="#{login.page.forget.pwd}"></a>	--><a id="retrievePassId" href="../retrieve-password/retrievePassword/index.html#/" class="fo-password">自助重置密码</a>
+						</span>
+						<span>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+						<span><a style="cursor: pointer; font-family: PingFangSC-Regular; font-size: 14px; color: #FFFFFF; letter-spacing: 0; font-weight: 400; text-decoration:none;" class="activation-account" href="/shiyongbanzhu.html">人工重置密码</a></span>
+					</div>
+					
+					<!-- 帐号激活|忘记密码 --><!-- <div class="help">
+						<span th:if="${_showAccountActivationLink}">
+							<a id="activationAccountId" th:href="@{../retrieve-password/accountActivation/index.html#/}" class="activation-account" th:text="#{login.page.account.activity.btn}"></a>
+							<span>&nbsp;|&nbsp;</span>
+						</span>
+						<a id="retrievePassId" th:href="@{../retrieve-password/retrievePassword/index.html#/}" class="fo-password" th:text="#{login.page.forget.pwd}"></a>
+					</div> --></div>
+				<!-- 嵌入二维码登录 --><!-- <div class="login-qrcode hide">
+					<div th:replace="${@systemConfigUtils.getConfigTheme()+'/qrLoginPage'} :: qrLoginPage"></div>
+				</div> --></section>
+			<div class="dz_ewm">
+				<div>
+<script type="text/javascript" src="/authserver/gdouThemeDz/static/custom/js/qrcode.js?v=20210618.194511"></script>
+<div class="qr_scan_box">
+    <form method="post" id="qrLoginForm" action="/authserver/login" role="form">
+        <div id="qr_code">
+             <div class="qr_scan_code"><img id="qr_img" src=""/></div>
+             <!-- <span class="title" th:text="#{ids.qr.login.tip}"></span> --><span class="title">企业微信扫码登录</span>
+        </div>
 
+        <div id="qr_success" style="margin-left:-5px;display: none">
+            <div class="qr_scan_success" style="margin-top: 0px;">
+                <img style="margin: 50px; 50px" src="/authserver/gdouThemeDz/static/custom/images/Success.png"/><span style="display: block;" class="title title_h1">扫描成功</span>
+                <span class="sub_title">请在手机上『确认登录』</span>
+            </div>
+            <div class="scan_footer" style="margin-top:10px; border: 1px solid #2366FF; border-radius: 4px; padding: 5px 10px; background: #2366FF;"><a class="scan_a" href="javascript:refresh();">返回二维码</a></div>
+        </div>
 
-<div id="background-contain">
-    <div id="background"></div>
+        <div id="qr_invalid" style="display: none">
+            <div class="qr_scan_code">
+                <img id="invalid_img" src=""/><div class="qr_scan_Invalid">
+                    <img id="qr_refresh" src="/authserver/gdouThemeDz/static/custom/images/refresh.png" onclick="refresh()"/></div>
+            </div>
+            <!-- <span class="title" th:text="#{ids.qr.login.tip}"></span> --><span class="title">企业微信扫码登录</span>
+        </div>
+
+        <input type="hidden" name="lt" id="lt" value="" /><input type="hidden" name="uuid" id="uuid" value=""/><input type="hidden" name="cllt" value="qrLogin"/><input type="hidden" id="dllt" name="dllt" value="generalLogin"><input type="hidden" name="execution" value="61836241-d4b9-461e-817b-1eb09fc75874_ZXlKaGJHY2lPaUpJVXpVeE1pSjkudWZQREhleDRtSm8rQXE0dVRtS3NYdlhCRmIra21BM1JXL0NUWGlLU0ZCWUZUVVVEOWswNkVqb3VHUW9GcDJiYkZMZW9ZOTdMWlhOZ1JrSjV0RzRPaklyQkprOUNFeEhGYUdtbEdnMDZaQUZqK0E0MkdhOFZRS04zTXpZb2pyNm9DaGZHSGlncTdmOWNXdHdFdTlmNFcvYjVUclpIblozNG9qOEw0bUtoN0NDcllYaTJ3N0RWT3ZKZkVlV0RFYVNBQzE2R2RoTmsrM1V0OXpqdy8vemhlZGdzRHRYTlA5V3JBdWxJWEhPWWlCMERaeExnUGY5Sjc1dFN4Tjc5WWdGNnFkRTZGQ241eFhCNFJPbWR6M1BYUXlSWEoxeHJMNmJSL1VTSWYxMW9NdGFnWEJCdk1XR0RnTjZzOEtja3FZMnFDVkQ3Yzhrc3BGRjh3eHRRWXlQM2c1R3ppYmUrc1V1elNoRGZ0cnZLNDZUKzVIdE8wVzY5MDQ0enhvbURmY1dRc0J0UDdCY2RBSXZ4RXdRb3ExYkN1S3lwZUJpWkd5MzJ3VkFuUG0wZDR1K09TU3V4a0plUG93ZWRFUCtocjBqUktTTUlkTEtUTXQwSFFoTnpaZ3dMSVZPZllTYWVTcE1oeDVOMjI0eStuUW1FbUkranRSaWVoRGxrMjhVTEdoQ0dMVjhYd3FhbFMrb3RtVFcwZWZ0MnNBcnEyR3ViSmNsUEE3ZjV6RFo2V29nNW1BWCt1V2dXVmZycVlkZlpJY05qN2R1UmMrcEtUajJSVk9kRDFiRU1ndEtkdHJNeG45YkQ2aG9rZE56ZDEvaU9Wb21aYkcwR1ByQmpQQXl4TEVrbkxIK3lENVViSUg1TjZBejZ3UlY0ZFliSUwxdndRQkQxUG0xRkE4cWtXYU9yRDBDN3RRc1ViclhMQSs3UGFGcmZmQlFUUnYzMDJ6NnFqQVlUUGY3bHliTGJiSzd0OWxjeHF5RjJoWCs2S2piMXUrMjJodkFrYnJrRE40YW5xZ2ZjRFhUSUFqYUs4N2JWdlpVYzBhdEZvM0xSMFVKRzR1Nm80SUJKZmxXRFZEVkRvMkV4MmxFTzF1OWQwMnUySE03eGN2a2FZOU83RGpWV0M3blZrOWFYaTQvN21CS001L3VZNndiaXp5dk1EeWpRNDBzVS9TOHpyRGcxRjl1VWF6M3NhZlk4a3kvUXkrOSt2MHRWWk96SjhQcEIreUVwWFhqUmJTN3FVbGFJbG90TlM2Z2JJTkhobVY2RGVYMTF6aXk1em9VeGluZWR5azF1WVJEaHRuSHZWejI5ejJpQW5RK1FpeVNxSlNEeFFFUFowcTIxSHc5RGx5L051RjlQQndibVZhcld3enVHQVEzQk9XcjlUbXU3SmFYVHdyMGU0SEkyMzlFVHltWmc0NjVzSjQ1clZXWHpzdXlTZnpUQ2NmUEYvVXZxdnY0RHlOWTRrSWl0UWtncHJUQkYzNTJyYVN1cHNTN2paVjBYNGk1aWhNU2lvakZ3NTNmK0xjVVcrdFR6Mms2Mm5sb2pvTTk5NllxMHBUV1l1cE0zRDFmdk9jamptR2NnWnNvY21RRWszYUhDNmxNRTIrb0xBSDAwSGNEMGJpYlhkcm1FSStRNUozeS96Y0hSQU1FanZYV1AvdVdlUERSZ2dsdjN1Uy8xZFpxUjQ0Q1NPbVdvVUNmdlVTUWZHaHdjL2xMSy9IekJrZzZTTHM1YUJYWkx3a3owNGZtS3VQRDBkOFZ6UlZqbUxjYkx5Y2ZSMGhTVnBYUHZnNUl0K0x1dmJyNU9hRXhJSk54NU03SWEyYjJieTFKcEpyZ0h4NlEyRVFVOUJFWVRPeFJ0SE5WNC9EMFJkTU96OXovVDh5cm1ERnY3QTQyL1U2T2l5eGE1d3h3QlFoSTlnMnZYTm5Wd3M2alVvWXZ2UVA3V3lFSkhBK01Ta0lhRHVDM2ZxNklDemhIaXk4SmdFai9kaVZEelZ0QnFTU3pDdmxrY3FPZkc2bytiMWVMcFNUNm5TUUovME5hQ3IzSSs1WFJieU9DcWRBcStSS0d0K094ZmNEdWlwZHkxNFUyMGlhdUh5NnlVYkk0UjVWMjVpTS9SQTRTYU15bzdjYVRLalJCRWlxN3Z6dEV2Tmx1WnlmdE5PTkZ6QzQ1RTJMdi9PenBVYXFKeWRUaS80WnZqcGdBOU1ibHE0d1dCMk9FZlhOVXIrOTZZeGJocUJVci9nRVlQUHVMd2NXdUtqVjlpMGwxRWJjb3FkdVZEelBKQWxqRTBjdThtcnhwOHl1Sm9nUHJyalFGVXBaWjFUdW8rNUlQd3NSOFJGaTRzaVIxTXI2cS81ZjFEdFN6MVB6WFZmb1Q4ZktFVWw0SkJFa0FpZEp6UFRGWlJwcFFmVWZkZ1ppYkVKU3BlZkY5MFBNU1ZpL3ZCSmg3Q1ZMNlptT25ZUWxHS3EzSkszMG9nMkxrNHlIWXpWRmpibFJ5eHlXY0J6L05Ba3NKVUgzZkY2aWlZaWtaS29vV0QwTUl1UmhKVGE3Z29BdmpEcm9iYnFDTEJJNklKNWw4WTVhck5ZYnZhMkpQRmVwMFhNTTdCM2NVeXdqNndlb0JaV3oxdTYxT2ZGNXVHME94S2RmaEkvblEwNVdYajAvZndYcE8vNjg5a1hWZCtmTlNJVG85ZkNrTXI1eEJ4TnFNTXRjRXI0NW1CVnlvL1FpMWRYbGJKbU5zdGdSTXR0NWZwZ3BhajMwejU0R1FERE11aCtkYytaSm9zVGhxYjAyMVdBc2txUEJYRUh1Tk56aEZiM1Q4RForWllQK3d6TDE3NVJDRmxrd2gxa3A0ckxjUGo3R2lyZVFPRnF0N3JVaHB1M1M4QkFZMm1kM3BnWTl1WDhiYjQ1QkNVTml3ZTlwTFVyOHVzb05rTTkrNmtrQWhDTHlSd0kvQUVwbGtzcDFPaVZobUZiQUlxS0xjS0VqWkdnN21UMWxUT1dWWk1WZWRWWjFnd05aWEs0SDhrSENuTzJKWkdZcktLTnhKVEIyUVVpSHhrdHp1NEpzWWRkKzNzZmxQMmNxOHdtV0pZSmtXaTFoVUpTaEkvejMwUGNwcDNsQmpaRFpUbFc4dGJHdFRzNjhRT0sxRWVDRWU3elRHOEx3aWJCNXdQaEFwNHdLNG10SGhGT21UU3BxcEhYK1licnRIUEFLeWM1TXl3STN3bktjSUVRaVJvMmQ2NXJyMU80UUk3WktVd0Q3YXNJNFlNSlZKU2tQS2h2S0ZIVGtoMnFvaEhjSTdkVjNmODlMTU85NkpVZ1RQMjVmdG1wSFc0U3QwMGkyVUc0MGdJRHdqdDhsRzkwZEhETENqSlFRV1c1RTdGUXdSOE5QakZFWFczODdKMlZVWUZSdVVlcU1BSWtUWWhrR3V2RStsKzZBcGNGYWdPZGdjcVFzWnVOQ3g2Z2V5cklOK3hkaFB3a1k5aitvVFEycUpkTTZZOHBuQjFkVlFQM25vTW5ONUZDWUhYNjhmaGtqbjhFMDNuRnRldTNScDRsNGNUbElYNnlkTVNoU3U5Wm0zNzBnQmhiUy9KYkRCSk9TZjJDZjRsWGFXblBXV0w1TFp1SldlZy9Vd21PUFQvbHdWZXRrWVBLZS9TMnlCeThzNHJPQ3dDVVZxS3ZZeDRRSUd5TFIzZHNTdFhuQjN4cFBXbEh6R200enF1dDhOam1Ha0syaXJVYkxIVXdRdVV5NnFKTVhUbWh2MmxsUk9wa2V1K3lPaHI5UG5XK0NETlgybE1wdklnQURpN0tDTmtuMnh2aEgycXQ5YjlUQUk1N1Q1VWVLWmZldXVtb3FSNzZYdUdOeVpBSmx3YkkwbFFXMkR0L3pvQm82Y25HaTRHK1lSdzZnNkxNRTRZU3p3ZjNBai9QZ01qa1JvSFBPWEFEK3hmU01xNHlmYWJrTW9hVkNlOURJODlGYWUrN2lVb0hzeE9Hb1pWbEducXVmQm1ldEttdlhvaitIcm0yaWtCbm11NWlsVVRVQzA2RTBSUU9SaTJsRitrRkMrdk8xTHhseEUzem53S1hFcTlSbFpDMFhNZEZkcnpqVG91QTlUZm1vYXlrN1Y4cTZnMUUyVE9qdEt5ckFKbVZMdnpzSkM5clUyMzJxcDYwL1NPbEozZXlzZ3NLRXpDcUgzN0ROVjg5Rm1RakpXQmZEWElJSEp1OU1nODVMQ1RRamJLbEJmNE44OG5VMmp5cDdWM2FTOE14UkFjQnFNcUZ2YXlMblRiMitJWTNoT3BaNjNxNzVtaml1TllMazIxYWRwQnBGbWs1MHRDRHp1UThGVklTZjB0Mml3Rmg3amNPcHJROTExOFhNbkZRcDJ2ZEU5TUU4WjhQVDFUdlZZSWxqQU1scTQwUWFLTmYwck1UdGlieXUzU2poaGllK1N5cGlObEdJY2lLbHdxc0FUM3pHRVJUMWJEeWY1SWw2MjNJRjJhcjVsay9GM0JiVjVhS0swVHJIRk5KZU9ZaHpsTXpKSGtESDNrdlphZW8yNnExR1BUL2Q5VVJCS2dXZ0Zzdy9KS1RKK1VvMVRhcjRnZlBzQ1h5TGFhbGtkQlYwZDRqVnpQWjNaUWFRZS9OTkdtMTBXRmdRdFRNcGJtVktIYWYvejNqTWN5cnFhUitXQU5SckQ5TmI3MGdZRnRKelVhdDVhOWI5N3JacXI0V2FNTmxYZGZVcjMramxuZVNnQkxCUFk5MlE3VGttY1dtM0FmYWNZWkt3QXRia2FLY2NvOU1RSmh2V3piZ1d2T2x3S2ZUVE5ES2F1cWxiNzhjOHcyQ3l6b0Nua1RnMGQ0dHdkcER2c3MzbFc2UU9NOTltMTVLclBzWG1TVUNsWVkwWHVHWXAwbU5IMit2Rktjd09zMG9LZ0Vld3IwOW9zZTVIZVRsZEpGNGphYjZHMTQvaU5TRW5nL1dqQWt2dEhQVi8xVnE2SUcwMWZYczFUNUpOaXhqZ3FHTUMxUkZ2dytDUFFmNHVXNGIxMWhiK0RRekhROXN5VW9UMnhUZjNDZjJVbVkyVGlXRlE5L3c4b3NvTGZmVXJ2dmZSb0t3V1Y3bHpURENsbUl2MWxYRUNYS0krenpqZ1FhTTJvTEpObTBWRHc4dUFhRlJKQkV5dkYyajJraVZjRmJTajkwWUJKQXBEalNET21FQTY3WVRTND0uVnpKeFpMNURLOE9EVjQxQkQ4bjk2OVlsVGJ6S2UzQ2NqOEtqZlpISzg5TlhrWkZISTBOWEtwb1FLekMzd3VGeWZpWndOZXBUbVVpTlRYbjRYNTJKS1E="/><input type="hidden" name="_eventId" value="submit"/><input type="hidden" name="rmShown" value="1"></form>
 </div>
-
-<div id="body-4">
-    <div id="body-4-project" class="fade-in">
-        <a name="#body-4"></a>
-           <h1> <a href="https://snd.cool/page/file/index.html">File Staging</a>  </h1>
-        <h1>File Staging For District 1</h1>
-
-        <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=2)" width="100%" color=#105586 SIZE=4>
-
-
-        <a href="http://snd.cool" style="color: #4B0082;">template</a><br />
-      
-
-
-
-
-        <HR style="FILTER: alpha(opacity=100,finishopacity=0,style=2)" width="100%" color=#105586 SIZE=4>
-
-
-
-
-    </div>
-
 </div>
-
-
-
-
-
-<script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="2b711c07dc339bd793784901-|49" defer=""></script>
-    </body>
-<script type="2b711c07dc339bd793784901-text/javascript">
-
-
-
-
-
-
-
-    window.onload = function() {
-        $("#background").animate({"opacity":"1"}, 1000);
-    }
-    $(function(){
-    
-        checkScroll();
-        checkFadeIn();
-        var nice = $("html").scroll();
-        $("#body-1>h1").css({"margin-left":"-50px"});
-        $("#body-1>h3").css({"margin-right":"-50px"});
-        $("#body-1").fadeIn(1000);
-        $("#body-1>h1").animate({"margin-left":"0"}, 1000);
-        $("#body-1>h3").animate({"margin-right":"0"}, 1000);
-        $("body").mousemove(function(e){
-            if ("ontouchstart" in window == true) {
-                return;
-            }
-            var x = window.innerWidth / 2 - e.clientX
-            var y = window.innerHeight / 2 - e.clientY
-            $("#background").css("background", "url(src/img/background.png) calc(50% + " + (x / 50) + "px) calc(50% + "+ (y / 50) + "px) no-repeat")
-        })
-        window.onscroll = function() {
-            checkScroll();
-            checkFadeIn();
-        }
-        c = window.innerHeight;
-        window.onresize = function() {
-            c = window.innerHeight;
-            checkScroll();
-        }
-        window.onclick = function(e) {
-            var e = e || window.event;
-            if (e.button == "0") {
-                $("#footer-down-menu").slideUp(100);
-            }
-        }
-    })
-    function checkScroll() {
-        var a = window.innerHeight + $(document).scrollTop() - 140;
-        var b = $(document).scrollTop() / window.innerHeight + 0.3;
-        var c = 1 - $(document).scrollTop() / window.innerHeight;
-        var d = window.innerHeight - $(document).scrollTop();
-        if (b < 0.3) b = 0.3;
-        $("#body-1").css("top", a / 2 + "px");
-        $("#body-1").css("opacity", c);
-        $("footer").css("background", "rgba(255,255,255," + b +")");
-        if (b > 0.7) {
-            $("footer").css("color", "gray");
-            $("#footer-down>svg").css("fill", "gray");
-            $("footer>p").css("text-shadow", "none");
-        } else {
-            $("footer").css("color", "white");
-            $("#footer-down>svg").css("fill", "white");
-            $("footer>p").css("text-shadow", "0 0 1px #000");
-        }
-        if ($(document).scrollTop() > window.innerHeight) {
-            $("header").css("position", "fixed");
-            $("header").css("top", "0");
-        } else {
-            $("header").css("position", "absolute");
-            $("header").css("top", "100%");
-        }
-        if ($(document).scrollTop() > window.innerHeight - 90) {
-            $("#footer-down-menu").css("display", "none");
-            $("#footer-down").css("position", "fixed");
-            $("#footer-down").css("transform", "rotate(" + (180 - (d / 90 * 180)) + "deg)");
-            if ($(document).scrollTop() > window.innerHeight - 25) {
-                if (d > 0) {
-                    $("#footer-down").css("top", d + 10 + "px");
-                } else {
-                    $("#footer-down").css("top", "10px");
-                    $("#footer-down").css("transform", "rotate(180deg)");
-                    $("#footer-down>svg").attr("onclick", "toTop()");
-                }
-            }
-        } else {
-            $("#footer-down").css("position", "absolute");
-            $("#footer-down").css("top", "35px");
-            $("#footer-down").css("transform", "rotate(0deg)");
-            $("#footer-down>svg").attr("onclick", "toNext()");
-        }
-    }
-    function checkFadeIn() {
-        $.fn.visible = function(partial) {
-            var viewTop = $(window).scrollTop(),
-                viewBottom = viewTop + $(window).height(),
-                _top = $(this).offset().top,
-                _bottom = _top + $(this).height(),
-                compareTop = partial === true ? _bottom : _top,
-                compareBottom = partial === true ? _top : _bottom;
-            return ((compareBottom <= viewBottom) && (compareTop >= viewTop));
-        }
-        $(".fade-in").each(function(i, el) {
-            if ($(el).visible(true)) $(el).addClass("come-in");
-        })
-    }
-    var touchY = 0;
-    var longClick =0;
-    $("#footer-down-button").on({
-        touchstart: function(e){
-            longClick=0;
-            timeOutEvent = setTimeout(function(){
-                if ($("#footer-down-menu").css("display") == "none") $("#footer-down-menu").slideDown(100);
-                else $("#footer-down-menu").slideUp(100);
-                longClick=1;
-            },500);
-            var touch = e.touches[0];
-            touchY = touch.clientY;
-        },
-        touchmove: function(){
-            clearTimeout(timeOutEvent);
-            timeOutEvent = 0;
-            var touch = e.touches[0]
-            if(Math.abs(touch.clientY - touchY) < 10){
-                e.preventDefault();
-            }
-        },
-        touchend: function(e){
-            clearTimeout(timeOutEvent);
-        }
-    });
-    function toNext() {
-        $('body,html').animate({
-            scrollTop: c
-        }, 1000);
-        return false;
-    }
-    function toTop() {
-        $('body,html').animate({
-            scrollTop: 0
-        }, 1000);
-        return false;
-    }
-    function showMenu() {
-        var e = window.event;
-        e.preventDefault();
-        if (e.button != "0") {
-            if ($("#footer-down-menu").css("display") == "none") $("#footer-down-menu").slideDown(100);
-            else $("#footer-down-menu").slideUp(100);
-        }
-    }
-    function audioVisualizer() {
-        $("#start-audio").css("display", "none");
-        $("#start-audio").attr("onclick", "startAudio()");
-        $("#pause-audio").css("display", "block");
-        $("#change-audio").css("display", "block");
-        var title = document.getElementById("body-1");
-        var audio = document.getElementById("audio");
-        audio.src = "https://lxns.org/audio/music-" + parseInt(Math.random() * 74 + 1) + ".mp3";
-        audio.load();
-        audio.play();
-        var context = new (window.AudioContext || window.webkitAudioContext)() || false;
-        if (!context) alert("浏览器不支持音频可视化");
-        try {
-            audio.addEventListener('ended', function () {
-                $("#start-audio").css("display", "block");
-                $("#pause-audio").css("display", "none");
-            }, false);
-            var src = context.createMediaElementSource(audio);
-            var analyser = context.createAnalyser();
-
-            var canvas = document.getElementById("canvas");
-            canvas.width = window.innerWidth;
-            canvas.height = 200;
-            var ctx = canvas.getContext("2d");
-
-            src.connect(analyser);
-            analyser.connect(context.destination);
-
-            analyser.fftSize = 2048;
-
-            var bufferLength = analyser.frequencyBinCount;
-
-            var freqDataArray = new Uint8Array(bufferLength);
-
-            var WIDTH = canvas.width;
-            var HEIGHT = canvas.height;
-
-            var barWidth = 20;
-            var barHeight;
-            var x = 0;
-
-            window.addEventListener("resize", function() {
-                canvas.width = window.innerWidth;
-                WIDTH = canvas.width;
-            })
-            if (analyser.getFloatTimeDomainData) {
-                var dataArray = new Float32Array(analyser.fftSize);
-            } else {
-                var dataArray = new Uint8Array(analyser.fftSize);
-            }
-
-            function renderFrame() {
-                requestAnimationFrame(renderFrame);
-                if (analyser.getFloatTimeDomainData) {
-                    analyser.getFloatTimeDomainData(dataArray);
-                } else {
-                    analyser.getByteTimeDomainData(dataArray);
-                }
-                var sampleAverage = 0;
-                if (analyser.getFloatTimeDomainData) {
-                    for (var i = 0; i < dataArray.length; i++) {
-                        sampleAverage += Math.abs(dataArray[i]);
-                    }
-                } else {
-                    for (var i = 0; i < dataArray.length; i++) {
-                        sampleAverage += Math.abs(dataArray[i] - 128) / 128;
-                    }
-                }
-                sampleAverage /= dataArray.length;
-                var shadow = 2 * (Math.exp(sampleAverage) - 1);
-                var shadowInner = 2 * (Math.exp(sampleAverage / 2) - 1);
-                if (shadowInner == 0) title.style['text-shadow'] = "0px 1px 3px white, 0px 1px 3px white";
-                else title.style['text-shadow'] = "0px 1px " + shadow + "em white, 0px 1px " + shadowInner + "em white";
-                x = 0;
-                analyser.getByteFrequencyData(freqDataArray);
-                ctx.clearRect(0, 0, WIDTH, HEIGHT);
-                for (var i = 0; i < bufferLength; i++) {
-                    barHeight = freqDataArray[i];
-                    ctx.fillStyle = "white";
-                    ctx.fillRect(x, 300 - barHeight*1, barWidth, barHeight*1);
-
-                    x += barWidth + 5;
-                }
-            }
-            renderFrame();
-        } catch(e) {
-            //
-        }
-    };
-    function startAudio() {
-        $("#start-audio").css("display", "none");
-        $("#pause-audio").css("display", "block");
-        $("#change-audio").css("display", "block");
-        document.getElementById("audio").play();
-    }
-    function pauseAudio() {
-        $("#start-audio").css("display", "block");
-        $("#pause-audio").css("display", "none");
-        document.getElementById("audio").pause();
-    }
-    function changeAudio() {
-        document.getElementById("audio").pause();
-        audioVisualizer();
-    }
-</script>
+				<!-- <p style="color: #ffffff;font-size: 14px;margin-top: -195px;letter-spacing: 3px;">企业微信扫码登录</p> --></div>
+			<div class="footer">
+				<!--跨校认证start--><!--跨校认证end--></div>
+			</div>
+		<div class="login_bottom">
+			<!-- <div class="login_navs"><img id="goleft" src="customTheme/static/dzimages/goleft.png" alt="logo">
+				<img id="goright" src="customTheme/static/dzimages/goright.png" alt="logo">
+			</div> --><div class="bq">
+				Copyright © 广东海洋大学  地址：广东省湛江市麻章区海大路1号  邮编：524088
+			</div>
+		</div>
+		<div class="language_switch t_switch">
+			<select id="language" onchange="changeLanguage(this)" class="t_switch_list">
+	            <option value="zh_CN">简体中文</option>
+	            <option value="en">English</option>
+	        </select>
+		</div>
+	</div>
+</body>
+<script src="/authserver/gdouThemeDz/static/custom/js/login-language.js?v=20210618.194511" type="text/javascript"></script>
 </html>
