@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "24286260",
+      "name": "已办-完成-01",
+      "font_class": "yiban-wancheng-01",
+      "unicode": "e7a1",
+      "unicode_decimal": 59297
+    }
+  ]
+}
