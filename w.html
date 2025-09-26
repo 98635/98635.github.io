@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <title>考研政治会议配对小游戏</title>
+  <style>
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: "Microsoft Yahei", sans-serif;
+  background: linear-gradient(135deg, #e3f2fd, #fce4ec);
+}
+h2 { text-align:center; font-size:24px; margin:10px 0; color:#333; text-shadow:1px 1px 2px #fff; }
+
+.container {
+  display:flex; flex-direction:row; gap:20px; height:calc(100% - 60px); padding:10px 20px; box-sizing:border-box;
+}
+
+.meetings {
+  flex:3; display:grid; grid-template-columns:1fr 1fr; gap:20px; overflow-y:auto; padding-right:10px; border-right:2px solid #ccc;
+}
+
+.meeting {
+  border:3px solid #ccc; border-radius:16px; padding:10px; min-height:160px; background:#fff;
+  transition:0.3s; box-shadow:0 4px 8px rgba(0,0,0,0.1); display:flex; flex-direction:column; align-items:center;
+}
+.meeting.over { border-color:#4caf50; background:#e8f5e9; transform:scale(1.02); }
+.meeting h3 { margin:5px 0 10px; font-size:18px; color:#2c3e50; }
+.collected { margin-top:10px; width:100%; display:flex; flex-wrap:wrap; justify-content:center; }
+
+.card {
+  padding:8px 12px; margin:6px; background:#fff; border:1px solid #aaa; border-radius:12px;
+  cursor:grab; font-size:14px; transition:0.2s; box-shadow:0 2px 4px rgba(0,0,0,0.15);
+}
+.card:hover { background:#f1faff; transform:translateY(-2px); box-shadow:0 4px 6px rgba(0,0,0,0.2); }
+
+.pool {
+  flex:1; border:2px dashed #ccc; padding:15px; border-radius:16px; background:#fafafa;
+  box-shadow:inset 0 2px 6px rgba(0,0,0,0.05); display:flex; flex-direction:column; overflow-y:auto;
+}
+.pool h3 { text-align:center; margin-bottom:10px; color:#555; }
+#shuffleBtn { margin:10px auto 0; padding:6px 12px; border-radius:12px; border:1px solid #888; background-color:#fff; cursor:pointer; transition:0.2s; }
+#shuffleBtn:hover { background-color:#f0f8ff; }
+
+.wrong { background:#ffe5e5 !important; border-color:red !important; animation:shake 0.4s; }
+@keyframes shake { 0% { transform:translateX(0); } 25% { transform:translateX(-4px); } 50% { transform:translateX(4px); } 75% { transform:translateX(-4px); } 100% { transform:translateX(0); } }
+
+/* Canvas 覆盖全屏，动画不阻挡拖拽 */
+#effectCanvas { position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; }
+</style>
+</head>
+
+
+
+<body>
+  <h2>📚 考研政治会议配对小游戏</h2>
+  <div class="container">
+    <div class="meetings">
+	
+	
+	
+     <div class="meetings">
+  <div class="meeting" data-id="meeting1">
+    <h3>中共一大 (1921)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting2">
+    <h3>中共二大 (1922)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting3">
+    <h3>中共三大 (1923)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting4">
+    <h3>中共四大 (1925)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting5">
+    <h3>八七会议 (1927)</h3>
+    <div class="collected"></div>
+  </div>
+
+
+  <div class="meeting" data-id="meeting6">
+    <h3>古田会议 (1929)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting7">
+    <h3>中华苏维埃第一次全国代表大会 (1931)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting8">
+    <h3>遵义会议 (1935)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting9">
+    <h3>瓦窑堡会议 (1935)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting10">
+    <h3>洛川会议 (1937)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting11">
+    <h3>中共六届六中全会 (1938)</h3>
+    <div class="collected"></div>
+  </div>
+
+
+  <div class="meeting" data-id="meeting12">
+    <h3>中共六届七中全会 (1944)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting13">
+    <h3>中共七大 (1945)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting14">
+    <h3>中共七届二中全会 (1949)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting15">
+    <h3>中国人民政治协商会议 (1949)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting16">
+    <h3>中共七届三中全会 (1950)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting17">
+    <h3>中共八大 (1956)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting18">
+    <h3>中共十一届三中全会 (1978)</h3>
+    <div class="collected"></div>
+  </div>
+
+  <div class="meeting" data-id="meeting19">
+    <h3>中共十一届六中全会 (1981)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting20">
+    <h3>中共十二大 (1982)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting21">
+    <h3>中共十三大 (1987)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting22">
+    <h3>中共十四大 (1992)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting23">
+    <h3>中共十五大 (1997)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting24">
+    <h3>中共十八大 (2012)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting25">
+    <h3>中共十八届三中全会 (2013)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting26">
+    <h3>中共十九大 (2017)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting27">
+    <h3>中共二十大 (2022)</h3>
+    <div class="collected"></div>
+  </div>
+  <div class="meeting" data-id="meeting28">
+    <h3>中共二十届三中全会 (2024)</h3>
+    <div class="collected"></div>
+  </div>
+  
+</div>
+
+    <div class="pool" id="pool">
+      <h3>内容池</h3>
+	  <button id="shuffleBtn">随机刷新内容池</button>
+    </div>
+	
+  </div>
+
+<canvas id="effectCanvas"></canvas>
+  <script>
+
+
+
+const canvas = document.getElementById("effectCanvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener("resize", resizeCanvas);
+
+// 粒子动画通用函数
+function createParticles(x, y, color, count=30, speed=4) {
+  const particles = [];
+  for(let i=0;i<count;i++){
+    particles.push({
+      x, y,
+      vx:(Math.random()-0.5)*speed*2,
+      vy:(Math.random()-0.5)*speed*2,
+      alpha:1,
+      color,
+      size:Math.random()*4+2
+    });
+  }
+  return particles;
+}
+
+let activeParticles = [];
+
+function animate() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  activeParticles.forEach((p,i)=>{
+    p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
+    ctx.fillStyle = `rgba(${p.color},${p.alpha})`;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+    ctx.fill();
+    if(p.alpha<=0) activeParticles.splice(i,1);
+  });
+  requestAnimationFrame(animate);
+}
+animate();
+
+function triggerFirework(x,y){
+  activeParticles.push(...createParticles(x,y,"255,215,0",50,5));
+}
+
+function triggerBomb(x,y){
+  activeParticles.push(...createParticles(x,y,"255,0,0",50,6));
+}
+
+// -------------------- 游戏逻辑 --------------------
+const pool = document.getElementById("pool");
+const contents = [
+   
+    // 中共一大
+  { text: "确定党的名称为“中国共产党”", meetingId: "meeting1" },
+  { text: "确立党的纲领：以无产阶级革命军队推翻资产阶级", meetingId: "meeting1" },
+  // 中共二大
+  { text: "第一次提出了反帝反封建的民主革命纲领", meetingId: "meeting2" },
+  { text: "明确党在现阶段的最低纲领：打倒军阀；推翻国际帝国主义的压迫；统一中国为真正民主共和国", meetingId: "meeting2" },
+  { text: "必须联合全国一切革命党派，联合资产阶级民主派，组成“民主主义的联合战线”", meetingId: "meeting2" },
+  { text: "开始采取群众路线的方法", meetingId: "meeting2" },
+
+  // 中共三大
+  { text: "正式决定共产党员以个人身份加入国民党", meetingId: "meeting3" },
+  { text: "明确规定共产党员加入国民党时，党必须在政治上、思想上、组织上保持自己的独立性", meetingId: "meeting3" },
+
+  // 中共四大
+  { text: "第一次明确提出了无产阶级在民主革命中的领导权问题和工农联盟问题", meetingId: "meeting4" },
+
+  // 八七会议
+  { text: "彻底清算了大革命后期的陈独秀右倾机会主义错误", meetingId: "meeting5" },
+  { text: "确定了土地革命和武装反抗国民党反动统治的总方针", meetingId: "meeting5" },
+  { text: "明确提出土地革命是中国资产阶级民主革命的中心问题", meetingId: "meeting5" },
+  { text: "毛泽东提出政权是由枪杆子中取得的，实际提出了以军事斗争作为党的工作重心的问题", meetingId: "meeting5" },
+  { text: "中国革命从此开始了从大革命失败到土地革命战争兴起的转折", meetingId: "meeting5" },
+   // 古田会议
+  { text: "确立了思想建党、政治建军原则", meetingId: "meeting6" },
+  { text: "规定红军是一个执行革命的政治任务的武装集团，必须绝对服从共产党的领导", meetingId: "meeting6" },
+  { text: "新型人民军队定型", meetingId: "meeting6" },
+
+  // 中华苏维埃第一次全国代表大会
+  { text: "通过了《中华苏维埃共和国宪法大纲》", meetingId: "meeting7" },
+  { text: "中华苏维埃共和国实行工农兵代表大会制度", meetingId: "meeting7" },
+
+  // 遵义会议
+  { text: "解决了军事问题和组织问题", meetingId: "meeting8" },
+  { text: "确立毛泽东领导地位，形成以毛泽东为核心的第一代中央领导集体", meetingId: "meeting8" },
+  { text: "开启了中国共产党独立自主解决中国革命实际问题的新阶段", meetingId: "meeting8" },
+
+  // 瓦窑堡会议
+  { text: "阐明建立抗日民族统一战线的可能性", meetingId: "meeting9" },
+  { text: "批判了'左'倾冒险主义、关门主义错误倾向，强调共产党在抗日民族统一战线中的领导作用", meetingId: "meeting9" },
+  { text: "规定了建立广泛的抗日民族统一战线的具体政策，决定用'人民共和国'口号代替'工农共和国'", meetingId: "meeting9" },
+  { text: "解决政治问题", meetingId: "meeting9" },
+
+  // 洛川会议
+  { text: "主张实行全面抗战路线，即人民战争路线", meetingId: "meeting10" },
+  { text: "制定了抗日救国十大纲领，强调要打倒日本帝国主义，关键在于使已经发动的抗战成为全面的全民族抗战", meetingId: "meeting10" },
+
+  // 中共六届六中全会
+  { text: "明确提出了'马克思主义的中国化'命题", meetingId: "meeting11" },
+  { text: "确立了经过长期武装斗争，先占乡村，后取城市，最后夺取全国胜利的革命道路", meetingId: "meeting11" },
+  { text: "基本纠正了王明的右倾错误", meetingId: "meeting11" },
+  { text: "进一步巩固了毛泽东在全党的领导地位，统一了全党的思想和步调", meetingId: "meeting11" },
+    // 中共六届七中全会
+  { text: "原则通过了《关于若干历史问题的决议》", meetingId: "meeting12" },
+  { text: "中国革命基本问题的认识达到了一致", meetingId: "meeting12" },
+  { text: "标志着延安整风运动的胜利结束", meetingId: "meeting12" },
+
+  // 中共七大
+  { text: "制定了党的政治路线", meetingId: "meeting13" },
+  { text: "三大作风：理论和实践相结合、和人民群众紧密联系、自我批评", meetingId: "meeting13" },
+  { text: "毛泽东思想完全成熟，并将毛泽东思想规定为党的一切工作的指针", meetingId: "meeting13" },
+  { text: "标志着党在政治上思想上组织上走向成熟", meetingId: "meeting13" },
+  { text: "党确立了毛泽东思想在全党的指导地位，把毛泽东思想载入了党章", meetingId: "meeting13" },
+   { text: "为建立新民主主义的新中国制定了正确路线方针政策", meetingId: "meeting13" },
+
+
+  // 中共七届二中全会
+  { text: "提出了迅速夺取全国胜利的方针", meetingId: "meeting14" },
+  { text: "指出党的工作重心必须由乡村转移到城市", meetingId: "meeting14" },
+  { text: "指出了中国由农业国转变为工业国、由新民主主义社会转变为社会主义社会的发展方向", meetingId: "meeting14" },
+  { text: "提出了“两个务必”的思想", meetingId: "meeting14" },
+
+  // 中国人民政治协商会议
+  { text: "通过了《中国人民政治协商会议组织法》《中华人民共和国中央人民政府组织法》和《中国人民政治协商会议共同纲领》", meetingId: "meeting15" },
+  { text: "确立了新型政党制度", meetingId: "meeting15" },
+
+  // 中共七届三中全会
+  { text: "确定了当时全党和全国人民的中心任务：在三年左右的时间内，争取国家财政经济状况的基本好转", meetingId: "meeting16" },
+  { text: "制定了党在中华人民共和国成立初期的战略策略方针：不要四面出击", meetingId: "meeting16" },
+
+  // 中共八大
+  { text: "指出社会主义制度在我国已经基本上建立起来", meetingId: "meeting17" },
+  { text: "指出全国人民的主要任务是集中力量发展社会生产力，实现国家工业化", meetingId: "meeting17" },
+  { text: "指出根本任务已经是在新的生产关系下保护和发展生产力", meetingId: "meeting17" },
+  { text: "坚持党中央提出的既反保守又反冒进，即在综合平衡中稳步前进的经济建设方针", meetingId: "meeting17" },
+  { text: "肯定了“三个主体，三个补充”思想", meetingId: "meeting17" },
+    { text: "主要矛盾：人民对经济文化迅速发展的需要同当前经济文化不能满足人民需要的状况之间的矛盾", meetingId: "meeting17" },
+
+  // 中共十一届三中全会
+  { text: "彻底否定了“两个凡是”的错误方针，果断停止使用“以阶级斗争为纲”的口号", meetingId: "meeting18" },
+  { text: "高度评价了关于真理标准问题的讨论，重新确立了马克思主义的思想路线、政治路线和组织路线", meetingId: "meeting18" },
+  { text: "决定把全党的工作重心转移到社会主义现代化建设上来和实行改革开放的战略决策", meetingId: "meeting18" },
+  { text: "形成了以邓小平同志为核心的党中央领导集体", meetingId: "meeting18" },
+  { text: "开始了拨乱反正", meetingId: "meeting18" },
+  { text: "开启了改革开放和社会主义现代化建设新时期", meetingId: "meeting18" },
+  // 中共十一届六中全会
+  { text: "科学评价了毛泽东和毛泽东思想的历史地位", meetingId: "meeting19" },
+  { text: "提出了毛泽东思想的活的灵魂是“实事求是、群众路线、独立自主”", meetingId: "meeting19" },
+  { text: "第一次使用“社会主义初级阶段”的提法", meetingId: "meeting19" },
+  { text: "完成了党在指导思想上的拨乱反正", meetingId: "meeting19" },
+  { text: "通过《关于建国以来党的若干历史问题的决议》", meetingId: "meeting19" },
+    { text: "主要矛盾：人民日益增长的物质文化需要同落后的社会生产之间的矛盾", meetingId: "meeting19" },
+
+
+  // 中共十二大
+  { text: "“中国特色社会主义”成为我们党的全部理论和实践创新的主题", meetingId: "meeting20" },
+
+  // 中共十三大
+  { text: "第一次对“社会主义初级阶段”理论作了系统阐述", meetingId: "meeting21" },
+  { text: "提出了社会主义初级阶段“一个中心、两个基本点”的基本路线", meetingId: "meeting21" },
+  { text: "第一次对中国特色社会主义理论的主要内容作了系统概括", meetingId: "meeting21" },
+  { text: "邓小平理论轮廓形成", meetingId: "meeting21" },
+
+  // 中共十四大
+  { text: "明确了建立社会主义市场经济体制的改革目标", meetingId: "meeting22" },
+  { text: "高度评价了邓小平对开创中国特色社会主义理论的贡献", meetingId: "meeting22" },
+
+  // 中共十五大
+  { text: "把邓小平理论写入党章", meetingId: "meeting23" },
+  { text: "指出“公有制为主体、多种所有制经济共同发展”是我国社会主义初级阶段的一项基本经济制度", meetingId: "meeting23" },
+
+  // 中共十八大
+  { text: "将中国特色社会主义事业总体布局从“四位一体”扩展为“五位一体”", meetingId: "meeting24" },
+  { text: "中国特色社会主义进入新时代", meetingId: "meeting24" },
+
+  // 中共十八届三中全会
+  { text: "通过了《中共中央关于全面深化改革若干重大问题的决定》", meetingId: "meeting25" },
+  { text: "实现了改革由局部探索、破冰突围到系统集成、全面深化的转变，开创了我国改革开放新局面", meetingId: "meeting25" },
+
+  // 中共十九大
+  { text: "把“坚定维护以习近平同志为核心的党中央权威和集中统一领导”写入党章", meetingId: "meeting26" },
+  { text: "把习近平新时代中国特色社会主义思想确立为党的指导思想并写入党章", meetingId: "meeting26" },
+  { text: "提出了党的政治建设这个重大命题，把党的政治建设纳入党的建设总体布局并摆在首位", meetingId: "meeting26" },
+  { text: "主要矛盾已经转化为人民日益增长的美好生活需要和不平衡不充分的发展之间的矛盾", meetingId: "meeting26" },
+  { text: "指出中国特色社会主义进入了新时代是我国发展新的历史方位", meetingId: "meeting26" },
+  { text: "作出了“中国特色社会主义进入新时代”的重大政治判断", meetingId: "meeting26" },
+
+  // 中共二十大
+  { text: "提出“三个务必”", meetingId: "meeting27" },
+  { text: "提出十年来的“三件大事", meetingId: "meeting27" },
+  { text: "指出跳出治乱兴衰历史周期率的第二个答案：自我革命", meetingId: "meeting27" },
+  { text: "提出今后党的中心任务：社会主义现代化强国、第二个百年奋斗目标，中华民族伟大复兴", meetingId: "meeting27" },
+  { text: "提出“两个结合”：把马克思主义基本原理同中国具体实际相结合、同中华优秀传统文化相结合", meetingId: "meeting27" },
+
+  // 中共二十届三中全会
+  { text: "通过了《中共中央关于进一步全面深化改革、推进中国式现代化的决定》", meetingId: "meeting28" },
+  { text: "指出进一步全面深化改革的总目标：继续完善和发展中国特色社会主义制度，推进国家治理体系和治理能力现代化", meetingId: "meeting28" },
+  { text: "提出2035年全面建成高水平社会主义市场经济体制的目标", meetingId: "meeting28" }
+    
+];
+
+function shuffleArray(array){
+  const arr=array.slice();
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function createCard(content){
+  const card=document.createElement("div");
+  card.className="card";
+  card.textContent=content.text;
+  card.draggable=true;
+  card.dataset.meetingId=content.meetingId;
+  card.addEventListener("dragstart", e => e.dataTransfer.setData("text/plain", JSON.stringify(content)));
+  return card;
+}
+
+function renderPool(arr){
+  pool.innerHTML='<h3>内容池</h3><button id="shuffleBtn">随机刷新内容池</button>';
+  arr.forEach(c=>pool.appendChild(createCard(c)));
+  document.getElementById("shuffleBtn").addEventListener("click",()=>renderPool(shuffleArray(contents)));
+}
+renderPool(contents);
+
+document.querySelectorAll(".meeting").forEach(meeting=>{
+  meeting.addEventListener("dragover", e=>{ e.preventDefault(); meeting.classList.add("over"); });
+  meeting.addEventListener("dragleave", ()=>meeting.classList.remove("over"));
+  meeting.addEventListener("drop", e=>{
+    e.preventDefault(); meeting.classList.remove("over");
+    const data=JSON.parse(e.dataTransfer.getData("text/plain"));
+    const mouseX=e.clientX, mouseY=e.clientY;
+
+    if(data.meetingId===meeting.dataset.id){
+      const card=createCard(data);
+      card.draggable=false;
+      meeting.querySelector(".collected").appendChild(card);
+      [...pool.querySelectorAll(".card")].forEach(c=>{ if(c.textContent===data.text) c.remove(); });
+      triggerFirework(mouseX, mouseY); // 正确放烟花
+    }else{
+      const wrongCard=[...pool.querySelectorAll(".card")].find(c=>c.textContent===data.text);
+      if(wrongCard){
+        wrongCard.classList.add("wrong");
+        setTimeout(()=>wrongCard.classList.remove("wrong"),600);
+      }
+      triggerBomb(mouseX, mouseY); // 错误放炸弹
+    }
+  });
+});
+</script>
+</body>
+</html>
