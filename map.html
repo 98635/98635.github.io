@@ -50,10 +50,36 @@
 
     .main-title {
         text-align: center;
-        font-size: 48px;
+        font-size: 36px;
         font-weight: bold;
         margin-top: 30px;
     }
+	.print-box {
+    text-align: center;
+    margin-top: 80px;
+}
+
+.print-btn {
+    background: #1e9bd7;
+    color: white;
+    font-size: 26px;
+    padding: 18px 60px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.print-btn:hover {
+    background: #1787bd;
+}
+
+	.footer {
+    text-align: center;
+    color: #9aa0a6;
+    font-size: 20px;
+    margin-top: 100px;
+    padding-bottom: 40px;
+}
 </style>
 	
 </style></head>
@@ -183,20 +209,14 @@
             </div>
     </div>
     
-    <div class="login-box2">
-    <div class="login-title">
-    	 <button onclick="to_print()" class="button bg-sub">打印成绩单</button>
-             </div>
-     </div>        
-     <div class="login-box2">
-    
+ <div class="login-box2">
+    <div class="print-box">
+        <button onclick="to_print()" class="print-btn">打印成绩单</button>
+    </div>
+</div>
 
 <div class="footer">
-    <span>中国科学技术大学研究生院 <a href="x-apple-data-detectors://3" dir="ltr" x-apple-data-detectors="true" x-apple-data-detectors-type="address" x-apple-data-detectors-result="3" style="color: currentcolor; text-decoration-color: rgba(117, 115, 140, 0.38);">安徽省合肥市包河区金寨路96号</a></span>
-    <span></span>
-    <span></span>
-    <span></span>
-    <span></span>
+    <span>中国科学技术大学研究生院 安徽省合肥市包河区金寨路96号</span>
 </div>
     </div>
     <script type="text/javascript">
