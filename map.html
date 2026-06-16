@@ -1,1596 +1,3124 @@
 <!DOCTYPE html>
 
-<html lang="zh-CN">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>智选持股 · AI选股分析系统</title>
+<title>深渊回响 · Abyss Echo</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=Share+Tech+Mono&display=swap');
+
 :root {
-  --bg: #080a0f;
-  --bg2: #0e1118;
-  --surface: #13161f;
-  --card: #181c28;
-  --border: #1e2333;
-  --border2: #252b3d;
-  --text: #dde3f0;
-  --text2: #8892a8;
-  --text3: #50596e;
-  --red: #e8394a;
-  --red-dim: rgba(232,57,74,0.12);
-  --red-border: rgba(232,57,74,0.25);
-  --green: #19c873;
-  --green-dim: rgba(25,200,115,0.10);
-  --green-border: rgba(25,200,115,0.25);
-  --orange: #f5820d;
-  --orange-dim: rgba(245,130,13,0.10);
-  --blue: #4a8fff;
-  --blue-dim: rgba(74,143,255,0.10);
-  --purple: #7c5cfc;
-  --purple-dim: rgba(124,92,252,0.12);
-  --yellow: #f0b429;
-  --yellow-dim: rgba(240,180,41,0.10);
+–void: #07080d;
+–deep: #0d1020;
+–abyss: #141828;
+–echo: #1e2640;
+–soul: #8b5cf6;
+–soul-bright: #a78bfa;
+–soul-glow: #c4b5fd;
+–fire: #f97316;
+–fire-dim: #7c3200;
+–ice: #38bdf8;
+–ice-dim: #0c4a6e;
+–poison: #4ade80;
+–poison-dim: #14532d;
+–blood: #f43f5e;
+–blood-dim: #881337;
+–gold: #fbbf24;
+–silver: #94a3b8;
+–hp: #f43f5e;
+–mp: #38bdf8;
+–xp: #fbbf24;
+–text: #e2e8f0;
+–text-dim: #64748b;
+–border: #2d3748;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+- { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-background: var(–bg);
+background: var(–void);
 color: var(–text);
-font-family: ‘SF Pro Display’, -apple-system, ‘PingFang SC’, ‘Helvetica Neue’, ‘Microsoft YaHei’, sans-serif;
+font-family: ‘Noto Serif SC’, serif;
 min-height: 100vh;
-font-size: 13px;
-line-height: 1.5;
+overflow-x: hidden;
+user-select: none;
 }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: var(–bg); }
-::-webkit-scrollbar-thumb { background: var(–border2); border-radius: 2px; }
+/* ── SCREENS ── */
+.screen { display: none; width: 100%; min-height: 100vh; }
+.screen.active { display: flex; }
 
-/* ── LAYOUT ── */
-.app { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
-/* ── TOPBAR ── */
-.topbar {
-display: flex; align-items: center; gap: 0;
-background: var(–bg2);
-border-bottom: 1px solid var(–border);
-height: 48px; padding: 0 20px;
-flex-shrink: 0;
-}
-
-.logo {
-display: flex; align-items: center; gap: 8px;
-font-size: 15px; font-weight: 800; letter-spacing: -0.02em;
-margin-right: 32px; color: var(–text);
-}
-
-.logo-dot {
-width: 8px; height: 8px; border-radius: 50%;
-background: var(–purple);
-box-shadow: 0 0 8px var(–purple);
-animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
-.nav-tabs { display: flex; gap: 2px; }
-.nav-tab {
-padding: 6px 14px; border-radius: 6px; font-size: 12px;
-font-weight: 600; cursor: pointer; color: var(–text3);
-transition: all 0.15s; border: none; background: none;
-letter-spacing: 0.02em;
-}
-.nav-tab:hover { color: var(–text2); background: var(–surface); }
-.nav-tab.active { color: var(–text); background: var(–card); }
-
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-.market-time { font-size: 11px; color: var(–text3); font-variant-numeric: tabular-nums; }
-.market-status { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 10px; }
-.market-status.open { background: var(–green-dim); color: var(–green); border: 1px solid var(–green-border); }
-.market-status.closed { background: var(–border); color: var(–text3); }
-
-/* ── ALERT BAR ── */
-.alert-bar {
-display: none; align-items: center; gap: 10px;
-background: var(–red-dim); border-bottom: 1px solid var(–red-border);
-padding: 8px 20px; font-size: 12px; color: #f87171; flex-shrink: 0;
-}
-.alert-bar.show { display: flex; }
-.alert-icon { font-size: 14px; }
-.alert-close { margin-left: auto; cursor: pointer; opacity: 0.6; font-size: 16px; line-height: 1; }
-
-/* ── MAIN ── */
-.main { display: flex; flex: 1; overflow: hidden; }
-
-/* ── LEFT SIDEBAR ── */
-.sidebar {
-width: 220px; flex-shrink: 0;
-background: var(–bg2);
-border-right: 1px solid var(–border);
-display: flex; flex-direction: column;
+/* ── TITLE SCREEN ── */
+#title-screen {
+flex-direction: column;
+align-items: center;
+justify-content: center;
+position: relative;
 overflow: hidden;
+background: radial-gradient(ellipse at 50% 60%, #1a0a2e 0%, var(–void) 70%);
 }
 
-.sidebar-header {
-padding: 14px 14px 10px;
-border-bottom: 1px solid var(–border);
-flex-shrink: 0;
+.stars {
+position: absolute; inset: 0;
+pointer-events: none;
 }
 
-.sidebar-title { font-size: 10px; font-weight: 700; color: var(–text3); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
-
-.add-stock-row { display: flex; gap: 6px; }
-.code-input {
-flex: 1; background: var(–surface); border: 1px solid var(–border2);
-color: var(–text); border-radius: 6px; padding: 7px 10px;
-font-size: 12px; font-family: ‘SF Mono’, ‘Consolas’, monospace;
-outline: none; transition: border-color 0.15s;
-letter-spacing: 0.05em;
+.star {
+position: absolute;
+width: 2px; height: 2px;
+background: white;
+border-radius: 50%;
+animation: twinkle var(–d) ease-in-out infinite;
 }
-.code-input:focus { border-color: var(–purple); }
-.code-input::placeholder { color: var(–text3); letter-spacing: 0; }
 
-.add-btn {
-background: var(–purple); color: white; border: none;
-border-radius: 6px; width: 32px; cursor: pointer;
-font-size: 16px; line-height: 1; transition: opacity 0.15s;
-display: flex; align-items: center; justify-content: center;
+@keyframes twinkle {
+0%,100% { opacity: 0.2; transform: scale(1); }
+50% { opacity: 1; transform: scale(1.5); }
 }
-.add-btn:hover { opacity: 0.85; }
 
-.holdings-list { flex: 1; overflow-y: auto; padding: 6px; }
-
-.holding-card {
-padding: 10px 10px;
-border-radius: 8px;
-cursor: pointer;
-transition: background 0.12s;
-border: 1px solid transparent;
-margin-bottom: 3px;
+.abyss-orb {
+width: 200px; height: 200px;
+border-radius: 50%;
+background: radial-gradient(circle at 35% 35%, var(–soul-glow), var(–soul) 40%, #3b0066 70%, transparent 100%);
+box-shadow: 0 0 60px var(–soul), 0 0 120px #4c1d95, inset 0 0 40px rgba(139,92,246,0.3);
+animation: orb-pulse 4s ease-in-out infinite;
+margin-bottom: 40px;
 position: relative;
 }
-.holding-card:hover { background: var(–surface); }
-.holding-card.active { background: var(–card); border-color: var(–border2); }
-.holding-card.active::before {
-content: ‘’; position: absolute; left: 0; top: 50%;
-transform: translateY(-50%);
-width: 3px; height: 60%; background: var(–purple);
-border-radius: 0 2px 2px 0;
+
+.abyss-orb::after {
+content: ‘’;
+position: absolute;
+inset: -20px;
+border-radius: 50%;
+border: 1px solid rgba(139,92,246,0.2);
+animation: orb-ring 4s ease-in-out infinite reverse;
 }
 
-.hc-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
-.hc-name { font-size: 12px; font-weight: 700; color: var(–text); }
-.hc-price { font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; }
-
-.hc-mid { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-.hc-code { font-size: 10px; color: var(–text3); font-family: monospace; }
-.hc-change { font-size: 11px; font-weight: 600; }
-
-.hc-bottom { display: flex; align-items: center; justify-content: space-between; }
-.hc-pnl { font-size: 11px; font-weight: 600; }
-.hc-score-badge {
-font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px;
-}
-.hc-del {
-position: absolute; top: 6px; right: 6px;
-font-size: 12px; color: var(–text3); cursor: pointer;
-opacity: 0; transition: opacity 0.1s; line-height: 1;
-}
-.holding-card:hover .hc-del { opacity: 1; }
-
-.sidebar-footer {
-padding: 12px 14px;
-border-top: 1px solid var(–border);
-flex-shrink: 0;
-}
-.portfolio-total { font-size: 10px; color: var(–text3); margin-bottom: 4px; }
-.portfolio-value { font-size: 16px; font-weight: 800; color: var(–text); }
-.portfolio-pnl { font-size: 11px; font-weight: 600; margin-top: 2px; }
-
-/* ── CENTER PANEL ── */
-.center { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
-
-/* empty state */
-.empty-state {
-flex: 1; display: flex; flex-direction: column;
-align-items: center; justify-content: center; gap: 14px;
-color: var(–text3);
-}
-.empty-icon { font-size: 40px; opacity: 0.3; }
-.empty-title { font-size: 15px; font-weight: 700; color: var(–text2); }
-.empty-sub { font-size: 12px; line-height: 1.6; text-align: center; max-width: 280px; }
-
-/* stock header */
-.stock-header {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 12px;
-padding: 16px 18px;
-display: flex; align-items: flex-start; justify-content: space-between;
-flex-wrap: wrap; gap: 12px;
+@keyframes orb-pulse {
+0%,100% { box-shadow: 0 0 60px var(–soul), 0 0 120px #4c1d95; transform: scale(1); }
+50% { box-shadow: 0 0 80px var(–soul-bright), 0 0 160px #6d28d9; transform: scale(1.05); }
 }
 
-.sh-left {}
-.sh-namerow { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.sh-name { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
-.sh-code { font-size: 11px; color: var(–text3); font-family: monospace; background: var(–bg2); padding: 2px 7px; border-radius: 4px; border: 1px solid var(–border2); }
-.sh-exchange { font-size: 10px; color: var(–text3); }
-
-.sh-price-row { display: flex; align-items: baseline; gap: 8px; }
-.sh-price { font-size: 28px; font-weight: 900; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
-.sh-change { font-size: 14px; font-weight: 700; }
-.sh-change-abs { font-size: 12px; color: var(–text3); }
-
-.sh-right { display: flex; gap: 20px; flex-wrap: wrap; }
-.sh-stat { text-align: right; }
-.sh-stat-label { font-size: 10px; color: var(–text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px; }
-.sh-stat-value { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
-
-.refresh-btn {
-background: var(–card); border: 1px solid var(–border2);
-color: var(–text2); border-radius: 7px; padding: 6px 12px;
-font-size: 11px; cursor: pointer; font-family: inherit;
-transition: all 0.15s; display: flex; align-items: center; gap: 5px;
-}
-.refresh-btn:hover { border-color: var(–purple); color: var(–purple); }
-.refresh-btn.spinning .refresh-icon { animation: spin 0.7s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* AI strip */
-.ai-strip {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 12px 16px;
-display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+@keyframes orb-ring {
+0% { transform: scale(1) rotate(0deg); opacity: 0.3; }
+50% { transform: scale(1.15) rotate(180deg); opacity: 0.6; }
+100% { transform: scale(1) rotate(360deg); opacity: 0.3; }
 }
 
-.ai-badge { font-size: 10px; font-weight: 800; color: var(–purple); border: 1px solid var(–purple); border-radius: 5px; padding: 3px 8px; letter-spacing: 0.08em; white-space: nowrap; }
-
-.decision-tag {
-font-size: 12px; font-weight: 800; padding: 4px 12px;
-border-radius: 6px; white-space: nowrap; letter-spacing: 0.04em;
+.title-main {
+font-size: clamp(36px, 8vw, 72px);
+font-weight: 900;
+letter-spacing: 0.1em;
+background: linear-gradient(135deg, var(–soul-glow), var(–soul), #7c3aed);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+background-clip: text;
+text-shadow: none;
+margin-bottom: 8px;
+animation: title-shimmer 3s ease-in-out infinite;
 }
-.dt-exit { background: var(–red-dim); color: var(–red); border: 1px solid var(–red-border); }
-.dt-hold { background: var(–yellow-dim); color: var(–yellow); border: 1px solid rgba(240,180,41,0.3); }
-.dt-add  { background: var(–green-dim); color: var(–green); border: 1px solid var(–green-border); }
-.dt-reduce { background: var(–orange-dim); color: var(–orange); border: 1px solid rgba(245,130,13,0.3); }
 
-.ai-summary { font-size: 12px; color: var(–text2); flex: 1; min-width: 0; line-height: 1.5; }
+@keyframes title-shimmer {
+0%,100% { filter: brightness(1); }
+50% { filter: brightness(1.2); }
+}
 
-.conf-group { display: flex; align-items: center; gap: 6px; margin-left: auto; white-space: nowrap; }
-.conf-label { font-size: 10px; color: var(–text3); text-transform: uppercase; letter-spacing: 0.07em; }
-.conf-val { font-size: 14px; font-weight: 800; }
+.title-sub {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 14px;
+color: var(–text-dim);
+letter-spacing: 0.3em;
+margin-bottom: 60px;
+}
 
-/* scores */
-.scores-grid {
+.menu-btn {
+background: transparent;
+border: 1px solid var(–soul);
+color: var(–soul-glow);
+font-family: ‘Noto Serif SC’, serif;
+font-size: 18px;
+padding: 14px 60px;
+cursor: pointer;
+margin: 8px 0;
+width: 260px;
+transition: all 0.3s;
+position: relative;
+overflow: hidden;
+letter-spacing: 0.15em;
+}
+
+.menu-btn::before {
+content: ‘’;
+position: absolute;
+left: -100%; top: 0;
+width: 100%; height: 100%;
+background: linear-gradient(90deg, transparent, rgba(139,92,246,0.2), transparent);
+transition: left 0.4s;
+}
+
+.menu-btn:hover::before { left: 100%; }
+.menu-btn:hover {
+background: rgba(139,92,246,0.15);
+border-color: var(–soul-bright);
+color: white;
+box-shadow: 0 0 20px rgba(139,92,246,0.3);
+transform: translateY(-1px);
+}
+
+.menu-btn.primary {
+background: rgba(139,92,246,0.2);
+border-color: var(–soul-bright);
+border-width: 2px;
+}
+
+.version-tag {
+position: absolute;
+bottom: 20px;
+right: 24px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+color: var(–text-dim);
+opacity: 0.5;
+}
+
+/* ── CLASS SELECT ── */
+#class-screen {
+flex-direction: column;
+align-items: center;
+padding: 40px 20px;
+background: radial-gradient(ellipse at 50% 20%, #0f1535 0%, var(–void) 70%);
+}
+
+.screen-title {
+font-size: 28px;
+font-weight: 700;
+color: var(–soul-glow);
+letter-spacing: 0.2em;
+margin-bottom: 8px;
+}
+
+.screen-subtitle {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 12px;
+color: var(–text-dim);
+letter-spacing: 0.3em;
+margin-bottom: 40px;
+}
+
+.class-grid {
 display: grid;
-grid-template-columns: repeat(4, 1fr);
-gap: 8px;
+grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+gap: 16px;
+max-width: 960px;
+width: 100%;
+margin-bottom: 30px;
 }
 
-.score-card {
-background: var(–surface);
+.class-card {
 border: 1px solid var(–border);
-border-radius: 10px;
-padding: 13px 14px;
-text-align: center;
-position: relative; overflow: hidden;
-}
-.score-card::after {
-content: ‘’; position: absolute; bottom: 0; left: 0; right: 0;
-height: 2px;
-}
-.score-card.danger::after { background: var(–red); }
-.score-card.warn::after { background: var(–orange); }
-.score-card.caution::after { background: var(–yellow); }
-.score-card.ok::after { background: var(–green); }
-
-.sc-label { font-size: 10px; color: var(–text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 6px; }
-.sc-value { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
-.score-card.danger .sc-value { color: var(–red); }
-.score-card.warn .sc-value { color: var(–orange); }
-.score-card.caution .sc-value { color: var(–yellow); }
-.score-card.ok .sc-value { color: var(–green); }
-.sc-sub { font-size: 10px; color: var(–text3); margin-top: 3px; }
-
-/* 2-col layout */
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-/* section box */
-.section-box {
-background: var(–surface);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 14px 16px;
-}
-
-.section-label {
-font-size: 10px; font-weight: 700; color: var(–text3);
-text-transform: uppercase; letter-spacing: 0.1em;
-margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
-}
-.section-label::after { content: ‘’; flex: 1; height: 1px; background: var(–border); }
-
-/* levels */
-.levels-list { display: flex; flex-direction: column; gap: 7px; }
-
-.level-row {
-display: flex; align-items: center; gap: 10px;
-padding: 9px 11px; border-radius: 7px;
-border-left: 3px solid;
-}
-.level-row.resistance { background: var(–red-dim); border-color: var(–red); }
-.level-row.support    { background: var(–green-dim); border-color: var(–green); }
-.level-row.warning    { background: var(–orange-dim); border-color: var(–orange); }
-.level-row.info       { background: var(–blue-dim); border-color: var(–blue); }
-.level-row.cost       { background: var(–purple-dim); border-color: var(–purple); }
-
-.level-name { font-size: 11px; color: var(–text2); flex: 1; min-width: 0; }
-.level-price { font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
-.level-row.resistance .level-price { color: var(–red); }
-.level-row.support    .level-price { color: var(–green); }
-.level-row.warning    .level-price { color: var(–orange); }
-.level-row.info       .level-price { color: var(–blue); }
-.level-row.cost       .level-price { color: var(–purple); }
-.level-dist { font-size: 10px; color: var(–text3); white-space: nowrap; font-variant-numeric: tabular-nums; }
-.level-desc { font-size: 10px; color: var(–text3); margin-top: 2px; line-height: 1.4; }
-
-/* scenarios */
-.scenarios-list { display: flex; flex-direction: column; gap: 8px; }
-
-.scenario-row {
-border-radius: 8px; padding: 10px 12px; border: 1px solid;
-}
-.scenario-row.bull   { background: var(–green-dim); border-color: var(–green-border); }
-.scenario-row.bear   { background: var(–red-dim); border-color: var(–red-border); }
-.scenario-row.neutral{ background: var(–orange-dim); border-color: rgba(245,130,13,0.2); }
-
-.sr-trigger { font-size: 12px; font-weight: 700; margin-bottom: 4px; }
-.scenario-row.bull   .sr-trigger { color: var(–green); }
-.scenario-row.bear   .sr-trigger { color: var(–red); }
-.scenario-row.neutral .sr-trigger { color: var(–orange); }
-
-.sr-action { font-size: 11px; color: var(–text2); line-height: 1.5; }
-
-/* donts */
-.donts-row {
-background: var(–surface); border: 1px solid var(–red-border);
-border-radius: 10px; padding: 12px 16px;
-}
-.donts-label { font-size: 10px; font-weight: 700; color: var(–red); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
-.donts-tags { display: flex; gap: 6px; flex-wrap: wrap; }
-.dont-tag { font-size: 11px; background: var(–red-dim); color: #f87171; border: 1px solid var(–red-border); border-radius: 5px; padding: 4px 10px; }
-
-/* rationale */
-.rationale-text { font-size: 12px; color: var(–text2); line-height: 1.8; }
-.watchpoints { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(–border); display: flex; flex-direction: column; gap: 6px; }
-.wp-item { font-size: 11px; color: var(–text2); padding-left: 10px; border-left: 2px solid var(–purple); line-height: 1.6; }
-
-/* right panel */
-.right-panel {
-width: 260px; flex-shrink: 0;
-background: var(–bg2);
-border-left: 1px solid var(–border);
-display: flex; flex-direction: column;
+background: var(–deep);
+padding: 24px;
+cursor: pointer;
+transition: all 0.3s;
+position: relative;
 overflow: hidden;
 }
 
-.rp-section { padding: 14px; border-bottom: 1px solid var(–border); }
-.rp-title { font-size: 10px; font-weight: 700; color: var(–text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px; }
-
-/* holding form */
-.form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
-.form-label { font-size: 10px; color: var(–text3); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-.form-input {
-background: var(–surface); border: 1px solid var(–border2);
-color: var(–text); border-radius: 6px; padding: 8px 10px;
-font-size: 12px; font-family: inherit; outline: none;
-transition: border-color 0.15s; width: 100%;
+.class-card::after {
+content: ‘’;
+position: absolute;
+inset: 0;
+background: linear-gradient(135deg, transparent 60%, rgba(255,255,255,0.03));
 }
-.form-input:focus { border-color: var(–purple); }
-.form-input::placeholder { color: var(–text3); }
 
-.form-textarea {
-background: var(–surface); border: 1px solid var(–border2);
-color: var(–text); border-radius: 6px; padding: 8px 10px;
-font-size: 12px; font-family: inherit; outline: none;
-transition: border-color 0.15s; width: 100%; resize: vertical;
-min-height: 70px; line-height: 1.5;
+.class-card:hover, .class-card.selected {
+border-color: var(–soul);
+background: var(–abyss);
+box-shadow: 0 0 30px rgba(139,92,246,0.2), inset 0 0 20px rgba(139,92,246,0.05);
+transform: translateY(-2px);
 }
-.form-textarea:focus { border-color: var(–purple); }
-.form-textarea::placeholder { color: var(–text3); }
 
-.analyze-btn {
-width: 100%; background: var(–purple); color: white; border: none;
-border-radius: 7px; padding: 10px; font-size: 13px; font-weight: 700;
-cursor: pointer; font-family: inherit; transition: opacity 0.15s;
-letter-spacing: 0.02em;
+.class-card.selected { border-color: var(–soul-bright); border-width: 2px; }
+
+.class-icon { font-size: 48px; margin-bottom: 12px; display: block; }
+.class-name { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+.class-tagline { font-size: 12px; color: var(–soul-glow); letter-spacing: 0.1em; margin-bottom: 12px; font-family: ‘Share Tech Mono’, monospace; }
+.class-desc { font-size: 13px; color: var(–silver); line-height: 1.6; margin-bottom: 14px; }
+
+.class-stats { display: flex; gap: 8px; flex-wrap: wrap; }
+.stat-pill {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+padding: 3px 10px;
+border-radius: 2px;
+border: 1px solid;
 }
-.analyze-btn:hover { opacity: 0.88; }
-.analyze-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-/* pnl display */
-.pnl-display {
-background: var(–card); border: 1px solid var(–border2);
-border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;
+.stat-pill.hp { border-color: var(–blood); color: var(–blood); }
+.stat-pill.atk { border-color: var(–fire); color: var(–fire); }
+.stat-pill.spd { border-color: var(–ice); color: var(–ice); }
+.stat-pill.mag { border-color: var(–soul); color: var(–soul-bright); }
+
+.class-skill {
+margin-top: 12px;
+padding: 10px;
+background: rgba(255,255,255,0.03);
+border-left: 2px solid var(–soul);
+font-size: 12px;
+color: var(–text-dim);
 }
-.pnl-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.pnl-row:last-child { margin-bottom: 0; }
-.pnl-key { font-size: 10px; color: var(–text3); }
-.pnl-val { font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.class-skill strong { color: var(–soul-glow); display: block; margin-bottom: 3px; }
 
-/* bokou data */
-.bokoudata { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
-.boku-item { background: var(–card); border-radius: 5px; padding: 6px 8px; }
-.boku-label { font-size: 9px; color: var(–text3); margin-bottom: 2px; }
-.boku-val { font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; }
-
-.rp-scroll { flex: 1; overflow-y: auto; }
-
-/* loading overlay for analysis */
-.analysis-loading {
-display: none; flex-direction: column; align-items: center; justify-content: center;
-gap: 14px; padding: 60px 20px;
+/* ── GAME SCREEN ── */
+#game-screen {
+flex-direction: column;
+background: var(–void);
 }
-.analysis-loading.show { display: flex; }
 
-.spinner {
-width: 32px; height: 32px;
-border: 2px solid var(–border2);
-border-top-color: var(–purple);
+.game-layout {
+display: grid;
+grid-template-columns: 220px 1fr 220px;
+grid-template-rows: auto 1fr auto;
+min-height: 100vh;
+gap: 0;
+}
+
+/* TOP HUD */
+.hud-top {
+grid-column: 1 / -1;
+background: var(–deep);
+border-bottom: 1px solid var(–border);
+padding: 10px 16px;
+display: flex;
+align-items: center;
+gap: 16px;
+flex-wrap: wrap;
+}
+
+.hud-name {
+font-weight: 700;
+font-size: 14px;
+color: var(–soul-glow);
+min-width: 100px;
+}
+
+.bar-group { display: flex; flex-direction: column; gap: 3px; flex: 1; max-width: 160px; }
+.bar-label {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+color: var(–text-dim);
+display: flex;
+justify-content: space-between;
+}
+.bar {
+height: 8px;
+background: rgba(255,255,255,0.08);
+border-radius: 1px;
+overflow: hidden;
+position: relative;
+}
+.bar-fill {
+height: 100%;
+border-radius: 1px;
+transition: width 0.4s ease;
+position: relative;
+}
+.bar-fill::after {
+content: ‘’;
+position: absolute;
+top: 0; right: 0;
+width: 4px; height: 100%;
+background: rgba(255,255,255,0.5);
+filter: blur(2px);
+}
+.bar-fill.hp { background: linear-gradient(90deg, var(–blood-dim), var(–hp)); }
+.bar-fill.mp { background: linear-gradient(90deg, var(–ice-dim), var(–mp)); }
+.bar-fill.xp { background: linear-gradient(90deg, #92400e, var(–xp)); }
+
+.hud-divider { width: 1px; height: 32px; background: var(–border); }
+
+.hud-info {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+color: var(–text-dim);
+display: flex;
+flex-direction: column;
+gap: 2px;
+}
+.hud-info span { color: var(–text); }
+
+.hud-right { margin-left: auto; display: flex; gap: 16px; align-items: center; }
+
+.echo-counter {
+display: flex;
+align-items: center;
+gap: 6px;
+background: rgba(139,92,246,0.1);
+border: 1px solid rgba(139,92,246,0.3);
+padding: 4px 12px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+color: var(–soul-glow);
+}
+
+.gold-display {
+display: flex;
+align-items: center;
+gap: 6px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+color: var(–gold);
+}
+
+/* LEFT PANEL */
+.panel-left {
+background: var(–deep);
+border-right: 1px solid var(–border);
+padding: 12px;
+display: flex;
+flex-direction: column;
+gap: 12px;
+overflow-y: auto;
+}
+
+.panel-section-title {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.3em;
+color: var(–text-dim);
+border-bottom: 1px solid var(–border);
+padding-bottom: 6px;
+margin-bottom: 6px;
+}
+
+/* MAP AREA */
+#map-container {
+position: relative;
+overflow: hidden;
+cursor: default;
+}
+
+#dungeon-canvas {
+display: block;
+width: 100%;
+height: 100%;
+}
+
+/* RIGHT PANEL */
+.panel-right {
+background: var(–deep);
+border-left: 1px solid var(–border);
+padding: 12px;
+display: flex;
+flex-direction: column;
+gap: 10px;
+overflow-y: auto;
+}
+
+/* BOTTOM HUD */
+.hud-bottom {
+grid-column: 1 / -1;
+background: var(–deep);
+border-top: 1px solid var(–border);
+padding: 10px 16px;
+display: flex;
+align-items: center;
+gap: 12px;
+flex-wrap: wrap;
+}
+
+/* SKILL SLOTS */
+.skill-slots { display: flex; gap: 8px; }
+
+.skill-slot {
+width: 56px; height: 56px;
+border: 1px solid var(–border);
+background: var(–abyss);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+position: relative;
+transition: all 0.2s;
+font-size: 20px;
+}
+
+.skill-slot:hover { border-color: var(–soul); box-shadow: 0 0 10px rgba(139,92,246,0.2); }
+.skill-slot.on-cooldown { opacity: 0.5; cursor: not-allowed; }
+
+.skill-key {
+position: absolute;
+bottom: 2px; right: 4px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 9px;
+color: var(–text-dim);
+}
+
+.skill-cd-overlay {
+position: absolute;
+inset: 0;
+background: rgba(0,0,0,0.6);
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 13px;
+font-weight: bold;
+color: var(–soul-glow);
+}
+
+.log-area {
+flex: 1;
+max-height: 60px;
+overflow-y: auto;
+padding: 4px 8px;
+background: rgba(0,0,0,0.3);
+border: 1px solid var(–border);
+}
+
+.log-line {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+line-height: 1.5;
+color: var(–text-dim);
+}
+.log-line.important { color: var(–soul-glow); }
+.log-line.damage { color: var(–blood); }
+.log-line.heal { color: var(–poison); }
+.log-line.loot { color: var(–gold); }
+
+/* INVENTORY */
+.inventory-grid {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 4px;
+}
+
+.inv-slot {
+aspect-ratio: 1;
+border: 1px solid var(–border);
+background: var(–abyss);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 18px;
+cursor: pointer;
+position: relative;
+transition: all 0.2s;
+}
+
+.inv-slot:hover { border-color: var(–soul); }
+.inv-slot .item-rarity {
+position: absolute;
+bottom: 0; left: 0; right: 0;
+height: 2px;
+}
+.inv-slot .item-rarity.common { background: var(–silver); }
+.inv-slot .item-rarity.rare { background: var(–ice); }
+.inv-slot .item-rarity.epic { background: var(–soul); }
+.inv-slot .item-rarity.legendary { background: var(–gold); animation: pulse-bar 1.5s infinite; }
+
+@keyframes pulse-bar {
+0%,100% { opacity: 0.7; } 50% { opacity: 1; box-shadow: 0 0 6px var(–gold); }
+}
+
+/* BUFFS */
+.buff-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.buff-tag {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+padding: 2px 8px;
+border: 1px solid;
+border-radius: 2px;
+cursor: pointer;
+transition: all 0.2s;
+}
+.buff-tag:hover { filter: brightness(1.3); }
+.buff-tag.fire { border-color: var(–fire); color: var(–fire); background: rgba(249,115,22,0.1); }
+.buff-tag.ice { border-color: var(–ice); color: var(–ice); background: rgba(56,189,248,0.1); }
+.buff-tag.soul { border-color: var(–soul); color: var(–soul-glow); background: rgba(139,92,246,0.1); }
+.buff-tag.poison { border-color: var(–poison); color: var(–poison); background: rgba(74,222,128,0.1); }
+.buff-tag.gold { border-color: var(–gold); color: var(–gold); background: rgba(251,191,36,0.1); }
+
+/* RELICS */
+.relic-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.relic-item {
+font-size: 22px;
+cursor: pointer;
+position: relative;
+transition: transform 0.2s;
+filter: drop-shadow(0 0 4px rgba(139,92,246,0.4));
+}
+.relic-item:hover { transform: scale(1.2); }
+
+/* ECHO MEMORIES */
+.echo-list { display: flex; flex-direction: column; gap: 6px; }
+.echo-item {
+background: rgba(139,92,246,0.08);
+border: 1px solid rgba(139,92,246,0.2);
+padding: 8px;
+font-size: 12px;
+cursor: pointer;
+transition: all 0.2s;
+}
+.echo-item:hover { background: rgba(139,92,246,0.15); border-color: var(–soul); }
+.echo-item-title { font-weight: 700; color: var(–soul-glow); margin-bottom: 3px; }
+.echo-item-desc { color: var(–text-dim); font-size: 11px; }
+
+/* MODAL */
+.modal-overlay {
+display: none;
+position: fixed; inset: 0;
+background: rgba(0,0,0,0.85);
+z-index: 100;
+align-items: center;
+justify-content: center;
+backdrop-filter: blur(4px);
+}
+.modal-overlay.active { display: flex; }
+
+.modal-box {
+background: var(–deep);
+border: 1px solid var(–soul);
+max-width: 680px;
+width: 95%;
+max-height: 85vh;
+overflow-y: auto;
+box-shadow: 0 0 60px rgba(139,92,246,0.3);
+animation: modal-in 0.25s ease;
+}
+
+@keyframes modal-in {
+from { transform: scale(0.92); opacity: 0; }
+to { transform: scale(1); opacity: 1; }
+}
+
+.modal-header {
+background: rgba(139,92,246,0.15);
+border-bottom: 1px solid var(–soul);
+padding: 16px 20px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.modal-title { font-size: 18px; font-weight: 700; color: var(–soul-glow); letter-spacing: 0.1em; }
+.modal-close {
+background: none; border: none; color: var(–text-dim);
+font-size: 20px; cursor: pointer; padding: 0 4px;
+transition: color 0.2s;
+}
+.modal-close:hover { color: var(–blood); }
+.modal-body { padding: 20px; }
+
+/* REWARD CARDS */
+.reward-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+gap: 12px;
+}
+
+.reward-card {
+border: 1px solid var(–border);
+background: var(–abyss);
+padding: 16px;
+cursor: pointer;
+transition: all 0.25s;
+position: relative;
+overflow: hidden;
+}
+
+.reward-card::before {
+content: ‘’;
+position: absolute;
+top: -50%; left: -50%;
+width: 200%; height: 200%;
+background: radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 60%);
+opacity: 0;
+transition: opacity 0.3s;
+}
+
+.reward-card:hover::before { opacity: 1; }
+.reward-card:hover { border-color: var(–soul); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+
+.reward-card.legendary { border-color: var(–gold); }
+.reward-card.legendary:hover { box-shadow: 0 8px 24px rgba(251,191,36,0.2); }
+.reward-card.epic { border-color: var(–soul); }
+.reward-card.rare { border-color: var(–ice); }
+
+.reward-icon { font-size: 36px; display: block; margin-bottom: 10px; }
+.reward-name { font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+.reward-type {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+letter-spacing: 0.2em;
+margin-bottom: 8px;
+}
+.reward-type.legendary { color: var(–gold); }
+.reward-type.epic { color: var(–soul-glow); }
+.reward-type.rare { color: var(–ice); }
+.reward-type.common { color: var(–silver); }
+
+.reward-desc { font-size: 12px; color: var(–text-dim); line-height: 1.5; }
+.reward-stat { font-family: ‘Share Tech Mono’, monospace; font-size: 11px; color: var(–poison); margin-top: 6px; }
+
+/* COMBAT OVERLAY */
+#combat-overlay {
+position: absolute; inset: 0;
+background: rgba(0,0,0,0.7);
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 10;
+}
+#combat-overlay.active { display: flex; }
+
+.combat-arena {
+background: var(–deep);
+border: 1px solid var(–blood);
+width: 90%;
+max-width: 560px;
+padding: 24px;
+box-shadow: 0 0 40px rgba(244,63,94,0.2);
+animation: combat-in 0.3s ease;
+}
+
+@keyframes combat-in {
+from { transform: scale(0.9) translateY(20px); opacity: 0; }
+to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.combat-title {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 11px;
+letter-spacing: 0.3em;
+color: var(–blood);
+margin-bottom: 16px;
+text-align: center;
+}
+
+.combat-sides {
+display: flex;
+align-items: center;
+gap: 16px;
+margin-bottom: 20px;
+}
+
+.combatant {
+flex: 1;
+text-align: center;
+}
+
+.combatant-icon { font-size: 48px; display: block; margin-bottom: 8px; filter: drop-shadow(0 0 8px rgba(244,63,94,0.4)); }
+.combatant-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.combatant-bar {
+height: 10px;
+background: rgba(255,255,255,0.08);
+border-radius: 2px;
+overflow: hidden;
+margin-bottom: 4px;
+}
+.combatant-hp { height: 100%; background: linear-gradient(90deg, var(–blood-dim), var(–blood)); transition: width 0.5s ease; border-radius: 2px; }
+.combatant-hp-text { font-family: ‘Share Tech Mono’, monospace; font-size: 11px; color: var(–blood); }
+
+.vs-badge {
+width: 40px; height: 40px;
 border-radius: 50%;
-animation: spin 0.6s linear infinite;
+background: rgba(244,63,94,0.15);
+border: 1px solid var(–blood);
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 12px;
+color: var(–blood);
+flex-shrink: 0;
+animation: vs-pulse 1.5s ease-in-out infinite;
 }
 
-.loading-text { font-size: 12px; color: var(–text3); }
-.loading-sub { font-size: 11px; color: var(–text3); opacity: 0.6; }
-
-/* analysis result */
-.analysis-result { display: none; }
-.analysis-result.show { display: flex; flex-direction: column; gap: 12px; }
-
-/* error */
-.error-box {
-background: var(–red-dim); border: 1px solid var(–red-border);
-border-radius: 10px; padding: 16px; color: #f87171;
-font-size: 12px; line-height: 1.7;
+@keyframes vs-pulse {
+0%,100% { box-shadow: 0 0 0 0 rgba(244,63,94,0.3); }
+50% { box-shadow: 0 0 0 8px rgba(244,63,94,0); }
 }
 
-/* color utilities */
-.c-red { color: var(–red); }
-.c-green { color: var(–green); }
-.c-orange { color: var(–orange); }
-.c-yellow { color: var(–yellow); }
-.c-purple { color: var(–purple); }
-.c-text2 { color: var(–text2); }
-
-/* tag */
-.tag { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 4px; }
-.tag-danger { background: var(–red-dim); color: var(–red); }
-.tag-ok { background: var(–green-dim); color: var(–green); }
-.tag-warn { background: var(–yellow-dim); color: var(–yellow); }
-
-/* tab pages */
-.tab-page { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-.tab-page.active { display: flex; }
-
-/* scanner page */
-.scanner-wrap { padding: 20px; display: flex; flex-direction: column; gap: 16px; flex: 1; overflow-y: auto; }
-.scanner-input-area {
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 12px; padding: 20px;
+.combat-log {
+background: rgba(0,0,0,0.4);
+border: 1px solid var(–border);
+padding: 10px;
+height: 80px;
+overflow-y: auto;
+margin-bottom: 16px;
 }
-.scanner-title { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
-.scanner-sub { font-size: 12px; color: var(–text3); margin-bottom: 14px; }
-.scanner-codes {
-background: var(–card); border: 1px solid var(–border2);
-border-radius: 8px; padding: 10px 12px;
-font-size: 12px; color: var(–text); font-family: monospace;
-width: 100%; min-height: 80px; resize: vertical; outline: none;
+
+.combat-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.combat-btn {
+flex: 1; min-width: 80px;
+background: var(–abyss);
+border: 1px solid var(–border);
+color: var(–text);
+padding: 10px 8px;
+cursor: pointer;
+font-family: ‘Noto Serif SC’, serif;
+font-size: 13px;
+transition: all 0.2s;
+display: flex;
+flex-direction: column;
+align-items: center;
+gap: 3px;
+}
+.combat-btn:hover { border-color: var(–soul); background: rgba(139,92,246,0.1); }
+.combat-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.combat-btn .btn-key { font-family: ‘Share Tech Mono’, monospace; font-size: 9px; color: var(–text-dim); }
+.combat-btn .btn-cost { font-family: ‘Share Tech Mono’, monospace; font-size: 9px; color: var(–ice); }
+
+/* DEATH SCREEN */
+#death-screen {
+flex-direction: column;
+align-items: center;
+justify-content: center;
+background: radial-gradient(ellipse at 50% 50%, #200000 0%, var(–void) 70%);
+}
+
+.death-icon { font-size: 80px; margin-bottom: 20px; animation: death-float 3s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(244,63,94,0.5)); }
+
+@keyframes death-float {
+0%,100% { transform: translateY(0) rotate(-5deg); }
+50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.death-title {
+font-size: 48px; font-weight: 900;
+color: var(–blood);
+letter-spacing: 0.2em;
+text-shadow: 0 0 30px rgba(244,63,94,0.4);
+margin-bottom: 8px;
+}
+
+.death-subtitle { color: var(–text-dim); margin-bottom: 40px; font-size: 14px; letter-spacing: 0.2em; }
+
+.death-stats {
+background: var(–deep);
+border: 1px solid var(–border);
+padding: 20px 40px;
+margin-bottom: 30px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px 40px;
+max-width: 400px;
+width: 90%;
+}
+
+.death-stat { font-family: ‘Share Tech Mono’, monospace; font-size: 13px; }
+.death-stat-label { color: var(–text-dim); display: block; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 2px; }
+.death-stat-val { color: var(–soul-glow); }
+
+.echo-save-notice {
+font-size: 13px;
+color: var(–soul-glow);
+margin-bottom: 24px;
+text-align: center;
+max-width: 360px;
 line-height: 1.6;
-}
-.scanner-codes:focus { border-color: var(–purple); }
-.scanner-row { display: flex; gap: 10px; margin-top: 10px; align-items: center; }
-.scan-btn {
-background: var(–purple); color: white; border: none;
-border-radius: 7px; padding: 9px 20px; font-size: 13px; font-weight: 700;
-cursor: pointer; font-family: inherit; transition: opacity 0.15s;
-}
-.scan-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.scan-count { font-size: 11px; color: var(–text3); }
-
-.scan-results { display: flex; flex-direction: column; gap: 8px; }
-.scan-card {
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 10px; padding: 14px 16px;
-display: flex; align-items: center; gap: 14px;
-cursor: pointer; transition: border-color 0.15s;
-}
-.scan-card:hover { border-color: var(–border2); }
-.scan-rank { font-size: 18px; font-weight: 900; color: var(–text3); width: 28px; text-align: center; flex-shrink: 0; }
-.scan-rank.top { color: var(–purple); }
-.scan-info { flex: 1; min-width: 0; }
-.scan-name { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
-.scan-code { font-size: 10px; color: var(–text3); font-family: monospace; }
-.scan-reason { font-size: 11px; color: var(–text2); margin-top: 4px; line-height: 1.5; }
-.scan-right { text-align: right; flex-shrink: 0; }
-.scan-price { font-size: 14px; font-weight: 800; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
-.scan-score-big { font-size: 22px; font-weight: 900; }
-.scan-score-label { font-size: 9px; color: var(–text3); text-transform: uppercase; letter-spacing: 0.07em; }
-
-/* diary page */
-.diary-wrap { padding: 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
-.diary-input {
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 12px; padding: 18px;
-}
-.diary-row { display: flex; gap: 10px; flex-wrap: wrap; }
-.diary-field { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 130px; }
-.diary-entries { display: flex; flex-direction: column; gap: 8px; }
-.diary-entry {
-background: var(–surface); border: 1px solid var(–border);
-border-radius: 10px; padding: 14px 16px;
-}
-.de-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.de-stock { font-size: 13px; font-weight: 700; }
-.de-time { font-size: 10px; color: var(–text3); }
-.de-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
-.de-stat { }
-.de-key { font-size: 10px; color: var(–text3); }
-.de-val { font-size: 12px; font-weight: 700; }
-.de-note { font-size: 11px; color: var(–text2); line-height: 1.6; padding-top: 8px; border-top: 1px solid var(–border); }
-.add-diary-btn {
-background: var(–purple); color: white; border: none;
-border-radius: 7px; padding: 8px 16px; font-size: 12px; font-weight: 700;
-cursor: pointer; font-family: inherit;
+background: rgba(139,92,246,0.1);
+border: 1px solid rgba(139,92,246,0.3);
+padding: 12px 20px;
 }
 
-/* responsive */
-@media (max-width: 900px) {
-.right-panel { width: 220px; }
-.scores-grid { grid-template-columns: repeat(2, 1fr); }
+/* TOOLTIP */
+.tooltip {
+position: fixed;
+background: var(–deep);
+border: 1px solid var(–soul);
+padding: 10px 14px;
+font-size: 12px;
+max-width: 220px;
+pointer-events: none;
+z-index: 200;
+display: none;
+box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+line-height: 1.5;
 }
-@media (max-width: 700px) {
-.sidebar { width: 180px; }
-.right-panel { display: none; }
-.two-col { grid-template-columns: 1fr; }
+.tooltip.visible { display: block; }
+.tooltip-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.tooltip-type { font-family: ‘Share Tech Mono’, monospace; font-size: 10px; color: var(–text-dim); margin-bottom: 6px; }
+.tooltip-desc { color: var(–silver); margin-bottom: 6px; }
+.tooltip-stat { font-family: ‘Share Tech Mono’, monospace; font-size: 11px; color: var(–poison); }
+
+/* FLOOR EVENT */
+.floor-event {
+position: absolute; inset: 0;
+background: rgba(0,0,0,0.75);
+display: none;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+z-index: 9;
+backdrop-filter: blur(2px);
+}
+.floor-event.active { display: flex; }
+
+.event-box {
+background: var(–deep);
+border: 1px solid var(–echo);
+max-width: 500px;
+width: 90%;
+padding: 28px;
+animation: modal-in 0.3s ease;
+}
+
+.event-icon { font-size: 56px; text-align: center; display: block; margin-bottom: 16px; }
+.event-name { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 8px; color: var(–gold); }
+.event-desc { font-size: 14px; color: var(–silver); text-align: center; line-height: 1.7; margin-bottom: 20px; }
+.event-choices { display: flex; flex-direction: column; gap: 8px; }
+.event-choice {
+background: var(–abyss);
+border: 1px solid var(–border);
+padding: 12px 16px;
+cursor: pointer;
+font-size: 13px;
+transition: all 0.2s;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+.event-choice:hover { border-color: var(–soul); background: rgba(139,92,246,0.1); }
+.event-choice-effect { font-family: ‘Share Tech Mono’, monospace; font-size: 11px; color: var(–soul-glow); }
+
+/* SHOP */
+.shop-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+gap: 10px;
+}
+
+.shop-item {
+background: var(–abyss);
+border: 1px solid var(–border);
+padding: 14px;
+cursor: pointer;
+transition: all 0.2s;
+text-align: center;
+}
+.shop-item:hover { border-color: var(–gold); }
+.shop-item .item-icon { font-size: 32px; display: block; margin-bottom: 8px; }
+.shop-item .item-name { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+.shop-item .item-desc { font-size: 11px; color: var(–text-dim); margin-bottom: 8px; }
+.shop-item .item-price {
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 12px;
+color: var(–gold);
+}
+
+/* MISC */
+.divider { border: none; border-top: 1px solid var(–border); margin: 8px 0; }
+.btn-small {
+background: rgba(139,92,246,0.15);
+border: 1px solid var(–soul);
+color: var(–soul-glow);
+padding: 6px 14px;
+cursor: pointer;
+font-family: ‘Noto Serif SC’, serif;
+font-size: 12px;
+transition: all 0.2s;
+}
+.btn-small:hover { background: rgba(139,92,246,0.3); }
+
+.floor-indicator {
+text-align: center;
+padding: 12px;
+background: rgba(139,92,246,0.05);
+border: 1px solid rgba(139,92,246,0.15);
+}
+.floor-num {
+font-size: 28px;
+font-weight: 900;
+color: var(–soul-glow);
+font-family: ‘Share Tech Mono’, monospace;
+display: block;
+}
+.floor-type { font-size: 11px; color: var(–text-dim); letter-spacing: 0.2em; }
+
+.mini-map {
+display: grid;
+gap: 2px;
+margin-top: 8px;
+}
+.mini-room {
+height: 14px;
+border-radius: 1px;
+transition: all 0.3s;
+}
+.mini-room.current { background: var(–soul-bright); box-shadow: 0 0 6px var(–soul); }
+.mini-room.visited { background: var(–echo); }
+.mini-room.hidden { background: rgba(255,255,255,0.05); }
+.mini-room.boss { background: rgba(244,63,94,0.5); border: 1px solid var(–blood); }
+.mini-room.shop { background: rgba(251,191,36,0.4); }
+.mini-room.event { background: rgba(56,189,248,0.4); }
+
+.node-path {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+.node-row {
+display: flex;
+gap: 6px;
+justify-content: center;
+}
+.node {
+width: 36px; height: 36px;
+border: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+cursor: pointer;
+transition: all 0.2s;
+position: relative;
+}
+.node.available { border-color: var(–soul); cursor: pointer; animation: node-pulse 2s infinite; }
+.node.completed { background: rgba(255,255,255,0.05); border-color: var(–border); cursor: default; opacity: 0.6; }
+.node.current { border-color: var(–soul-bright); background: rgba(139,92,246,0.2); }
+.node.locked { opacity: 0.3; cursor: not-allowed; }
+
+@keyframes node-pulse {
+0%,100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.4); }
+50% { box-shadow: 0 0 0 4px rgba(139,92,246,0); }
+}
+
+.status-effect {
+display: flex;
+align-items: center;
+gap: 4px;
+font-family: ‘Share Tech Mono’, monospace;
+font-size: 10px;
+margin-bottom: 2px;
+}
+
+.combo-display {
+position: fixed;
+top: 80px; right: 240px;
+pointer-events: none;
+z-index: 50;
+display: none;
+}
+.combo-display.active { display: block; }
+.combo-num {
+font-size: 48px;
+font-weight: 900;
+color: var(–fire);
+text-shadow: 0 0 20px rgba(249,115,22,0.6);
+font-family: ‘Share Tech Mono’, monospace;
+animation: combo-pop 0.3s ease;
+}
+.combo-label { font-size: 11px; color: var(–fire); letter-spacing: 0.3em; }
+
+@keyframes combo-pop {
+from { transform: scale(1.4); opacity: 0.5; }
+to { transform: scale(1); opacity: 1; }
+}
+
+.floating-text {
+position: fixed;
+pointer-events: none;
+z-index: 60;
+font-family: ‘Share Tech Mono’, monospace;
+font-weight: bold;
+font-size: 18px;
+animation: float-up 1.2s ease forwards;
+}
+
+@keyframes float-up {
+from { opacity: 1; transform: translateY(0); }
+to { opacity: 0; transform: translateY(-60px); }
+}
+
+@media (max-width: 768px) {
+.game-layout {
+grid-template-columns: 1fr;
+grid-template-rows: auto 300px auto auto auto;
+}
+.panel-left, .panel-right {
+border: none;
+border-top: 1px solid var(–border);
+flex-direction: row;
+flex-wrap: wrap;
+max-height: 160px;
+}
+.hud-top { font-size: 11px; }
 }
 </style>
 
 </head>
 <body>
-<div class="app">
 
-  <!-- TOPBAR -->
+<!-- TITLE SCREEN -->
 
-  <div class="topbar">
-    <div class="logo">
-      <div class="logo-dot"></div>
-      智选持股
+<div id="title-screen" class="screen active">
+  <div class="stars" id="stars-container"></div>
+  <div class="abyss-orb"></div>
+  <div class="title-main">深渊回响</div>
+  <div class="title-sub">A B Y S S · E C H O</div>
+  <button class="menu-btn primary" onclick="showClassSelect()">⚔ 开始新游戏</button>
+  <button class="menu-btn" onclick="showContinue()">🔮 继承回响</button>
+  <button class="menu-btn" onclick="showCodex()">📜 深渊图鉴</button>
+  <div class="version-tag">v1.0.0 · ROGUELITE</div>
+</div>
+
+<!-- CLASS SELECT -->
+
+<div id="class-screen" class="screen">
+  <div class="screen-title">选择你的灵魂形态</div>
+  <div class="screen-subtitle">CHOOSE YOUR SOUL FORM</div>
+  <div class="class-grid" id="class-grid"></div>
+  <button class="menu-btn primary" id="start-btn" onclick="startGame()" style="margin-top:10px;" disabled>▶ 进入深渊</button>
+  <button class="menu-btn" onclick="showScreen('title-screen')" style="margin-top:4px;">← 返回</button>
+</div>
+
+<!-- GAME SCREEN -->
+
+<div id="game-screen" class="screen">
+  <div class="game-layout">
+    <!-- TOP HUD -->
+    <div class="hud-top">
+      <div class="hud-name" id="hud-name">-</div>
+      <div class="bar-group">
+        <div class="bar-label"><span>生命</span><span id="hp-text">0/0</span></div>
+        <div class="bar"><div class="bar-fill hp" id="hp-bar" style="width:100%"></div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-label"><span>灵能</span><span id="mp-text">0/0</span></div>
+        <div class="bar"><div class="bar-fill mp" id="mp-bar" style="width:100%"></div></div>
+      </div>
+      <div class="bar-group">
+        <div class="bar-label"><span>经验</span><span id="xp-text">Lv.1</span></div>
+        <div class="bar"><div class="bar-fill xp" id="xp-bar" style="width:0%"></div></div>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-info">
+        <div>攻击 <span id="stat-atk">0</span></div>
+        <div>防御 <span id="stat-def">0</span></div>
+      </div>
+      <div class="hud-info">
+        <div>速度 <span id="stat-spd">0</span></div>
+        <div>暴击 <span id="stat-crit">0</span>%</div>
+      </div>
+      <div class="hud-right">
+        <div class="echo-counter">🔮 <span id="echo-count">0</span> 回响</div>
+        <div class="gold-display">✦ <span id="gold-display">0</span></div>
+        <button class="btn-small" onclick="openMap()">🗺 地图</button>
+        <button class="btn-small" onclick="openShop()">🏪 商店</button>
+      </div>
     </div>
-    <div class="nav-tabs">
-      <button class="nav-tab active" onclick="switchTab('analysis')">持仓分析</button>
-      <button class="nav-tab" onclick="switchTab('scanner')">选股扫描</button>
-      <button class="nav-tab" onclick="switchTab('diary')">交易日志</button>
-    </div>
-    <div class="topbar-right">
-      <span class="market-time" id="marketTime">--:--:--</span>
-      <span class="market-status closed" id="marketStatus">休市</span>
-    </div>
-  </div>
-
-  <!-- ALERT BAR -->
-
-  <div class="alert-bar" id="alertBar">
-    <span class="alert-icon">⚠️</span>
-    <span id="alertText"></span>
-    <span class="alert-close" onclick="document.getElementById('alertBar').classList.remove('show')">×</span>
-  </div>
-
-  <!-- MAIN -->
-
-  <div class="main">
 
 ```
-<!-- LEFT SIDEBAR -->
-<div class="sidebar">
-  <div class="sidebar-header">
-    <div class="sidebar-title">我的持仓</div>
-    <div class="add-stock-row">
-      <input class="code-input" id="addCodeInput" placeholder="股票代码" maxlength="8"
-        onkeydown="if(event.key==='Enter') addHolding()">
-      <button class="add-btn" onclick="addHolding()">+</button>
+<!-- LEFT PANEL -->
+<div class="panel-left">
+  <div>
+    <div class="panel-section-title">当前楼层</div>
+    <div class="floor-indicator">
+      <span class="floor-num" id="floor-num">1</span>
+      <span class="floor-type" id="floor-type">DUNGEON FLOOR</span>
     </div>
   </div>
-  <div class="holdings-list" id="holdingsList"></div>
-  <div class="sidebar-footer">
-    <div class="portfolio-total">持仓总市值</div>
-    <div class="portfolio-value" id="portfolioValue">--</div>
-    <div class="portfolio-pnl" id="portfolioPnl"></div>
+  <hr class="divider">
+  <div>
+    <div class="panel-section-title">路径节点</div>
+    <div class="node-path" id="node-path"></div>
   </div>
-</div>
-
-<!-- TAB: ANALYSIS -->
-<div class="tab-page active" id="tab-analysis">
-
-  <!-- CENTER -->
-  <div class="center" id="centerPanel">
-
-    <div class="empty-state" id="emptyState">
-      <div class="empty-icon">📊</div>
-      <div class="empty-title">添加持仓开始分析</div>
-      <div class="empty-sub">在左侧输入股票代码（如 600519），点击 + 添加到持仓，系统将自动拉取行情并通过 AI 进行深度分析。</div>
-    </div>
-
-    <!-- STOCK HEADER -->
-    <div id="stockHeader" style="display:none">
-      <div class="stock-header">
-        <div class="sh-left">
-          <div class="sh-namerow">
-            <div class="sh-name" id="shName">--</div>
-            <div class="sh-code" id="shCode">--</div>
-            <div class="sh-exchange" id="shExchange"></div>
-          </div>
-          <div class="sh-price-row">
-            <div class="sh-price" id="shPrice">--</div>
-            <div class="sh-change" id="shChange"></div>
-            <div class="sh-change-abs" id="shChangeAbs"></div>
-          </div>
-        </div>
-        <div class="sh-right">
-          <div class="sh-stat">
-            <div class="sh-stat-label">今开</div>
-            <div class="sh-stat-value" id="shOpen">--</div>
-          </div>
-          <div class="sh-stat">
-            <div class="sh-stat-label">最高</div>
-            <div class="sh-stat-value c-red" id="shHigh">--</div>
-          </div>
-          <div class="sh-stat">
-            <div class="sh-stat-label">最低</div>
-            <div class="sh-stat-value c-green" id="shLow">--</div>
-          </div>
-          <div class="sh-stat">
-            <div class="sh-stat-label">成交量</div>
-            <div class="sh-stat-value" id="shVol">--</div>
-          </div>
-          <div class="sh-stat">
-            <div class="sh-stat-label">昨收</div>
-            <div class="sh-stat-value" id="shPrevClose">--</div>
-          </div>
-          <div>
-            <button class="refresh-btn" id="refreshBtn" onclick="refreshQuote()">
-              <span class="refresh-icon">↻</span> 刷新
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- AI STRIP -->
-    <div id="aiStrip" style="display:none">
-      <div class="ai-strip" id="aiStripInner"></div>
-    </div>
-
-    <!-- SCORES -->
-    <div id="scoresArea" style="display:none">
-      <div class="scores-grid" id="scoresGrid"></div>
-    </div>
-
-    <!-- LOADING -->
-    <div class="analysis-loading" id="analysisLoading">
-      <div class="spinner"></div>
-      <div class="loading-text">AI 正在分析持仓状况...</div>
-      <div class="loading-sub">整合行情数据 · 计算关键价位 · 生成情景操作</div>
-    </div>
-
-    <!-- ERROR -->
-    <div id="analysisError" style="display:none"></div>
-
-    <!-- RESULT -->
-    <div class="analysis-result" id="analysisResult">
-
-      <!-- 2 col: levels + scenarios -->
-      <div class="two-col">
-        <div class="section-box">
-          <div class="section-label">关键价位</div>
-          <div class="levels-list" id="levelsList"></div>
-        </div>
-        <div class="section-box">
-          <div class="section-label">情景操作</div>
-          <div class="scenarios-list" id="scenariosList"></div>
-        </div>
-      </div>
-
-      <!-- donts -->
-      <div class="donts-row">
-        <div class="donts-label">⛔ 不要做</div>
-        <div class="donts-tags" id="dontsTags"></div>
-      </div>
-
-      <!-- rationale -->
-      <div class="section-box">
-        <div class="section-label">AI 分析理由</div>
-        <div class="rationale-text" id="rationaleText"></div>
-        <div class="watchpoints" id="watchpointsList"></div>
-      </div>
-
-    </div>
-
+  <hr class="divider">
+  <div>
+    <div class="panel-section-title">状态效果</div>
+    <div id="status-effects-list"></div>
   </div>
-
-  <!-- RIGHT PANEL -->
-  <div class="right-panel">
-    <div class="rp-scroll">
-
-      <!-- HOLDING INFO -->
-      <div class="rp-section" id="holdingInfoSection" style="display:none">
-        <div class="rp-title">持仓信息</div>
-        <div class="pnl-display" id="pnlDisplay"></div>
-      </div>
-
-      <!-- PARAMS FORM -->
-      <div class="rp-section" id="paramsSection" style="display:none">
-        <div class="rp-title">分析参数</div>
-        <div class="form-row">
-          <div class="form-label">成本价（元）</div>
-          <input class="form-input" id="fCost" type="number" step="0.01" placeholder="如 36.50">
-        </div>
-        <div class="form-row">
-          <div class="form-label">持仓数量（股）</div>
-          <input class="form-input" id="fShares" type="number" placeholder="如 14500">
-        </div>
-        <div class="form-row">
-          <div class="form-label">持仓天数</div>
-          <input class="form-input" id="fDays" type="number" placeholder="如 10">
-        </div>
-        <div class="form-row">
-          <div class="form-label">分析模式</div>
-          <select class="form-input" id="fMode">
-            <option value="short">短线（5日内）</option>
-            <option value="mid" selected>中线（1-3月）</option>
-            <option value="long">长线（6月以上）</option>
-          </select>
-        </div>
-        <div class="form-row">
-          <div class="form-label">市场补充描述（可选）</div>
-          <textarea class="form-textarea" id="fDesc" placeholder="如：今日缩量下跌，板块整体走弱，接近35元关键支撑..."></textarea>
-        </div>
-        <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">🤖 开始 AI 分析</button>
-      </div>
-
-      <!-- BOKOU DATA -->
-      <div class="rp-section" id="bokuSection" style="display:none">
-        <div class="rp-title">盘口数据</div>
-        <div class="bokoudata" id="bokuData"></div>
-      </div>
-
-    </div>
-  </div>
-
-</div><!-- end tab-analysis -->
-
-<!-- TAB: SCANNER -->
-<div class="tab-page" id="tab-scanner">
-  <div class="scanner-wrap">
-    <div class="scanner-input-area">
-      <div class="scanner-title">选股扫描器</div>
-      <div class="scanner-sub">批量输入股票代码，AI 将自动评分排序，找出当前最优标的</div>
-      <textarea class="scanner-codes" id="scannerCodes" placeholder="输入股票代码，每行一个或逗号分隔，如：&#10;600519&#10;000858&#10;002352,601012,300750"></textarea>
-      <div class="scanner-row">
-        <button class="scan-btn" id="scanBtn" onclick="runScanner()">🔍 开始扫描</button>
-        <span class="scan-count" id="scanCount"></span>
-      </div>
-    </div>
-    <div class="scan-results" id="scanResults"></div>
+  <hr class="divider">
+  <div>
+    <div class="panel-section-title">当前增益</div>
+    <div class="buff-list" id="buff-list"></div>
   </div>
 </div>
 
-<!-- TAB: DIARY -->
-<div class="tab-page" id="tab-diary">
-  <div class="diary-wrap">
-    <div class="diary-input">
-      <div class="scanner-title" style="margin-bottom:14px">记录交易</div>
-      <div class="diary-row">
-        <div class="diary-field">
-          <div class="form-label">股票代码</div>
-          <input class="form-input" id="dCode" placeholder="如 600519">
+<!-- MAP AREA -->
+<div id="map-container">
+  <canvas id="dungeon-canvas"></canvas>
+  <div id="combat-overlay" class="combat-overlay">
+    <div class="combat-arena">
+      <div class="combat-title">⚔ BATTLE ⚔</div>
+      <div class="combat-sides">
+        <div class="combatant" id="player-side">
+          <span class="combatant-icon" id="player-combat-icon">🧙</span>
+          <div class="combatant-name" id="player-combat-name">灵魂猎手</div>
+          <div class="combatant-bar"><div class="combatant-hp" id="player-combat-hp" style="width:100%"></div></div>
+          <div class="combatant-hp-text" id="player-combat-hp-text">100/100</div>
         </div>
-        <div class="diary-field">
-          <div class="form-label">操作类型</div>
-          <select class="form-input" id="dType">
-            <option>买入</option>
-            <option>卖出</option>
-            <option>加仓</option>
-            <option>减仓</option>
-            <option>止损</option>
-          </select>
-        </div>
-        <div class="diary-field">
-          <div class="form-label">操作价格</div>
-          <input class="form-input" id="dPrice" type="number" step="0.01" placeholder="元">
-        </div>
-        <div class="diary-field">
-          <div class="form-label">数量（股）</div>
-          <input class="form-input" id="dShares" type="number" placeholder="">
+        <div class="vs-badge">VS</div>
+        <div class="combatant" id="enemy-side">
+          <span class="combatant-icon" id="enemy-combat-icon">👾</span>
+          <div class="combatant-name" id="enemy-combat-name">深渊虫</div>
+          <div class="combatant-bar"><div class="combatant-hp" id="enemy-combat-hp" style="width:100%"></div></div>
+          <div class="combatant-hp-text" id="enemy-combat-hp-text">50/50</div>
         </div>
       </div>
-      <div style="margin-top:10px">
-        <div class="form-label" style="margin-bottom:5px">操作理由 / 备注</div>
-        <textarea class="form-textarea" id="dNote" placeholder="记录你的判断依据，如：AI建议持有但量能萎缩，先减半仓观察..."></textarea>
-      </div>
-      <div style="display:flex; justify-content:flex-end; margin-top:10px;">
-        <button class="add-diary-btn" onclick="addDiaryEntry()">记录</button>
+      <div class="combat-log" id="combat-log"></div>
+      <div class="combat-actions">
+        <button class="combat-btn" onclick="combatAction('attack')">⚔<br>普攻<span class="btn-key">[A]</span></button>
+        <button class="combat-btn" id="skill1-btn" onclick="combatAction('skill1')">💥<br>技能<span class="btn-key">[S]</span><span class="btn-cost" id="skill1-cost">-MP</span></button>
+        <button class="combat-btn" id="skill2-btn" onclick="combatAction('skill2')">🌀<br>特技<span class="btn-key">[D]</span><span class="btn-cost" id="skill2-cost">-MP</span></button>
+        <button class="combat-btn" onclick="combatAction('item')">🧪<br>道具<span class="btn-key">[I]</span></button>
+        <button class="combat-btn" onclick="combatAction('flee')">💨<br>逃跑<span class="btn-key">[F]</span></button>
       </div>
     </div>
-    <div class="diary-entries" id="diaryEntries"></div>
+  </div>
+  <div id="floor-event" class="floor-event">
+    <div class="event-box" id="event-box"></div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="panel-right">
+  <div>
+    <div class="panel-section-title">背包 (8格)</div>
+    <div class="inventory-grid" id="inventory-grid"></div>
+  </div>
+  <hr class="divider">
+  <div>
+    <div class="panel-section-title">遗物</div>
+    <div class="relic-list" id="relic-list"></div>
+  </div>
+  <hr class="divider">
+  <div>
+    <div class="panel-section-title">回响记忆</div>
+    <div class="echo-list" id="echo-list"></div>
+  </div>
+  <hr class="divider">
+  <div>
+    <div class="panel-section-title">击杀统计</div>
+    <div id="kill-stats" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text-dim)">
+      <div>总击杀: <span style="color:var(--text)" id="total-kills">0</span></div>
+      <div>精英: <span style="color:var(--soul-glow)" id="elite-kills">0</span></div>
+      <div>Boss: <span style="color:var(--blood)" id="boss-kills">0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM HUD -->
+<div class="hud-bottom">
+  <div class="skill-slots" id="skill-slots"></div>
+  <div class="log-area" id="game-log">
+    <div class="log-line important">欢迎来到深渊。你的每一次死亡都将成为回响...</div>
   </div>
 </div>
 ```
 
-  </div><!-- end main -->
-</div><!-- end app -->
+  </div>
+
+  <!-- COMBO DISPLAY -->
+
+  <div class="combo-display" id="combo-display">
+    <div class="combo-num" id="combo-num">x2</div>
+    <div class="combo-label">COMBO</div>
+  </div>
+</div>
+
+<!-- DEATH SCREEN -->
+
+<div id="death-screen" class="screen">
+  <div class="death-icon">💀</div>
+  <div class="death-title">ECHO REMAINS</div>
+  <div class="death-subtitle">你的灵魂已破碎，但回响永存</div>
+  <div class="death-stats" id="death-stats"></div>
+  <div class="echo-save-notice" id="echo-save-notice">🔮 你的记忆碎片已封印于深渊第 <span id="echo-floor">1</span> 层<br>下一次降临时，你可以召唤这道回响</div>
+  <button class="menu-btn primary" onclick="reincarnate()">🔮 回响重生（保留记忆）</button>
+  <button class="menu-btn" onclick="showScreen('title-screen')" style="margin-top:6px;">↩ 返回虚空</button>
+</div>
+
+<!-- MODALS -->
+
+<div class="modal-overlay" id="reward-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="reward-modal-title">选择奖励</div>
+      <button class="modal-close" onclick="closeModal('reward-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="reward-grid" id="reward-grid"></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shop-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🏪 深渊商店 · ✦ <span id="shop-gold">0</span></div>
+      <button class="modal-close" onclick="closeModal('shop-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="shop-grid" id="shop-grid"></div>
+      <hr class="divider" style="margin:16px 0">
+      <div style="font-size:12px;color:var(--text-dim)">💬 商人絮语: <span id="shop-flavor"></span></div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="map-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🗺 深渊地图</div>
+      <button class="modal-close" onclick="closeModal('map-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="map-modal-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="codex-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">📜 深渊图鉴</div>
+      <button class="modal-close" onclick="closeModal('codex-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="codex-body"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="item-modal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title" id="item-modal-title">物品详情</div>
+      <button class="modal-close" onclick="closeModal('item-modal')">✕</button>
+    </div>
+    <div class="modal-body" id="item-modal-body"></div>
+  </div>
+</div>
+
+<!-- TOOLTIP -->
+
+<div class="tooltip" id="tooltip">
+  <div class="tooltip-name" id="tt-name"></div>
+  <div class="tooltip-type" id="tt-type"></div>
+  <div class="tooltip-desc" id="tt-desc"></div>
+  <div class="tooltip-stat" id="tt-stat"></div>
+</div>
 
 <script>
-// ═══════════════════════════════════════════════
-// STATE
-// ═══════════════════════════════════════════════
-let state = {
-  holdings: [],      // { code, name, price, prevClose, change, changePct, high, low, open, vol, amount, buy1..5, sell1..5 }
-  activeCode: null,
-  lastAnalysis: {},  // code -> analysis result
-  diary: [],
+// ═══════════════════════════════════════════════════════════
+// GAME DATA
+// ═══════════════════════════════════════════════════════════
+
+const CLASSES = [
+  {
+    id: 'hunter',
+    icon: '🗡️',
+    name: '灵魂猎手',
+    tagline: 'SOUL HUNTER',
+    desc: '穿梭于生死之间的猎手，以自身生命值作为武器的弹药。每次攻击消耗少量生命，但造成额外伤害。',
+    baseStats: { hp: 120, maxHp: 120, mp: 60, maxMp: 60, atk: 18, def: 8, spd: 14, crit: 20 },
+    skills: [
+      { id: 'bloodshot', name: '血刃冲刺', icon: '🩸', desc: '消耗10HP，造成攻击力×2.5的伤害', mpCost: 0, hpCost: 10, dmgMult: 2.5, cooldown: 2 },
+      { id: 'soullink', name: '灵魂锁链', icon: '⛓️', desc: '消耗20MP，使敌人减速并每回合流血', mpCost: 20, hpCost: 0, dmgMult: 1.2, special: 'bleed', cooldown: 3 },
+    ],
+    passiveEcho: '每次受到攻击时，积累1点「愤怒」，最多10层。攻击时消耗所有愤怒造成额外伤害。',
+    stats: [
+      { label: 'HP', val: '120', type: 'hp' },
+      { label: 'ATK', val: '18', type: 'atk' },
+      { label: 'SPD', val: '14', type: 'spd' },
+      { label: 'CRIT', val: '20%', type: 'atk' },
+    ]
+  },
+  {
+    id: 'weaver',
+    icon: '🌀',
+    name: '虚空织者',
+    tagline: 'VOID WEAVER',
+    desc: '将深渊之力编织成武器的术士。拥有强大的法术但生命脆弱，能将敌人技能反转使用。',
+    baseStats: { hp: 80, maxHp: 80, mp: 140, maxMp: 140, atk: 10, def: 5, spd: 10, crit: 12 },
+    skills: [
+      { id: 'voidbolt', name: '虚空弹', icon: '💠', desc: '消耗15MP，造成法力值×0.8的魔法伤害', mpCost: 15, hpCost: 0, dmgMult: 0.8, isMagic: true, cooldown: 1 },
+      { id: 'mirror', name: '深渊镜像', icon: '🪞', desc: '消耗30MP，复制敌人上一个技能效果', mpCost: 30, hpCost: 0, special: 'mirror', cooldown: 4 },
+    ],
+    passiveEcho: '每次施法后，下一次普攻附带魔法伤害。灵能满时，技能伤害提升50%。',
+    stats: [
+      { label: 'HP', val: '80', type: 'hp' },
+      { label: 'MP', val: '140', type: 'mag' },
+      { label: 'ATK', val: '10', type: 'atk' },
+      { label: 'MAG', val: 'HIGH', type: 'mag' },
+    ]
+  },
+  {
+    id: 'knight',
+    icon: '🛡️',
+    name: '回响骑士',
+    tagline: 'ECHO KNIGHT',
+    desc: '以过去的残影作为护盾的防御型战士。死亡时有概率以30%HP复活。拥有最高的防御力。',
+    baseStats: { hp: 180, maxHp: 180, mp: 80, maxMp: 80, atk: 14, def: 18, spd: 8, crit: 8 },
+    skills: [
+      { id: 'echoshield', name: '回响护盾', icon: '🔮', desc: '消耗25MP，获得防御力×2的护盾值持续2回合', mpCost: 25, hpCost: 0, special: 'shield', cooldown: 3 },
+      { id: 'counterecho', name: '回响反击', icon: '↩️', desc: '消耗30MP，反弹下一次受到伤害的150%', mpCost: 30, hpCost: 0, special: 'counter', cooldown: 4 },
+    ],
+    passiveEcho: '每次格挡（减少伤害）时积累「残影」。积累5层后可召唤残影分身攻击敌人。',
+    stats: [
+      { label: 'HP', val: '180', type: 'hp' },
+      { label: 'DEF', val: '18', type: 'spd' },
+      { label: 'ATK', val: '14', type: 'atk' },
+      { label: 'SPD', val: '8', type: 'spd' },
+    ]
+  },
+  {
+    id: 'ghost',
+    icon: '👻',
+    name: '深渊幽灵',
+    tagline: 'ABYSS GHOST',
+    desc: '已死之人，在深渊中徘徊的幽灵。可以穿透敌人防御，每次死亡会变得更强，是最适合多周目的职业。',
+    baseStats: { hp: 100, maxHp: 100, mp: 100, maxMp: 100, atk: 12, def: 10, spd: 12, crit: 15 },
+    skills: [
+      { id: 'haunting', name: '魂魄缠绕', icon: '🌫️', desc: '消耗20MP，穿透敌人所有防御造成伤害', mpCost: 20, hpCost: 0, dmgMult: 1.8, piercing: true, cooldown: 2 },
+      { id: 'deathmark', name: '死亡印记', icon: '☠️', desc: '消耗35MP，标记敌人，该敌人受到的所有伤害提升80%', mpCost: 35, hpCost: 0, special: 'deathmark', cooldown: 5 },
+    ],
+    passiveEcho: '每死亡一次，下一世对应属性+5%（最多叠加10次）。每次进入战斗时有15%概率进入「幽灵态」免疫一次攻击。',
+    stats: [
+      { label: 'HP', val: '100', type: 'hp' },
+      { label: 'MP', val: '100', type: 'mag' },
+      { label: 'ATK', val: '12', type: 'atk' },
+      { label: 'SPD', val: '12', type: 'spd' },
+    ]
+  },
+];
+
+const ITEMS = [
+  { id: 'hp_pot', icon: '🧪', name: '生命药水', type: 'consumable', rarity: 'common', desc: '恢复50点生命值', effect: { hp: 50 }, price: 30 },
+  { id: 'mp_pot', icon: '💙', name: '灵能药水', type: 'consumable', rarity: 'common', desc: '恢复40点灵能', effect: { mp: 40 }, price: 25 },
+  { id: 'fire_rune', icon: '🔥', name: '炎焰符文', type: 'rune', rarity: 'rare', desc: '下3次攻击附带火焰伤害+20', effect: { fireBuff: 3 }, price: 70 },
+  { id: 'void_crystal', icon: '💎', name: '虚空水晶', type: 'material', rarity: 'epic', desc: '强化一件已装备遗物的效果×1.5', effect: { enhanceRelic: true }, price: 120 },
+  { id: 'echo_shard', icon: '🔮', name: '回响碎片', type: 'special', rarity: 'rare', desc: '立即获得一个随机回响记忆', effect: { addEcho: true }, price: 90 },
+  { id: 'death_elixir', icon: '☠️', name: '死亡药剂', type: 'consumable', rarity: 'epic', desc: '损失30%当前HP，但攻击力翻倍持续3回合', effect: { deathElixir: true }, price: 100 },
+  { id: 'abyss_map', icon: '🗺️', name: '深渊地图', type: 'special', rarity: 'rare', desc: '揭示下一楼层所有房间类型', effect: { revealMap: true }, price: 60 },
+  { id: 'soul_cage', icon: '🏮', name: '灵魂笼', type: 'relic', rarity: 'epic', desc: '每击败一个敌人积累1点灵魂，10点可爆发', effect: { soulCage: true }, price: 150 },
+];
+
+const RELICS = [
+  { id: 'bloodring', icon: '💍', name: '血环', rarity: 'epic', desc: '每损失10%最大HP，攻击力+5%', passive: 'bloodring' },
+  { id: 'voideye', icon: '👁️', name: '虚空之眼', rarity: 'legendary', desc: '战斗开始时，有30%概率看穿敌人弱点，伤害+50%', passive: 'voideye' },
+  { id: 'echostone', icon: '🔮', name: '回响石', rarity: 'rare', desc: '每拥有一个回响记忆，属性+3%', passive: 'echostone' },
+  { id: 'deathwing', icon: '🦋', name: '死亡之翼', rarity: 'legendary', desc: 'HP低于20%时，速度+30且暴击率+30%', passive: 'deathwing' },
+  { id: 'goldskull', icon: '💀', name: '黄金骷髅', rarity: 'epic', desc: '每击败精英/Boss额外获得+50%金币', passive: 'goldskull' },
+  { id: 'mirror', icon: '🪞', name: '破碎镜', rarity: 'rare', desc: '有15%概率完全反弹物理攻击', passive: 'mirror' },
+  { id: 'compass', icon: '🧭', name: '深渊罗盘', rarity: 'common', desc: '每层总是有一个商店房间', passive: 'compass' },
+  { id: 'cursed_idol', icon: '🗿', name: '诅咒神像', rarity: 'legendary', desc: 'HP上限-30，但所有伤害+40%，所有属性+15%', passive: 'cursed_idol' },
+];
+
+const ENEMIES = [
+  { id: 'abyss_worm', icon: '🐛', name: '深渊虫', hp: 40, atk: 8, def: 2, spd: 6, xp: 15, gold: 10, type: 'common' },
+  { id: 'void_bat', icon: '🦇', name: '虚空蝠', hp: 30, atk: 12, def: 1, spd: 14, xp: 18, gold: 12, type: 'common' },
+  { id: 'shadow_skull', icon: '💀', name: '影颅', hp: 55, atk: 10, def: 5, spd: 8, xp: 22, gold: 15, type: 'common' },
+  { id: 'echo_specter', icon: '👻', name: '回响幽魂', hp: 45, atk: 14, def: 3, spd: 12, xp: 25, gold: 18, type: 'common' },
+  { id: 'void_golem', icon: '🗿', name: '虚空石像', hp: 80, atk: 16, def: 12, spd: 4, xp: 40, gold: 30, type: 'elite', skills: ['slam'] },
+  { id: 'shadow_knight', icon: '⚔️', name: '影骑士', hp: 70, atk: 20, def: 8, spd: 10, xp: 45, gold: 35, type: 'elite', skills: ['charge'] },
+  { id: 'abyssal_witch', icon: '🧙‍♀️', name: '深渊女巫', hp: 60, atk: 18, def: 4, spd: 13, xp: 50, gold: 40, type: 'elite', skills: ['curse', 'firebolt'] },
+  { id: 'echo_dragon', icon: '🐉', name: '回响之龙', hp: 200, atk: 30, def: 15, spd: 12, xp: 150, gold: 120, type: 'boss', skills: ['breathe', 'tailswipe', 'roar'] },
+  { id: 'void_titan', icon: '👾', name: '虚空泰坦', hp: 250, atk: 25, def: 20, spd: 8, xp: 180, gold: 150, type: 'boss', skills: ['slam', 'voidburst', 'summon'] },
+  { id: 'abyss_lord', icon: '😈', name: '深渊领主', hp: 350, atk: 40, def: 25, spd: 15, xp: 300, gold: 250, type: 'boss', skills: ['deathscythe', 'voidgate', 'lifedrains'] },
+];
+
+const EVENTS = [
+  {
+    id: 'altar',
+    icon: '🗿',
+    name: '深渊祭坛',
+    desc: '你在黑暗中发现了一座祭坛，它散发着诡异的紫色光芒。深渊的意志在向你低语...',
+    choices: [
+      { text: '献祭生命之血（损失20%最大HP）', effect: 'sacrifice_hp', result: '获得攻击力+8，暴击率+10%' },
+      { text: '献祭灵能（损失30%最大MP）', effect: 'sacrifice_mp', result: '获得一件随机史诗遗物' },
+      { text: '拒绝（什么都不做）', effect: 'ignore', result: '毫无收获，但保持完整' },
+    ]
+  },
+  {
+    id: 'merchant_ghost',
+    icon: '👻',
+    name: '幽灵商人',
+    desc: '一个已死多年的商人灵魂在深渊中飘荡。他愿意用灵魂来换取你想要的东西...',
+    choices: [
+      { text: '用回响记忆交换（-1回响）', effect: 'trade_echo', result: '获得随机传说级物品' },
+      { text: '购买信息（-30金币）', effect: 'buy_info', result: '揭示下层Boss弱点，该Boss受伤增加30%' },
+      { text: '挑战他！', effect: 'fight_ghost', result: '战斗！击败可获得丰厚奖励' },
+    ]
+  },
+  {
+    id: 'echo_pool',
+    icon: '🌊',
+    name: '回响之池',
+    desc: '一汪散发着紫色光芒的液体池，其中倒映着无数死亡灵魂的影像。那些都是曾经到达此地的冒险者...',
+    choices: [
+      { text: '浸入池中（危险）', effect: 'dive_pool', result: '随机获得或失去1-3层的增益' },
+      { text: '饮下一口（-10HP）', effect: 'drink_pool', result: '随机获得一个永久属性提升' },
+      { text: '提取回响', effect: 'extract_echo', result: '获得+2回响碎片' },
+    ]
+  },
+  {
+    id: 'curse_shrine',
+    icon: '💀',
+    name: '诅咒神殿',
+    desc: '这座神殿弥漫着死气，供奉着一个龇牙咧嘴的骷髅神像。伸手触摸它，你感到一阵颤栗...',
+    choices: [
+      { text: '接受诅咒（HP-20%，获得强力遗物）', effect: 'accept_curse', result: '获得传说级诅咒遗物' },
+      { text: '打破诅咒（消耗所有当前增益）', effect: 'break_curse', result: '转化为等量的纯粹力量提升' },
+      { text: '离开', effect: 'leave', result: '保持原状' },
+    ]
+  },
+  {
+    id: 'void_rift',
+    icon: '🌀',
+    name: '虚空裂缝',
+    desc: '空间在你面前撕裂，通向一个不可名状的维度。那里有着无尽的可能性，也有无尽的危险...',
+    choices: [
+      { text: '进入裂缝（随机传送）', effect: 'enter_rift', result: '可能传送到宝藏室或危险地带' },
+      { text: '汲取裂缝能量（50%失败率）', effect: 'absorb_rift', result: '成功：全属性+15%，失败：失去15%当前HP' },
+      { text: '封闭裂缝（获得封印之力）', effect: 'seal_rift', result: '获得特殊Buff：封印之力（下次技能额外强化）' },
+    ]
+  },
+];
+
+const ECHO_MEMORIES = [
+  { id: 'wrath', icon: '🔥', name: '仇恨的回响', desc: '前世的愤怒赋予你力量，攻击力持续+8%', bonus: { atk: 0.08 } },
+  { id: 'wisdom', icon: '📚', name: '智慧的回响', desc: '前世积累的知识，技能效果提升20%', bonus: { skillPower: 0.2 } },
+  { id: 'survival', icon: '🛡️', name: '求生的回响', desc: '前世的求生本能，HP上限+25', bonus: { hp: 25 } },
+  { id: 'greed', icon: '💰', name: '贪婪的回响', desc: '前世的贪婪，金币获取+30%', bonus: { gold: 0.3 } },
+  { id: 'speed', icon: '💨', name: '疾风的回响', desc: '前世的身手，速度+5且先手概率+20%', bonus: { spd: 5 } },
+  { id: 'magic', icon: '✨', name: '魔力的回响', desc: '前世的法力，MP上限+30且法术伤害+15%', bonus: { mp: 30 } },
+  { id: 'phantom', icon: '👻', name: '幽灵的回响', desc: '前世的死亡，每场战斗开始有10%概率无敌1回合', bonus: { phantom: 0.1 } },
+  { id: 'iron', icon: '⚙️', name: '钢铁的回响', desc: '前世的铠甲，防御+6且受到伤害减少10%', bonus: { def: 6 } },
+];
+
+const ROOM_TYPES = ['combat', 'combat', 'combat', 'elite', 'event', 'shop', 'rest', 'treasure'];
+
+// ═══════════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════════
+
+let G = {
+  player: null,
+  floor: 1,
+  gold: 0,
+  echoCount: 0,
+  echoMemories: [],
+  inventory: [],
+  relics: [],
+  buffs: [],
+  statusEffects: [],
+  kills: { total: 0, elite: 0, boss: 0 },
+  combo: 0,
+  comboTimer: null,
+  nodes: [],
+  currentNode: 0,
+  inCombat: false,
+  enemy: null,
+  enemyShield: 0,
+  playerShield: 0,
+  counterMode: false,
+  deathmarkActive: false,
+  lastEnemySkill: null,
+  runStats: { floorsReached: 0, totalKills: 0, damageDealt: 0, goldEarned: 0, startTime: Date.now() },
+  savedEchos: JSON.parse(localStorage.getItem('abyssEchos') || '[]'),
+  deathCount: parseInt(localStorage.getItem('deathCount') || '0'),
+  skillCooldowns: {},
+  selectedClass: null,
+  ghostBuff: false,
+  fireBuff: 0,
+  deathmarkMult: 1,
+  currentEnemy: null,
 };
 
-// load from localStorage
-try {
-  const saved = localStorage.getItem('zhixuan_state');
-  if (saved) {
-    const p = JSON.parse(saved);
-    state.holdings = p.holdings || [];
-    state.diary = p.diary || [];
-    state.lastAnalysis = p.lastAnalysis || {};
-  }
-} catch(e) {}
+// ═══════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════
 
-function saveState() {
-  try {
-    localStorage.setItem('zhixuan_state', JSON.stringify({
-      holdings: state.holdings.map(h => ({
-        code: h.code,
-        cost: h.cost,
-        shares: h.shares,
-        days: h.days,
-        mode: h.mode,
-        desc: h.desc,
-        // don't save live quote data
-      })),
-      diary: state.diary,
-      lastAnalysis: state.lastAnalysis,
-    }));
-  } catch(e) {}
+function init() {
+  generateStars();
+  renderClassGrid();
 }
 
-// ═══════════════════════════════════════════════
-// TIME & MARKET STATUS
-// ═══════════════════════════════════════════════
-function updateTime() {
-  const now = new Date();
-  const h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-  document.getElementById('marketTime').textContent =
-    `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-
-  const day = now.getDay();
-  const t = h * 100 + m;
-  const isWeekday = day >= 1 && day <= 5;
-  const isOpen = isWeekday && ((t >= 925 && t < 1130) || (t >= 1300 && t < 1500));
-
-  const el = document.getElementById('marketStatus');
-  if (isOpen) {
-    el.textContent = '交易中'; el.className = 'market-status open';
-  } else {
-    el.textContent = '休市'; el.className = 'market-status closed';
+function generateStars() {
+  const container = document.getElementById('stars-container');
+  for (let i = 0; i < 150; i++) {
+    const star = document.createElement('div');
+    star.className = 'star';
+    star.style.cssText = `left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;animation-delay:${Math.random()*4}s;width:${Math.random()<0.1?3:2}px;height:${Math.random()<0.1?3:2}px;opacity:${0.3+Math.random()*0.7}`;
+    container.appendChild(star);
   }
 }
-setInterval(updateTime, 1000);
-updateTime();
 
-// ═══════════════════════════════════════════════
-// QUOTE FETCH (Sina Finance)
-// ═══════════════════════════════════════════════
-function getPrefix(code) {
-  const c = code.replace(/\D/g,'');
-  if (/^(6|9)/.test(c)) return 'sh';
-  if (/^(0|2|3)/.test(c)) return 'sz';
-  if (/^(8|4)/.test(c)) return 'bj';
-  return 'sh';
-}
-
-async function fetchQuote(code) {
-  const prefix = getPrefix(code);
-  const symbol = prefix + code.replace(/\D/g,'');
-  const url = `https://hq.sinajs.cn/list=${symbol}&_=${Date.now()}`;
-
-  const resp = await fetch(url, {
-    headers: { Referer: 'https://finance.sina.com.cn' }
-  });
-  const text = await resp.text();
-
-  // parse: var hq_str_sh600519="name,open,prevclose,price,high,low,buy,sell,vol,amount,b1v,b1p,b2v,b2p,b3v,b3p,b4v,b4p,b5v,b5p,s1v,s1p,s2v,s2p,s3v,s3p,s4v,s4p,s5v,s5p,date,time,..."
-  const match = text.match(/"([^"]+)"/);
-  if (!match || match[1].length < 10) return null;
-
-  const parts = match[1].split(',');
-  if (parts.length < 32) return null;
-
-  const name = parts[0];
-  const open = parseFloat(parts[1]);
-  const prevClose = parseFloat(parts[2]);
-  const price = parseFloat(parts[3]);
-  const high = parseFloat(parts[4]);
-  const low = parseFloat(parts[5]);
-  const vol = parseInt(parts[8]);
-  const amount = parseFloat(parts[9]);
-
-  const change = price - prevClose;
-  const changePct = prevClose > 0 ? (change / prevClose * 100) : 0;
-
-  // buy/sell orderbook
-  const bids = [];
-  const asks = [];
-  for (let i = 0; i < 5; i++) {
-    bids.push({ vol: parseInt(parts[10 + i*2]), price: parseFloat(parts[11 + i*2]) });
-    asks.push({ vol: parseInt(parts[20 + i*2]), price: parseFloat(parts[21 + i*2]) });
-  }
-
-  return {
-    code: code.replace(/\D/g,''),
-    symbol, name, open, prevClose, price, high, low,
-    vol, amount, change, changePct, bids, asks,
-    exchange: prefix === 'sh' ? '上交所' : prefix === 'sz' ? '深交所' : '北交所',
-  };
-}
-
-// ═══════════════════════════════════════════════
-// HOLDINGS MANAGEMENT
-// ═══════════════════════════════════════════════
-async function addHolding() {
-  let code = document.getElementById('addCodeInput').value.trim().replace(/\D/g,'');
-  if (!code) return;
-  if (code.length < 5 || code.length > 6) { alert('请输入6位股票代码'); return; }
-  if (state.holdings.find(h => h.code === code)) {
-    selectHolding(code); return;
-  }
-
-  const btn = document.querySelector('.add-btn');
-  btn.textContent = '…';
-
-  try {
-    const q = await fetchQuote(code);
-    if (!q) { alert('未找到该股票，请检查代码'); btn.textContent = '+'; return; }
-
-    const h = { ...q, cost: null, shares: null, days: null, mode: 'mid', desc: '' };
-    state.holdings.push(h);
-    saveState();
-    document.getElementById('addCodeInput').value = '';
-    renderHoldingsList();
-    selectHolding(code);
-  } catch(e) {
-    alert('行情获取失败，请检查网络');
-  }
-  btn.textContent = '+';
-}
-
-function removeHolding(code, e) {
-  e.stopPropagation();
-  state.holdings = state.holdings.filter(h => h.code !== code);
-  if (state.activeCode === code) {
-    state.activeCode = state.holdings.length > 0 ? state.holdings[0].code : null;
-  }
-  saveState();
-  renderHoldingsList();
-  if (state.activeCode) selectHolding(state.activeCode);
-  else showEmptyState();
-}
-
-function renderHoldingsList() {
-  const el = document.getElementById('holdingsList');
-  if (state.holdings.length === 0) {
-    el.innerHTML = '<div style="padding:20px; text-align:center; color:var(--text3); font-size:11px;">暂无持仓<br>在上方输入代码添加</div>';
-    document.getElementById('portfolioValue').textContent = '--';
-    document.getElementById('portfolioPnl').textContent = '';
-    return;
-  }
-
-  let totalMv = 0, totalCost = 0;
-  el.innerHTML = state.holdings.map(h => {
-    const isUp = h.changePct >= 0;
-    const priceColor = isUp ? 'var(--red)' : 'var(--green)';
-    const changeStr = (isUp ? '+' : '') + h.changePct.toFixed(2) + '%';
-    const isActive = h.code === state.activeCode;
-
-    let pnlStr = '';
-    if (h.cost && h.shares) {
-      const mv = h.price * h.shares;
-      const cost = h.cost * h.shares;
-      totalMv += mv; totalCost += cost;
-      const pnl = mv - cost;
-      const pnlPct = (pnl / cost * 100).toFixed(2);
-      pnlStr = `<div class="hc-pnl" style="color:${pnl>=0?'var(--red)':'var(--green)'}">${pnl>=0?'+':''}${pnl.toFixed(0)}元 (${pnl>=0?'+':''}${pnlPct}%)</div>`;
-    }
-
-    const analysis = state.lastAnalysis[h.code];
-    let scoreBadge = '';
-    if (analysis) {
-      const s = analysis.score || 0;
-      const cls = s > 0.6 ? 'tag-ok' : s > 0.4 ? 'tag-warn' : 'tag-danger';
-      scoreBadge = `<span class="hc-score-badge ${cls}">${analysis.decisionLabel || 'AI'}</span>`;
-    }
-
-    return `
-      <div class="holding-card ${isActive ? 'active' : ''}" onclick="selectHolding('${h.code}')">
-        <span class="hc-del" onclick="removeHolding('${h.code}', event)">×</span>
-        <div class="hc-top">
-          <div class="hc-name">${h.name || h.code}</div>
-          <div class="hc-price" style="color:${priceColor}">${h.price?.toFixed(2) || '--'}</div>
-        </div>
-        <div class="hc-mid">
-          <div class="hc-code">${h.code}</div>
-          <div class="hc-change" style="color:${priceColor}">${changeStr}</div>
-        </div>
-        <div class="hc-bottom">
-          ${pnlStr}
-          ${scoreBadge}
-        </div>
+function renderClassGrid() {
+  const grid = document.getElementById('class-grid');
+  grid.innerHTML = CLASSES.map(c => `
+    <div class="class-card" id="card-${c.id}" onclick="selectClass('${c.id}')">
+      <span class="class-icon">${c.icon}</span>
+      <div class="class-name">${c.name}</div>
+      <div class="class-tagline">${c.tagline}</div>
+      <div class="class-desc">${c.desc}</div>
+      <div class="class-stats">
+        ${c.stats.map(s => `<span class="stat-pill ${s.type}">${s.label}: ${s.val}</span>`).join('')}
       </div>
-    `;
-  }).join('');
+      <div class="class-skill">
+        <strong>⚡ 回响被动</strong>${c.passiveEcho}
+      </div>
+    </div>
+  `).join('');
+}
 
-  if (totalMv > 0) {
-    document.getElementById('portfolioValue').textContent = '¥' + (totalMv/10000).toFixed(2) + '万';
-    const pnl = totalMv - totalCost;
-    const pnlPct = (pnl/totalCost*100).toFixed(2);
-    const pnlEl = document.getElementById('portfolioPnl');
-    pnlEl.textContent = `浮盈亏 ${pnl>=0?'+':''}${(pnl/10000).toFixed(2)}万 (${pnl>=0?'+':''}${pnlPct}%)`;
-    pnlEl.style.color = pnl >= 0 ? 'var(--red)' : 'var(--green)';
+function selectClass(id) {
+  document.querySelectorAll('.class-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('card-' + id).classList.add('selected');
+  G.selectedClass = CLASSES.find(c => c.id === id);
+  document.getElementById('start-btn').disabled = false;
+}
+
+// ═══════════════════════════════════════════════════════════
+// GAME START
+// ═══════════════════════════════════════════════════════════
+
+function startGame(fromReincarnation = false) {
+  const cls = G.selectedClass;
+  if (!cls) return;
+
+  const stats = JSON.parse(JSON.stringify(cls.baseStats));
+
+  // Apply death count bonus for ghost class
+  if (cls.id === 'ghost' && G.deathCount > 0) {
+    const bonus = Math.min(G.deathCount * 0.05, 0.5);
+    stats.atk = Math.floor(stats.atk * (1 + bonus));
+    stats.def = Math.floor(stats.def * (1 + bonus));
+    stats.hp = Math.floor(stats.hp * (1 + bonus));
+    stats.maxHp = stats.hp;
+  }
+
+  G.player = {
+    ...stats,
+    class: cls,
+    level: 1,
+    xp: 0,
+    xpNext: 100,
+    skills: cls.skills,
+  };
+
+  G.floor = 1;
+  G.gold = fromReincarnation ? Math.floor(G.gold * 0.2) : 20;
+  G.inventory = [{ ...ITEMS[0] }, { ...ITEMS[1] }]; // start items
+  G.relics = [];
+  G.buffs = [];
+  G.statusEffects = [];
+  G.kills = { total: 0, elite: 0, boss: 0 };
+  G.combo = 0;
+  G.skillCooldowns = {};
+  G.fireBuff = 0;
+  G.counterMode = false;
+  G.deathmarkActive = false;
+  G.enemyShield = 0;
+  G.playerShield = 0;
+  G.ghostBuff = false;
+
+  // Apply echo memories if reincarnating
+  if (fromReincarnation) {
+    applyEchoMemories();
+  }
+
+  G.runStats = { floorsReached: 1, totalKills: 0, damageDealt: 0, goldEarned: G.gold, startTime: Date.now() };
+
+  generateFloor();
+  showScreen('game-screen');
+  updateHUD();
+  renderInventory();
+  renderRelics();
+  renderEchoList();
+  renderSkillSlots();
+  addLog('你踏入了深渊第一层...', 'important');
+  addLog(`职业：${cls.name} · 生命：${G.player.hp} · 攻击：${G.player.atk}`, '');
+}
+
+function applyEchoMemories() {
+  G.echoMemories.forEach(echo => {
+    const mem = ECHO_MEMORIES.find(e => e.id === echo);
+    if (!mem) return;
+    const b = mem.bonus;
+    if (b.atk) G.player.atk = Math.floor(G.player.atk * (1 + b.atk));
+    if (b.def) G.player.def += b.def;
+    if (b.spd) G.player.spd += b.spd;
+    if (b.hp) { G.player.maxHp += b.hp; G.player.hp += b.hp; }
+    if (b.mp) { G.player.maxMp += b.mp; G.player.mp += b.mp; }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// FLOOR / NODE GENERATION
+// ═══════════════════════════════════════════════════════════
+
+function generateFloor() {
+  const nodeCount = 5 + Math.floor(G.floor * 0.5);
+  G.nodes = [];
+
+  for (let i = 0; i < nodeCount; i++) {
+    let type;
+    if (i === nodeCount - 1) {
+      type = G.floor % 5 === 0 ? 'boss' : 'combat';
+    } else {
+      const pool = [...ROOM_TYPES];
+      type = pool[Math.floor(Math.random() * pool.length)];
+    }
+    G.nodes.push({ type, completed: false, available: i === 0 });
+  }
+
+  // Ensure at least 1 shop and 1 rest
+  if (!G.nodes.slice(0, -1).some(n => n.type === 'shop')) {
+    const idx = 1 + Math.floor(Math.random() * (nodeCount - 2));
+    G.nodes[idx].type = 'shop';
+  }
+
+  G.currentNode = -1;
+  renderNodePath();
+  drawDungeon();
+}
+
+function renderNodePath() {
+  const container = document.getElementById('node-path');
+  const nodeIcons = {
+    combat: '⚔️', elite: '💀', boss: '🐉', event: '⭐',
+    shop: '🏪', rest: '🛏️', treasure: '💎'
+  };
+  const nodeColors = {
+    combat: 'var(--blood)', elite: 'var(--soul)', boss: 'var(--fire)',
+    event: 'var(--ice)', shop: 'var(--gold)', rest: 'var(--poison)', treasure: 'var(--gold)'
+  };
+
+  container.innerHTML = G.nodes.map((node, i) => `
+    <div class="node-row">
+      <div class="node ${node.completed ? 'completed' : node.available ? 'available' : 'locked'}"
+           style="${node.available ? 'border-color:' + nodeColors[node.type] : ''}"
+           onclick="enterNode(${i})"
+           title="${node.type}">
+        ${node.completed ? '✓' : nodeIcons[node.type] || '?'}
+      </div>
+    </div>
+  `).join('');
+}
+
+function drawDungeon() {
+  const canvas = document.getElementById('dungeon-canvas');
+  const container = document.getElementById('map-container');
+  canvas.width = container.clientWidth || 600;
+  canvas.height = container.clientHeight || 400;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = '#07080d';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw atmospheric abyss
+  const cx = canvas.width / 2, cy = canvas.height / 2;
+
+  // Radial glow
+  const grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, Math.min(canvas.width, canvas.height) * 0.5);
+  grd.addColorStop(0, 'rgba(139,92,246,0.05)');
+  grd.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = grd;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw floating particles
+  for (let i = 0; i < 40; i++) {
+    const x = (Math.sin(i * 137.5) * 0.5 + 0.5) * canvas.width;
+    const y = (Math.cos(i * 137.5) * 0.5 + 0.5) * canvas.height;
+    const r = Math.random() * 2 + 0.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(139,92,246,${0.1 + Math.random() * 0.3})`;
+    ctx.fill();
+  }
+
+  // Draw nodes on canvas
+  const nodeSpacing = canvas.width / (G.nodes.length + 1);
+  const nodeY = canvas.height / 2;
+
+  G.nodes.forEach((node, i) => {
+    const x = nodeSpacing * (i + 1);
+    const colors = {
+      combat: '#f43f5e', elite: '#8b5cf6', boss: '#f97316',
+      event: '#38bdf8', shop: '#fbbf24', rest: '#4ade80', treasure: '#fbbf24'
+    };
+    const col = colors[node.type] || '#64748b';
+
+    // Connect line
+    if (i > 0) {
+      ctx.beginPath();
+      ctx.moveTo(nodeSpacing * i, nodeY);
+      ctx.lineTo(x, nodeY);
+      ctx.strokeStyle = node.completed ? 'rgba(139,92,246,0.4)' : 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Node circle
+    ctx.beginPath();
+    ctx.arc(x, nodeY, i === G.currentNode ? 18 : 14, 0, Math.PI * 2);
+    if (node.completed) {
+      ctx.fillStyle = 'rgba(100,116,139,0.3)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(100,116,139,0.5)';
+    } else if (node.available) {
+      ctx.fillStyle = 'rgba(30,38,64,0.9)';
+      ctx.fill();
+      ctx.strokeStyle = col;
+      // Glow
+      ctx.shadowColor = col;
+      ctx.shadowBlur = 12;
+    } else {
+      ctx.fillStyle = 'rgba(13,16,32,0.8)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    }
+    ctx.lineWidth = node.available ? 2 : 1;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Node icon
+    ctx.fillStyle = node.completed ? '#64748b' : (node.available ? col : 'rgba(255,255,255,0.2)');
+    ctx.font = `${i === G.currentNode ? '16' : '13'}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const icons = { combat: '⚔', elite: '☠', boss: '🐉', event: '★', shop: '⬡', rest: '✦', treasure: '◆' };
+    ctx.fillText(icons[node.type] || '?', x, nodeY);
+
+    // Label
+    ctx.fillStyle = 'rgba(148,163,184,0.6)';
+    ctx.font = '9px monospace';
+    ctx.fillText(node.type.toUpperCase(), x, nodeY + 28);
+  });
+
+  // Floor label
+  ctx.fillStyle = 'rgba(139,92,246,0.3)';
+  ctx.font = 'bold 11px monospace';
+  ctx.textAlign = 'left';
+  ctx.fillText(`FLOOR ${G.floor}`, 12, 20);
+}
+
+// ═══════════════════════════════════════════════════════════
+// NODE INTERACTION
+// ═══════════════════════════════════════════════════════════
+
+function enterNode(idx) {
+  const node = G.nodes[idx];
+  if (!node || !node.available || node.completed) return;
+
+  G.currentNode = idx;
+  renderNodePath();
+
+  switch (node.type) {
+    case 'combat': startCombat(false, false); break;
+    case 'elite': startCombat(true, false); break;
+    case 'boss': startCombat(false, true); break;
+    case 'event': showRandomEvent(); break;
+    case 'shop': openShop(); break;
+    case 'rest': showRestRoom(); break;
+    case 'treasure': showTreasureRoom(); break;
+  }
+}
+
+function completeNode() {
+  if (G.currentNode < 0) return;
+  G.nodes[G.currentNode].completed = true;
+  G.nodes[G.currentNode].available = false;
+
+  // Unlock next nodes
+  const next = G.currentNode + 1;
+  if (next < G.nodes.length) {
+    G.nodes[next].available = true;
   } else {
-    document.getElementById('portfolioValue').textContent = '--';
-    document.getElementById('portfolioPnl').textContent = '';
+    // Floor complete!
+    setTimeout(() => nextFloor(), 500);
+  }
+  renderNodePath();
+  drawDungeon();
+}
+
+function nextFloor() {
+  G.floor++;
+  G.runStats.floorsReached = G.floor;
+  updateFloorDisplay();
+  addLog(`✦ 进入第 ${G.floor} 层深渊...`, 'important');
+  generateFloor();
+
+  // Floor milestone reward
+  if (G.floor % 3 === 0) {
+    setTimeout(() => showRewardModal(), 300);
+  }
+
+  // Rest bonus every 5 floors
+  if (G.floor % 5 === 0) {
+    G.player.hp = Math.min(G.player.hp + Math.floor(G.player.maxHp * 0.3), G.player.maxHp);
+    addLog('新楼层休整，恢复30%生命值', 'heal');
+    updateHUD();
   }
 }
 
-function showEmptyState() {
-  document.getElementById('emptyState').style.display = 'flex';
-  document.getElementById('stockHeader').style.display = 'none';
-  document.getElementById('aiStrip').style.display = 'none';
-  document.getElementById('scoresArea').style.display = 'none';
-  document.getElementById('analysisLoading').classList.remove('show');
-  document.getElementById('analysisResult').classList.remove('show');
-  document.getElementById('analysisError').style.display = 'none';
-  document.getElementById('holdingInfoSection').style.display = 'none';
-  document.getElementById('paramsSection').style.display = 'none';
-  document.getElementById('bokuSection').style.display = 'none';
-}
+// ═══════════════════════════════════════════════════════════
+// COMBAT SYSTEM
+// ═══════════════════════════════════════════════════════════
 
-async function selectHolding(code) {
-  state.activeCode = code;
-  renderHoldingsList();
+function startCombat(isElite, isBoss) {
+  let enemyPool = ENEMIES.filter(e => {
+    if (isBoss) return e.type === 'boss';
+    if (isElite) return e.type === 'elite';
+    return e.type === 'common';
+  });
 
-  const h = state.holdings.find(x => x.code === code);
-  if (!h) return;
+  let base = enemyPool[Math.floor(Math.random() * enemyPool.length)];
+  G.enemy = JSON.parse(JSON.stringify(base));
 
-  // show UI
-  document.getElementById('emptyState').style.display = 'none';
-  document.getElementById('stockHeader').style.display = 'block';
-  document.getElementById('holdingInfoSection').style.display = 'block';
-  document.getElementById('paramsSection').style.display = 'block';
-  document.getElementById('bokuSection').style.display = 'block';
+  // Scale enemy with floor
+  const scale = 1 + (G.floor - 1) * 0.15;
+  G.enemy.hp = Math.floor(G.enemy.hp * scale);
+  G.enemy.maxHp = G.enemy.hp;
+  G.enemy.atk = Math.floor(G.enemy.atk * scale);
+  G.enemy.def = Math.floor(G.enemy.def * scale);
+  G.enemy.xp = Math.floor(G.enemy.xp * scale);
+  G.enemy.gold = Math.floor(G.enemy.gold * scale);
+  G.enemyShield = 0;
+  G.deathmarkMult = 1;
 
-  // fill form
-  document.getElementById('fCost').value = h.cost || '';
-  document.getElementById('fShares').value = h.shares || '';
-  document.getElementById('fDays').value = h.days || '';
-  document.getElementById('fMode').value = h.mode || 'mid';
-  document.getElementById('fDesc').value = h.desc || '';
+  // Ghost class: phantom chance
+  if (G.player.class.id === 'ghost' && Math.random() < 0.15) {
+    G.ghostBuff = true;
+    addLog('👻 幽灵态激活！下一次受到的攻击将被免疫！', 'important');
+  }
 
-  updateStockHeader(h);
-  updateBokuData(h);
-  updatePnlDisplay(h);
+  G.inCombat = true;
+  G.lastEnemySkill = null;
+  updateCombatUI();
+  document.getElementById('combat-overlay').classList.add('active');
+  addCombatLog(`遭遇了 ${G.enemy.icon} ${G.enemy.name}！`);
 
-  // show cached analysis if any
-  const cached = state.lastAnalysis[code];
-  if (cached) renderAnalysisResult(cached, h);
-  else {
-    document.getElementById('analysisResult').classList.remove('show');
-    document.getElementById('analysisError').style.display = 'none';
-    document.getElementById('analysisLoading').classList.remove('show');
-    document.getElementById('aiStrip').style.display = 'none';
-    document.getElementById('scoresArea').style.display = 'none';
+  // Void eye relic check
+  const voidEye = G.relics.find(r => r.id === 'voideye');
+  if (voidEye && Math.random() < 0.3) {
+    addCombatLog('👁️ 虚空之眼发动！看穿了敌人弱点，伤害+50%！');
+    G.buffs.push({ id: 'void_eye_active', name: '看穿弱点', rounds: 3 });
   }
 }
 
-function updateStockHeader(h) {
-  document.getElementById('shName').textContent = h.name || h.code;
-  document.getElementById('shCode').textContent = h.code;
-  document.getElementById('shExchange').textContent = h.exchange || '';
-  document.getElementById('shPrice').textContent = h.price?.toFixed(2) || '--';
-  document.getElementById('shOpen').textContent = h.open?.toFixed(2) || '--';
-  document.getElementById('shHigh').textContent = h.high?.toFixed(2) || '--';
-  document.getElementById('shLow').textContent = h.low?.toFixed(2) || '--';
-  document.getElementById('shPrevClose').textContent = h.prevClose?.toFixed(2) || '--';
+function updateCombatUI() {
+  const p = G.player;
+  const e = G.enemy;
+  if (!e) return;
 
-  const vol = h.vol ? (h.vol >= 10000 ? (h.vol/10000).toFixed(0)+'万手' : h.vol+'手') : '--';
-  document.getElementById('shVol').textContent = vol;
+  document.getElementById('player-combat-icon').textContent = p.class.icon;
+  document.getElementById('player-combat-name').textContent = p.class.name;
+  const phpPct = (p.hp / p.maxHp * 100).toFixed(1);
+  document.getElementById('player-combat-hp').style.width = phpPct + '%';
+  document.getElementById('player-combat-hp-text').textContent = `${p.hp}/${p.maxHp}`;
 
-  const isUp = (h.changePct || 0) >= 0;
-  const color = isUp ? 'var(--red)' : 'var(--green)';
-  document.getElementById('shPrice').style.color = color;
-  const changeEl = document.getElementById('shChange');
-  changeEl.textContent = (isUp?'+':'') + (h.changePct||0).toFixed(2) + '%';
-  changeEl.style.color = color;
-  document.getElementById('shChangeAbs').textContent = (isUp?'+':'') + (h.change||0).toFixed(2) + '元';
+  document.getElementById('enemy-combat-icon').textContent = e.icon;
+  document.getElementById('enemy-combat-name').textContent = e.name;
+  const ehpPct = (e.hp / e.maxHp * 100).toFixed(1);
+  document.getElementById('enemy-combat-hp').style.width = ehpPct + '%';
+  document.getElementById('enemy-combat-hp-text').textContent = `${e.hp}/${e.maxHp}` + (G.enemyShield > 0 ? ` 🛡${G.enemyShield}` : '');
+
+  // Update skill buttons
+  const s1 = p.skills[0];
+  const s2 = p.skills[1];
+  document.getElementById('skill1-btn').innerHTML = `${s1.icon}<br>${s1.name}<span class="btn-key">[S]</span><span class="btn-cost">${s1.mpCost > 0 ? '-' + s1.mpCost + 'MP' : '-' + s1.hpCost + 'HP'}</span>`;
+  document.getElementById('skill2-btn').innerHTML = `${s2.icon}<br>${s2.name}<span class="btn-key">[D]</span><span class="btn-cost">-${s2.mpCost}MP</span>`;
 }
 
-function updateBokuData(h) {
-  const bids = h.bids || [];
-  const asks = h.asks || [];
-  const el = document.getElementById('bokuData');
-  let html = '';
-  for (let i=0; i<5; i++) {
-    const ask = asks[4-i] || {};
-    html += `<div class="boku-item"><div class="boku-label">卖${5-i}</div><div class="boku-val c-green">${ask.price?.toFixed(2)||'--'}</div></div>`;
-  }
-  for (let i=0; i<5; i++) {
-    const bid = bids[i] || {};
-    html += `<div class="boku-item"><div class="boku-label">买${i+1}</div><div class="boku-val c-red">${bid.price?.toFixed(2)||'--'}</div></div>`;
-  }
-  el.innerHTML = html;
-}
+function combatAction(action) {
+  if (!G.inCombat || !G.enemy) return;
 
-function updatePnlDisplay(h) {
-  const cost = parseFloat(document.getElementById('fCost').value) || h.cost;
-  const shares = parseInt(document.getElementById('fShares').value) || h.shares;
-  const el = document.getElementById('pnlDisplay');
+  let playerDmg = 0;
+  let mpCost = 0;
+  let hpCost = 0;
+  let actionName = '';
+  let special = null;
 
-  if (!cost || !shares || !h.price) {
-    el.innerHTML = '<div style="color:var(--text3); font-size:11px; text-align:center; padding:4px">填写成本价和持仓数量后显示盈亏</div>';
+  const p = G.player;
+  const e = G.enemy;
+  const cd = G.skillCooldowns;
+
+  if (action === 'attack') {
+    playerDmg = calcDamage(p.atk, e.def);
+    actionName = '普通攻击';
+    // Fire buff
+    if (G.fireBuff > 0) {
+      playerDmg += 20;
+      G.fireBuff--;
+      addCombatLog('🔥 炎焰符文触发！额外造成20点火焰伤害');
+    }
+    incrementCombo();
+  } else if (action === 'skill1') {
+    const sk = p.skills[0];
+    if (cd[sk.id] > 0) { addCombatLog(`技能冷却中：${cd[sk.id]}回合`); return; }
+    if (p.mp < sk.mpCost) { addCombatLog('灵能不足！'); return; }
+    if (p.hp <= sk.hpCost) { addCombatLog('生命不足！'); return; }
+    p.mp -= sk.mpCost;
+    p.hp -= sk.hpCost;
+    if (sk.hpCost > 0) addCombatLog(`💔 消耗 ${sk.hpCost} 生命值`);
+    if (sk.isMagic) {
+      playerDmg = Math.floor(p.maxMp * (sk.dmgMult || 0.8));
+    } else if (sk.piercing) {
+      playerDmg = Math.floor(p.atk * (sk.dmgMult || 1.8));
+      G.enemyShield = 0;
+    } else {
+      playerDmg = calcDamage(p.atk * (sk.dmgMult || 1), e.def * (sk.piercing ? 0 : 1));
+    }
+    special = sk.special;
+    actionName = sk.name;
+    cd[sk.id] = sk.cooldown;
+    incrementCombo();
+  } else if (action === 'skill2') {
+    const sk = p.skills[1];
+    if (cd[sk.id] > 0) { addCombatLog(`特技冷却中：${cd[sk.id]}回合`); return; }
+    if (p.mp < sk.mpCost) { addCombatLog('灵能不足！'); return; }
+    p.mp -= sk.mpCost;
+    special = sk.special;
+    actionName = sk.name;
+    cd[sk.id] = sk.cooldown;
+    if (sk.dmgMult) playerDmg = calcDamage(p.atk * sk.dmgMult, e.def);
+    if (special === 'counter') { G.counterMode = true; addCombatLog('↩️ 回响反击已就绪！'); }
+    if (special === 'shield') {
+      G.playerShield = p.def * 2;
+      addCombatLog(`🛡️ 获得 ${G.playerShield} 点回响护盾！`);
+    }
+    if (special === 'deathmark') {
+      G.deathmarkMult = 1.8;
+      G.deathmarkActive = true;
+      addCombatLog('☠️ 死亡印记！敌人受到伤害+80%！');
+    }
+    if (special === 'mirror' && G.lastEnemySkill) {
+      addCombatLog(`🪞 镜像复制了 ${G.lastEnemySkill}！`);
+      playerDmg = calcDamage(p.atk * 1.5, e.def);
+    }
+    incrementCombo();
+  } else if (action === 'item') {
+    const usables = G.inventory.filter(i => i.type === 'consumable');
+    if (usables.length === 0) { addCombatLog('没有可用的消耗品！'); return; }
+    const item = usables[0];
+    useItem(item);
+    G.inventory = G.inventory.filter(i => i !== item);
+    renderInventory();
+    actionName = `使用${item.name}`;
+  } else if (action === 'flee') {
+    const fleeChance = Math.min(0.3 + (p.spd - e.spd) * 0.05, 0.7);
+    if (Math.random() < fleeChance) {
+      addCombatLog('💨 成功逃跑！');
+      endCombat(false);
+      return;
+    } else {
+      addCombatLog('逃跑失败！');
+    }
+  }
+
+  // Apply deathmark multiplier
+  if (G.deathmarkActive && playerDmg > 0) {
+    playerDmg = Math.floor(playerDmg * G.deathmarkMult);
+  }
+
+  // Void eye active
+  const voidEyeBuff = G.buffs.find(b => b.id === 'void_eye_active');
+  if (voidEyeBuff && playerDmg > 0) {
+    playerDmg = Math.floor(playerDmg * 1.5);
+  }
+
+  // Apply crit
+  let isCrit = false;
+  if (playerDmg > 0 && Math.random() < p.crit / 100) {
+    playerDmg = Math.floor(playerDmg * 1.8);
+    isCrit = true;
+  }
+
+  if (playerDmg > 0) {
+    // Apply to enemy shield first
+    if (G.enemyShield > 0) {
+      const absorbed = Math.min(G.enemyShield, playerDmg);
+      playerDmg -= absorbed;
+      G.enemyShield -= absorbed;
+    }
+    e.hp = Math.max(0, e.hp - playerDmg);
+    const critText = isCrit ? '💥暴击！' : '';
+    addCombatLog(`${critText}${actionName}造成 <span style="color:var(--fire)">${playerDmg}</span> 点伤害`, true);
+    showFloatingText(playerDmg, isCrit ? 'var(--fire)' : 'var(--text)', 'enemy');
+  }
+
+  // Apply special effects
+  if (special === 'bleed') {
+    e.bleed = 3;
+    addCombatLog('🩸 敌人开始流血！每回合损失8点生命');
+  }
+
+  // Update cooldowns
+  Object.keys(cd).forEach(k => { if (cd[k] > 0) cd[k]--; });
+
+  updateCombatUI();
+  updateHUD();
+
+  if (e.hp <= 0) {
+    onEnemyDeath();
     return;
   }
 
-  const mv = h.price * shares;
-  const costTotal = cost * shares;
-  const pnl = mv - costTotal;
-  const pnlPct = (pnl / costTotal * 100);
-  const isUp = pnl >= 0;
-  const color = isUp ? 'var(--red)' : 'var(--green)';
+  // Enemy turn
+  setTimeout(() => enemyTurn(), 600);
+}
 
-  el.innerHTML = `
-    <div class="pnl-row">
-      <span class="pnl-key">持仓市值</span>
-      <span class="pnl-val">¥${mv.toFixed(0)}</span>
+function enemyTurn() {
+  if (!G.inCombat || !G.enemy || G.enemy.hp <= 0) return;
+  const e = G.enemy;
+  const p = G.player;
+
+  // Apply bleed
+  if (e.bleed > 0) {
+    e.hp = Math.max(0, e.hp - 8);
+    e.bleed--;
+    addCombatLog(`🩸 流血！敌人损失8点生命`);
+    if (e.hp <= 0) { onEnemyDeath(); return; }
+  }
+
+  // Enemy skill check
+  let enemyDmg = 0;
+  let skillName = '攻击';
+
+  if (e.skills && e.skills.length > 0 && Math.random() < 0.35) {
+    const sk = e.skills[Math.floor(Math.random() * e.skills.length)];
+    G.lastEnemySkill = sk;
+    switch(sk) {
+      case 'slam': enemyDmg = Math.floor(e.atk * 1.8); skillName = '重击'; break;
+      case 'charge': enemyDmg = Math.floor(e.atk * 2.0); skillName = '冲锋'; break;
+      case 'firebolt': enemyDmg = Math.floor(e.atk * 1.5); skillName = '火焰弹'; break;
+      case 'curse': { G.statusEffects.push({ name: '诅咒', icon: '☠️', rounds: 3, effect: 'curse' }); enemyDmg = Math.floor(e.atk * 0.5); skillName = '诅咒'; break; }
+      case 'breathe': enemyDmg = Math.floor(e.atk * 2.5); skillName = '龙息'; break;
+      case 'tailswipe': enemyDmg = Math.floor(e.atk * 1.6); skillName = '尾扫'; break;
+      case 'roar': { p.atk = Math.floor(p.atk * 0.85); enemyDmg = Math.floor(e.atk * 0.3); skillName = '咆哮（攻击-15%）'; break; }
+      case 'voidburst': enemyDmg = Math.floor(e.atk * 2.2); skillName = '虚空爆发'; break;
+      case 'deathscythe': enemyDmg = Math.floor(e.atk * 3); skillName = '死亡镰刀'; break;
+      default: enemyDmg = Math.floor(e.atk * 1.2); break;
+    }
+    addCombatLog(`${e.icon} ${e.name} 使用了 ${skillName}！`);
+  } else {
+    enemyDmg = calcDamage(e.atk, Math.floor(p.def * 0.7));
+    addCombatLog(`${e.icon} ${e.name} 发动了攻击`);
+  }
+
+  // Counter mode check
+  if (G.counterMode) {
+    addCombatLog(`↩️ 回响反击！将 ${Math.floor(enemyDmg * 1.5)} 点伤害反弹回去！`);
+    e.hp = Math.max(0, e.hp - Math.floor(enemyDmg * 1.5));
+    G.counterMode = false;
+    updateCombatUI();
+    if (e.hp <= 0) { onEnemyDeath(); return; }
+  }
+
+  // Ghost buff dodge
+  if (G.ghostBuff) {
+    addCombatLog('👻 幽灵态！完全免疫本次攻击！');
+    G.ghostBuff = false;
+    enemyDmg = 0;
+  }
+
+  // Mirror relic check
+  const mirrorRelic = G.relics.find(r => r.id === 'mirror');
+  if (mirrorRelic && Math.random() < 0.15 && enemyDmg > 0) {
+    addCombatLog(`🪞 破碎镜反弹了攻击！敌人受到 ${enemyDmg} 点伤害！`);
+    e.hp = Math.max(0, e.hp - enemyDmg);
+    if (e.hp <= 0) { onEnemyDeath(); return; }
+    enemyDmg = 0;
+  }
+
+  // Apply player shield
+  if (G.playerShield > 0 && enemyDmg > 0) {
+    const absorbed = Math.min(G.playerShield, enemyDmg);
+    enemyDmg -= absorbed;
+    G.playerShield -= absorbed;
+    addCombatLog(`🛡️ 护盾吸收了 ${absorbed} 点伤害！`);
+  }
+
+  // Curse reduces def further
+  const cursed = G.statusEffects.find(s => s.effect === 'curse');
+  if (cursed && enemyDmg > 0) {
+    enemyDmg = Math.floor(enemyDmg * 1.2);
+  }
+
+  if (enemyDmg > 0) {
+    p.hp = Math.max(0, p.hp - enemyDmg);
+    addCombatLog(`受到 <span style="color:var(--blood)">${enemyDmg}</span> 点伤害！HP: ${p.hp}/${p.maxHp}`, true);
+    showFloatingText(enemyDmg, 'var(--blood)', 'player');
+  }
+
+  // Death wing relic
+  const deathWing = G.relics.find(r => r.id === 'deathwing');
+  if (deathWing && p.hp < p.maxHp * 0.2) {
+    if (!G.buffs.find(b => b.id === 'deathwing_active')) {
+      G.buffs.push({ id: 'deathwing_active', name: '死亡之翼', icon: '🦋', rounds: 999 });
+      addLog('🦋 死亡之翼激活！速度+30，暴击+30%！', 'important');
+    }
+  }
+
+  // Tick down status effects
+  G.statusEffects = G.statusEffects.map(s => ({ ...s, rounds: s.rounds - 1 })).filter(s => s.rounds > 0);
+
+  // Tick down buffs
+  G.buffs = G.buffs.map(b => ({ ...b, rounds: b.rounds - 1 })).filter(b => b.rounds > 0);
+
+  updateCombatUI();
+  updateHUD();
+  renderBuffList();
+
+  if (p.hp <= 0) {
+    onPlayerDeath();
+  }
+}
+
+function calcDamage(atk, def) {
+  const base = Math.max(1, atk - def);
+  const variance = Math.floor(base * 0.2);
+  return Math.max(1, base + Math.floor(Math.random() * variance * 2) - variance);
+}
+
+function onEnemyDeath() {
+  const e = G.enemy;
+  addCombatLog(`✦ 击败了 ${e.name}！获得 ${e.xp} XP 和 ${e.gold} 金币！`);
+
+  // Gold skull relic
+  let goldMult = 1;
+  const goldSkull = G.relics.find(r => r.id === 'goldskull');
+  if (goldSkull && (e.type === 'elite' || e.type === 'boss')) {
+    goldMult = 1.5;
+    addLog('💀 黄金骷髅：额外金币+50%！', 'loot');
+  }
+  // Echo greed memory
+  const greedMem = G.echoMemories.find(id => id === 'greed');
+  if (greedMem) goldMult *= 1.3;
+
+  const earnedGold = Math.floor(e.gold * goldMult);
+  G.gold += earnedGold;
+  G.runStats.goldEarned += earnedGold;
+  G.kills.total++;
+  if (e.type === 'elite') G.kills.elite++;
+  if (e.type === 'boss') G.kills.boss++;
+  G.runStats.totalKills++;
+
+  gainXP(e.xp);
+  endCombat(true);
+
+  setTimeout(() => {
+    if (e.type === 'boss' || e.type === 'elite' || Math.random() < 0.4) {
+      showRewardModal();
+    } else {
+      completeNode();
+    }
+  }, 400);
+}
+
+function gainXP(amount) {
+  G.player.xp += amount;
+  if (G.player.xp >= G.player.xpNext) {
+    G.player.level++;
+    G.player.xp -= G.player.xpNext;
+    G.player.xpNext = Math.floor(G.player.xpNext * 1.5);
+    levelUp();
+  }
+  updateHUD();
+}
+
+function levelUp() {
+  const p = G.player;
+  p.maxHp += 15;
+  p.hp = Math.min(p.hp + 15, p.maxHp);
+  p.maxMp += 10;
+  p.atk += 3;
+  p.def += 2;
+  p.crit = Math.min(p.crit + 1, 60);
+  addLog(`⬆ 等级提升！现在是 Lv.${p.level}`, 'important');
+  addLog(`HP+15, MP+10, ATK+3, DEF+2`, '');
+  showLevelUpEffect();
+}
+
+function onPlayerDeath() {
+  G.inCombat = false;
+  document.getElementById('combat-overlay').classList.remove('active');
+
+  // Echo knight revive
+  if (G.player.class.id === 'knight' && !G.knightRevived && Math.random() < 0.35) {
+    G.knightRevived = true;
+    G.player.hp = Math.floor(G.player.maxHp * 0.3);
+    addLog('🔮 回响骑士的残影拉回了你！以30%HP复活！', 'important');
+    updateHUD();
+    return;
+  }
+
+  G.deathCount++;
+  localStorage.setItem('deathCount', G.deathCount);
+
+  // Save echo
+  saveEchoMemory();
+  showDeathScreen();
+}
+
+function saveEchoMemory() {
+  const echo = {
+    floor: G.floor,
+    class: G.player.class.name,
+    kills: G.kills.total,
+    timestamp: Date.now(),
+  };
+  G.savedEchos.unshift(echo);
+  G.savedEchos = G.savedEchos.slice(0, 5); // keep last 5
+  localStorage.setItem('abyssEchos', JSON.stringify(G.savedEchos));
+
+  // Add a random echo memory
+  const available = ECHO_MEMORIES.filter(e => !G.echoMemories.includes(e.id));
+  if (available.length > 0) {
+    const mem = available[Math.floor(Math.random() * available.length)];
+    G.echoMemories.push(mem.id);
+    G.echoCount++;
+  }
+}
+
+function endCombat(won) {
+  G.inCombat = false;
+  G.enemy = null;
+  G.playerShield = 0;
+  G.enemyShield = 0;
+  G.counterMode = false;
+  G.deathmarkActive = false;
+  G.deathmarkMult = 1;
+  document.getElementById('combat-overlay').classList.remove('active');
+
+  if (!won) return;
+
+  // Partial MP regen after combat
+  const mpRegen = Math.floor(G.player.maxMp * 0.15);
+  G.player.mp = Math.min(G.player.mp + mpRegen, G.player.maxMp);
+  updateHUD();
+  updateKillStats();
+}
+
+// ═══════════════════════════════════════════════════════════
+// REWARDS
+// ═══════════════════════════════════════════════════════════
+
+function showRewardModal(title) {
+  const rewards = generateRewards();
+  const grid = document.getElementById('reward-grid');
+  document.getElementById('reward-modal-title').textContent = title || '🎁 战斗奖励 — 选择一项';
+
+  grid.innerHTML = rewards.map((r, i) => `
+    <div class="reward-card ${r.rarity}" onclick="selectReward(${i})">
+      <span class="reward-icon">${r.icon}</span>
+      <div class="reward-name">${r.name}</div>
+      <div class="reward-type ${r.rarity}">${r.rarity.toUpperCase()} · ${r.category}</div>
+      <div class="reward-desc">${r.desc}</div>
+      <div class="reward-stat">${r.stat || ''}</div>
     </div>
-    <div class="pnl-row">
-      <span class="pnl-key">持仓成本</span>
-      <span class="pnl-val">¥${costTotal.toFixed(0)}</span>
+  `).join('');
+
+  G._pendingRewards = rewards;
+  openModal('reward-modal');
+}
+
+function generateRewards() {
+  const pool = [];
+  const rarityRoll = Math.random();
+  const baseRarity = G.floor > 8 ? 'legendary' : G.floor > 4 ? 'epic' : rarityRoll > 0.7 ? 'epic' : rarityRoll > 0.4 ? 'rare' : 'common';
+
+  // Skill upgrade
+  pool.push({
+    icon: '⚡', name: '技能强化', category: '技能', rarity: 'rare',
+    desc: '随机强化一项已有技能，伤害提升25%或减少1回合冷却',
+    stat: 'SKILL PWR +25%', type: 'upgrade_skill'
+  });
+
+  // Random item
+  const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+  pool.push({ ...item, category: '物品', type: 'item', id: item.id });
+
+  // Random relic
+  const relic = RELICS[Math.floor(Math.random() * RELICS.length)];
+  pool.push({ ...relic, category: '遗物', type: 'relic', stat: relic.desc.substring(0, 40) + '...' });
+
+  // Stat boost
+  const statOptions = [
+    { icon: '❤️', name: 'HP提升', desc: '最大生命值+30', stat: 'MAX HP +30', type: 'stat', effect: { maxHp: 30 }, rarity: 'common' },
+    { icon: '⚔️', name: '攻击强化', desc: '攻击力+6', stat: 'ATK +6', type: 'stat', effect: { atk: 6 }, rarity: 'common' },
+    { icon: '🛡️', name: '防御强化', desc: '防御力+5', stat: 'DEF +5', type: 'stat', effect: { def: 5 }, rarity: 'common' },
+    { icon: '💨', name: '速度强化', desc: '速度+4', stat: 'SPD +4', type: 'stat', effect: { spd: 4 }, rarity: 'common' },
+    { icon: '💙', name: 'MP提升', desc: '最大灵能+30', stat: 'MAX MP +30', type: 'stat', effect: { maxMp: 30 }, rarity: 'common' },
+    { icon: '💥', name: '暴击强化', desc: '暴击率+8%', stat: 'CRIT +8%', type: 'stat', effect: { crit: 8 }, rarity: 'rare' },
+  ];
+  pool.push({ ...statOptions[Math.floor(Math.random() * statOptions.length)], category: '属性' });
+
+  // Special rare reward on floor milestone
+  if (G.floor % 3 === 0) {
+    pool.push({
+      icon: '🌟', name: '深渊启示', category: '特殊', rarity: 'legendary',
+      desc: '一道深渊的智慧划破虚空：全属性提升10%，获得一个回响记忆',
+      stat: 'ALL STATS +10% + ECHO', type: 'enlightenment'
+    });
+  }
+
+  return pool.slice(0, 3);
+}
+
+function selectReward(idx) {
+  const reward = G._pendingRewards[idx];
+  if (!reward) return;
+
+  const p = G.player;
+
+  switch(reward.type) {
+    case 'item':
+      if (G.inventory.length < 8) {
+        G.inventory.push({ ...ITEMS.find(i => i.id === reward.id) || reward });
+        addLog(`获得物品：${reward.name}`, 'loot');
+        renderInventory();
+      } else {
+        addLog('背包已满！无法获得物品', '');
+      }
+      break;
+    case 'relic':
+      if (!G.relics.find(r => r.id === reward.id)) {
+        G.relics.push({ ...RELICS.find(r => r.id === reward.id) || reward });
+        addLog(`获得遗物：${reward.name} — ${reward.desc}`, 'loot');
+        renderRelics();
+      } else {
+        G.gold += 50;
+        addLog(`已拥有该遗物，转化为50金币`, 'loot');
+      }
+      break;
+    case 'stat':
+      Object.entries(reward.effect).forEach(([key, val]) => {
+        if (key === 'maxHp') { p.maxHp += val; p.hp = Math.min(p.hp + val, p.maxHp); }
+        else if (key === 'maxMp') { p.maxMp += val; p.mp = Math.min(p.mp + val, p.maxMp); }
+        else p[key] = (p[key] || 0) + val;
+      });
+      addLog(`属性强化：${reward.stat}`, 'important');
+      break;
+    case 'upgrade_skill':
+      const skIdx = Math.floor(Math.random() * p.skills.length);
+      p.skills[skIdx] = { ...p.skills[skIdx], dmgMult: (p.skills[skIdx].dmgMult || 1) * 1.25, cooldown: Math.max(1, (p.skills[skIdx].cooldown || 2) - 1) };
+      addLog(`技能【${p.skills[skIdx].name}】已强化！`, 'important');
+      break;
+    case 'enlightenment':
+      p.atk = Math.floor(p.atk * 1.1);
+      p.def = Math.floor(p.def * 1.1);
+      p.spd = Math.floor(p.spd * 1.1);
+      p.maxHp = Math.floor(p.maxHp * 1.1);
+      p.hp = Math.min(p.hp, p.maxHp);
+      p.maxMp = Math.floor(p.maxMp * 1.1);
+      const avail = ECHO_MEMORIES.filter(e => !G.echoMemories.includes(e.id));
+      if (avail.length) { G.echoMemories.push(avail[0].id); G.echoCount++; renderEchoList(); }
+      addLog('✨ 深渊启示！全属性+10%，获得新回响！', 'important');
+      break;
+  }
+
+  closeModal('reward-modal');
+  updateHUD();
+  completeNode();
+}
+
+// ═══════════════════════════════════════════════════════════
+// EVENTS
+// ═══════════════════════════════════════════════════════════
+
+function showRandomEvent() {
+  const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+  const box = document.getElementById('event-box');
+
+  box.innerHTML = `
+    <span class="event-icon">${event.icon}</span>
+    <div class="event-name">${event.name}</div>
+    <div class="event-desc">${event.desc}</div>
+    <div class="event-choices">
+      ${event.choices.map((c, i) => `
+        <div class="event-choice" onclick="resolveEvent('${event.id}', ${i})">
+          <span>${c.text}</span>
+          <span class="event-choice-effect">${c.result}</span>
+        </div>
+      `).join('')}
     </div>
-    <div class="pnl-row">
-      <span class="pnl-key">浮动盈亏</span>
-      <span class="pnl-val" style="color:${color}">${isUp?'+':''}¥${pnl.toFixed(0)}</span>
+  `;
+
+  document.getElementById('floor-event').classList.add('active');
+}
+
+function resolveEvent(eventId, choiceIdx) {
+  const event = EVENTS.find(e => e.id === eventId);
+  const choice = event.choices[choiceIdx];
+  const p = G.player;
+
+  document.getElementById('floor-event').classList.remove('active');
+  addLog(`📜 ${event.name} → ${choice.result}`, 'important');
+
+  switch(choice.effect) {
+    case 'sacrifice_hp':
+      p.maxHp = Math.floor(p.maxHp * 0.8);
+      p.hp = Math.min(p.hp, p.maxHp);
+      p.atk += 8;
+      p.crit = Math.min(p.crit + 10, 60);
+      break;
+    case 'sacrifice_mp':
+      p.maxMp = Math.floor(p.maxMp * 0.7);
+      p.mp = Math.min(p.mp, p.maxMp);
+      const epic = RELICS.filter(r => r.rarity === 'epic');
+      const relic = epic[Math.floor(Math.random() * epic.length)];
+      if (relic && !G.relics.find(r => r.id === relic.id)) { G.relics.push({ ...relic }); renderRelics(); }
+      break;
+    case 'trade_echo':
+      if (G.echoCount > 0) {
+        G.echoCount--;
+        G.echoMemories.pop();
+        const leg = ITEMS.filter(i => i.rarity === 'epic');
+        const item = leg[Math.floor(Math.random() * leg.length)];
+        if (item && G.inventory.length < 8) { G.inventory.push({ ...item }); renderInventory(); }
+        renderEchoList();
+      } else {
+        addLog('你没有回响记忆！', '');
+      }
+      break;
+    case 'buy_info':
+      if (G.gold >= 30) {
+        G.gold -= 30;
+        G.bossWeakness = true;
+        addLog('💡 获得了Boss弱点信息！', 'important');
+      } else addLog('金币不足！', '');
+      break;
+    case 'fight_ghost':
+      G.nodes[G.currentNode].type = 'elite';
+      startCombat(true, false);
+      return;
+    case 'dive_pool':
+      if (Math.random() < 0.5) {
+        const bonus = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i < bonus; i++) G.buffs.push({ id: 'pool_buff_' + i, name: '回响之池', icon: '🌊', rounds: 5 });
+        addLog(`✦ 获得了${bonus}层回响增益！`, 'important');
+      } else {
+        p.hp = Math.floor(p.hp * 0.85);
+        addLog('被池中的力量反噬！损失15%当前HP', 'damage');
+      }
+      break;
+    case 'drink_pool':
+      p.hp = Math.max(1, p.hp - 10);
+      const stats = ['atk', 'def', 'spd', 'crit'];
+      const stat = stats[Math.floor(Math.random() * stats.length)];
+      p[stat] += 4;
+      addLog(`✦ 永久 ${stat.toUpperCase()} +4！`, 'important');
+      break;
+    case 'extract_echo':
+      G.echoCount += 2;
+      const avail = ECHO_MEMORIES.filter(e => !G.echoMemories.includes(e.id));
+      for (let i = 0; i < Math.min(2, avail.length); i++) G.echoMemories.push(avail[i].id);
+      renderEchoList();
+      break;
+    case 'accept_curse':
+      p.maxHp = Math.floor(p.maxHp * 0.8);
+      p.hp = Math.min(p.hp, p.maxHp);
+      const cursed = RELICS.find(r => r.id === 'cursed_idol');
+      if (cursed && !G.relics.find(r => r.id === 'cursed_idol')) { G.relics.push({ ...cursed }); renderRelics(); }
+      break;
+    case 'break_curse':
+      const buffCount = G.buffs.length;
+      G.buffs = [];
+      p.atk += buffCount * 2;
+      p.def += buffCount;
+      addLog(`将${buffCount}层增益转化为属性！ATK+${buffCount * 2}, DEF+${buffCount}`, 'important');
+      break;
+    case 'enter_rift':
+      if (Math.random() < 0.6) {
+        G.gold += 80;
+        addLog('🌀 发现了宝藏！获得80金币！', 'loot');
+      } else {
+        startCombat(true, false);
+        return;
+      }
+      break;
+    case 'absorb_rift':
+      if (Math.random() < 0.5) {
+        p.atk = Math.floor(p.atk * 1.15); p.def = Math.floor(p.def * 1.15);
+        p.spd = Math.floor(p.spd * 1.15);
+        addLog('✦ 成功汲取！全属性+15%！', 'important');
+      } else {
+        p.hp = Math.floor(p.hp * 0.85);
+        addLog('失败！损失15%当前HP！', 'damage');
+      }
+      break;
+    case 'seal_rift':
+      G.buffs.push({ id: 'seal', name: '封印之力', icon: '🌀', rounds: 1, sealBuff: true });
+      addLog('🌀 封印之力获得！下次技能效果翻倍！', 'important');
+      break;
+    case 'ignore': case 'leave': addLog('你选择了离开...', ''); break;
+  }
+
+  updateHUD();
+  renderBuffList();
+  completeNode();
+}
+
+// ═══════════════════════════════════════════════════════════
+// REST / TREASURE
+// ═══════════════════════════════════════════════════════════
+
+function showRestRoom() {
+  const healAmt = Math.floor(G.player.maxHp * 0.35);
+  const mpAmt = Math.floor(G.player.maxMp * 0.4);
+  const box = document.getElementById('event-box');
+
+  box.innerHTML = `
+    <span class="event-icon">🛏️</span>
+    <div class="event-name">深渊驿站</div>
+    <div class="event-desc">在这片黑暗中，你发现了一处勉强可以休息的地方。蜷缩在角落里，感受着深渊的低语...</div>
+    <div class="event-choices">
+      <div class="event-choice" onclick="chooseRest('heal')">
+        <span>🩹 包扎伤口（恢复35%最大HP）</span>
+        <span class="event-choice-effect">+${healAmt} HP</span>
+      </div>
+      <div class="event-choice" onclick="chooseRest('mp')">
+        <span>🌙 冥想恢复（恢复40%最大MP）</span>
+        <span class="event-choice-effect">+${mpAmt} MP</span>
+      </div>
+      <div class="event-choice" onclick="chooseRest('both')">
+        <span>⏰ 深度休息（恢复20%HP和MP，概率获得增益）</span>
+        <span class="event-choice-effect">HP+${Math.floor(healAmt*0.57)} MP+${Math.floor(mpAmt*0.5)}</span>
+      </div>
     </div>
-    <div class="pnl-row">
-      <span class="pnl-key">盈亏比例</span>
-      <span class="pnl-val" style="color:${color}">${isUp?'+':''}${pnlPct.toFixed(2)}%</span>
+  `;
+
+  document.getElementById('floor-event').classList.add('active');
+}
+
+function chooseRest(type) {
+  const p = G.player;
+  document.getElementById('floor-event').classList.remove('active');
+
+  if (type === 'heal') {
+    const amt = Math.floor(p.maxHp * 0.35);
+    p.hp = Math.min(p.hp + amt, p.maxHp);
+    addLog(`🩹 恢复了 ${amt} 点生命值！`, 'heal');
+  } else if (type === 'mp') {
+    const amt = Math.floor(p.maxMp * 0.4);
+    p.mp = Math.min(p.mp + amt, p.maxMp);
+    addLog(`🌙 恢复了 ${amt} 点灵能！`, 'heal');
+  } else {
+    const hAmt = Math.floor(p.maxHp * 0.2);
+    const mAmt = Math.floor(p.maxMp * 0.2);
+    p.hp = Math.min(p.hp + hAmt, p.maxHp);
+    p.mp = Math.min(p.mp + mAmt, p.maxMp);
+    addLog(`⏰ HP+${hAmt} MP+${mAmt}`, 'heal');
+    if (Math.random() < 0.4) {
+      G.buffs.push({ id: 'rest_bonus', name: '休息之力', icon: '✨', rounds: 3 });
+      addLog('✨ 深度休息获得了额外增益！', 'important');
+    }
+  }
+
+  updateHUD();
+  completeNode();
+}
+
+function showTreasureRoom() {
+  const box = document.getElementById('event-box');
+  const gold = 40 + G.floor * 10;
+  box.innerHTML = `
+    <span class="event-icon">💎</span>
+    <div class="event-name">深渊宝库</div>
+    <div class="event-desc">光芒从黑暗中透出，一个小小的宝箱散发着诡异的光芒。里面装着什么呢...</div>
+    <div class="event-choices">
+      <div class="event-choice" onclick="openTreasure('open')">
+        <span>🔑 打开宝箱</span>
+        <span class="event-choice-effect">随机奖励</span>
+      </div>
+      <div class="event-choice" onclick="openTreasure('gold')">
+        <span>💰 出售宝箱（快速获取金币）</span>
+        <span class="event-choice-effect">+${gold} 金币</span>
+      </div>
     </div>
+  `;
+  document.getElementById('floor-event').classList.add('active');
+}
+
+function openTreasure(choice) {
+  document.getElementById('floor-event').classList.remove('active');
+  if (choice === 'gold') {
+    const amt = 40 + G.floor * 10;
+    G.gold += amt;
+    addLog(`💰 出售宝箱获得 ${amt} 金币！`, 'loot');
+    updateHUD();
+    completeNode();
+  } else {
+    // Random treasure
+    if (Math.random() < 0.5) {
+      showRewardModal('💎 宝箱奖励');
+    } else {
+      const item = ITEMS[Math.floor(Math.random() * ITEMS.length)];
+      if (G.inventory.length < 8) {
+        G.inventory.push({ ...item });
+        renderInventory();
+        addLog(`获得了 ${item.icon} ${item.name}！`, 'loot');
+      } else {
+        addLog('背包已满！获得40金币替代', 'loot');
+        G.gold += 40;
+      }
+      updateHUD();
+      completeNode();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SHOP
+// ═══════════════════════════════════════════════════════════
+
+function openShop() {
+  const flavors = ['深渊的馈赠，总是伴随着代价...', '欢迎光临，灵魂猎手。黄金最终都会归于深渊。', '我见过无数旅人，但活着的很少...', '快点决定，深渊在等待。'];
+  document.getElementById('shop-flavor').textContent = flavors[Math.floor(Math.random() * flavors.length)];
+  document.getElementById('shop-gold').textContent = G.gold;
+
+  const shopItems = generateShopItems();
+  const grid = document.getElementById('shop-grid');
+  grid.innerHTML = shopItems.map((item, i) => `
+    <div class="shop-item" onclick="buyShopItem(${i})">
+      <span class="item-icon">${item.icon}</span>
+      <div class="item-name">${item.name}</div>
+      <div class="item-desc">${item.desc || ''}</div>
+      <div class="item-price">✦ ${item.price}</div>
+    </div>
+  `).join('');
+
+  G._shopItems = shopItems;
+  openModal('shop-modal');
+}
+
+function generateShopItems() {
+  const pool = [...ITEMS, ...RELICS.map(r => ({ ...r, type: 'relic', price: r.rarity === 'legendary' ? 180 : r.rarity === 'epic' ? 120 : 70 }))];
+  const shuffled = pool.sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, 5).map(item => ({
+    ...item,
+    price: Math.floor((item.price || 80) * (0.9 + Math.random() * 0.3))
+  }));
+}
+
+function buyShopItem(idx) {
+  const item = G._shopItems[idx];
+  if (!item) return;
+  if (G.gold < item.price) { addLog('金币不足！', ''); return; }
+
+  G.gold -= item.price;
+  addLog(`购买了 ${item.icon} ${item.name} (-${item.price}金币)`, 'loot');
+
+  if (item.type === 'relic') {
+    if (!G.relics.find(r => r.id === item.id)) { G.relics.push({ ...item }); renderRelics(); }
+    else { G.gold += Math.floor(item.price * 0.5); addLog('已有此遗物，返还50%金币', ''); }
+  } else {
+    if (G.inventory.length < 8) { G.inventory.push({ ...item }); renderInventory(); }
+    else addLog('背包已满！', '');
+  }
+
+  document.getElementById('shop-gold').textContent = G.gold;
+  updateHUD();
+  G._shopItems[idx] = null;
+  // Update shop display
+  openShop();
+}
+
+// ═══════════════════════════════════════════════════════════
+// ITEMS
+// ═══════════════════════════════════════════════════════════
+
+function useItem(item) {
+  const p = G.player;
+  const ef = item.effect || {};
+
+  if (ef.hp) { p.hp = Math.min(p.hp + ef.hp, p.maxHp); addLog(`🧪 ${item.name} 恢复了 ${ef.hp} HP`, 'heal'); }
+  if (ef.mp) { p.mp = Math.min(p.mp + ef.mp, p.maxMp); addLog(`💙 ${item.name} 恢复了 ${ef.mp} MP`, 'heal'); }
+  if (ef.fireBuff) { G.fireBuff += ef.fireBuff; addLog(`🔥 炎焰符文激活！下${ef.fireBuff}次攻击+20火焰伤害`, 'important'); }
+  if (ef.addEcho) {
+    const avail = ECHO_MEMORIES.filter(e => !G.echoMemories.includes(e.id));
+    if (avail.length) { const mem = avail[Math.floor(Math.random() * avail.length)]; G.echoMemories.push(mem.id); G.echoCount++; renderEchoList(); addLog(`🔮 获得回响记忆：${mem.name}！`, 'important'); }
+  }
+  if (ef.revealMap) { addLog('🗺️ 深渊地图：下层路径已揭示', 'important'); }
+  if (ef.deathElixir) {
+    p.hp = Math.floor(p.hp * 0.7);
+    G.buffs.push({ id: 'death_elixir', name: '死亡药剂', icon: '☠️', rounds: 3, atkMult: 2 });
+    addLog('☠️ 死亡药剂！攻击力翻倍3回合（-30%当前HP）！', 'important');
+  }
+  updateHUD();
+}
+
+function clickInventory(idx) {
+  const item = G.inventory[idx];
+  if (!item) return;
+
+  if (item.type === 'consumable') {
+    useItem(item);
+    G.inventory.splice(idx, 1);
+    renderInventory();
+  } else {
+    // Show detail
+    showItemDetail(item);
+  }
+}
+
+function showItemDetail(item) {
+  document.getElementById('item-modal-title').textContent = `${item.icon} ${item.name}`;
+  document.getElementById('item-modal-body').innerHTML = `
+    <div style="margin-bottom:12px">
+      <span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:${item.rarity === 'legendary' ? 'var(--gold)' : item.rarity === 'epic' ? 'var(--soul-glow)' : 'var(--ice)'}">
+        ${(item.rarity || 'common').toUpperCase()} · ${(item.type || '').toUpperCase()}
+      </span>
+    </div>
+    <p style="color:var(--silver);line-height:1.6;margin-bottom:16px">${item.desc}</p>
+    ${item.type === 'consumable' ? `<button class="btn-small" onclick="clickInventoryFromModal(${G.inventory.indexOf(item)});closeModal('item-modal')">使用物品</button>` : ''}
+  `;
+  openModal('item-modal');
+}
+
+function clickInventoryFromModal(idx) {
+  clickInventory(idx);
+  updateHUD();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DEATH & REINCARNATION
+// ═══════════════════════════════════════════════════════════
+
+function showDeathScreen() {
+  showScreen('death-screen');
+  document.getElementById('echo-floor').textContent = G.floor;
+
+  const timeSpent = Math.floor((Date.now() - G.runStats.startTime) / 1000);
+  const mins = Math.floor(timeSpent / 60), secs = timeSpent % 60;
+
+  document.getElementById('death-stats').innerHTML = `
+    <div class="death-stat"><span class="death-stat-label">死亡楼层</span><span class="death-stat-val">第 ${G.floor} 层</span></div>
+    <div class="death-stat"><span class="death-stat-label">总击杀</span><span class="death-stat-val">${G.kills.total}</span></div>
+    <div class="death-stat"><span class="death-stat-label">精英击杀</span><span class="death-stat-val">${G.kills.elite}</span></div>
+    <div class="death-stat"><span class="death-stat-label">Boss击杀</span><span class="death-stat-val">${G.kills.boss}</span></div>
+    <div class="death-stat"><span class="death-stat-label">获得金币</span><span class="death-stat-val">${G.runStats.goldEarned}</span></div>
+    <div class="death-stat"><span class="death-stat-label">游玩时间</span><span class="death-stat-val">${mins}:${String(secs).padStart(2,'0')}</span></div>
+    <div class="death-stat"><span class="death-stat-label">总死亡次数</span><span class="death-stat-val">${G.deathCount}</span></div>
+    <div class="death-stat"><span class="death-stat-label">回响记忆</span><span class="death-stat-val">${G.echoMemories.length} 个</span></div>
   `;
 }
 
-// live update pnl when form changes
-['fCost','fShares'].forEach(id => {
-  document.getElementById(id).addEventListener('input', () => {
-    const h = state.holdings.find(x => x.code === state.activeCode);
-    if (h) updatePnlDisplay(h);
+function reincarnate() {
+  showScreen('class-screen');
+}
+
+function showContinue() {
+  if (G.echoMemories.length === 0) {
+    addLog('还没有回响记忆可以继承', '');
+    showScreen('class-screen');
+    return;
+  }
+  showScreen('class-screen');
+  // Mark as reincarnation
+  document.getElementById('start-btn').onclick = () => {
+    startGame(true);
+    document.getElementById('start-btn').onclick = startGame;
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// HUD & RENDER
+// ═══════════════════════════════════════════════════════════
+
+function updateHUD() {
+  const p = G.player;
+  if (!p) return;
+
+  document.getElementById('hud-name').textContent = `${p.class.icon} ${p.class.name}`;
+  document.getElementById('hp-text').textContent = `${p.hp}/${p.maxHp}`;
+  document.getElementById('hp-bar').style.width = (p.hp / p.maxHp * 100) + '%';
+  document.getElementById('mp-text').textContent = `${p.mp}/${p.maxMp}`;
+  document.getElementById('mp-bar').style.width = (p.mp / p.maxMp * 100) + '%';
+  document.getElementById('xp-text').textContent = `Lv.${p.level}`;
+  document.getElementById('xp-bar').style.width = (p.xp / p.xpNext * 100) + '%';
+  document.getElementById('stat-atk').textContent = p.atk;
+  document.getElementById('stat-def').textContent = p.def;
+  document.getElementById('stat-spd').textContent = p.spd;
+  document.getElementById('stat-crit').textContent = p.crit;
+  document.getElementById('echo-count').textContent = G.echoCount;
+  document.getElementById('gold-display').textContent = G.gold;
+  updateFloorDisplay();
+}
+
+function updateFloorDisplay() {
+  document.getElementById('floor-num').textContent = G.floor;
+  const floorTypes = ['', '黑暗走廊', '腐烂地穴', '鬼魂迷宫', '熔岩地带', 'BOSS圣堂'];
+  document.getElementById('floor-type').textContent = G.floor % 5 === 0 ? '⚠ BOSS 圣堂' : floorTypes[Math.min(G.floor, 5)];
+}
+
+function renderInventory() {
+  const grid = document.getElementById('inventory-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 8; i++) {
+    const item = G.inventory[i];
+    const slot = document.createElement('div');
+    slot.className = 'inv-slot';
+    if (item) {
+      slot.innerHTML = `${item.icon}<div class="item-rarity ${item.rarity || 'common'}"></div>`;
+      slot.title = `${item.name}: ${item.desc}`;
+      slot.onclick = () => clickInventory(i);
+      addTooltip(slot, item.name, (item.type || '').toUpperCase(), item.desc, item.rarity);
+    }
+    grid.appendChild(slot);
+  }
+}
+
+function renderRelics() {
+  const list = document.getElementById('relic-list');
+  list.innerHTML = G.relics.map(r => `
+    <span class="relic-item" title="${r.name}: ${r.desc}">${r.icon}</span>
+  `).join('');
+}
+
+function renderEchoList() {
+  const list = document.getElementById('echo-list');
+  list.innerHTML = G.echoMemories.map(id => {
+    const mem = ECHO_MEMORIES.find(e => e.id === id);
+    if (!mem) return '';
+    return `
+      <div class="echo-item">
+        <div class="echo-item-title">${mem.icon} ${mem.name}</div>
+        <div class="echo-item-desc">${mem.desc}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+function renderSkillSlots() {
+  const slots = document.getElementById('skill-slots');
+  const skills = G.player.skills;
+  slots.innerHTML = skills.map((sk, i) => {
+    const cd = G.skillCooldowns[sk.id] || 0;
+    return `
+      <div class="skill-slot ${cd > 0 ? 'on-cooldown' : ''}" title="${sk.name}: ${sk.desc}" onclick="combatAction('skill${i+1}')">
+        ${sk.icon}
+        <span class="skill-key">${['S','D'][i]}</span>
+        ${cd > 0 ? `<div class="skill-cd-overlay">${cd}</div>` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function renderBuffList() {
+  const list = document.getElementById('buff-list');
+  const types = { fire: 'fire', ice: 'ice', soul: 'soul', poison: 'poison', rest_bonus: 'poison', void_eye_active: 'soul', deathwing_active: 'soul', seal: 'soul', death_elixir: 'fire' };
+  list.innerHTML = G.buffs.map(b => `
+    <span class="buff-tag ${types[b.id] || 'gold'}" title="${b.name} (${b.rounds}回合)">${b.icon || '✦'} ${b.name}</span>
+  `).join('');
+}
+
+function updateKillStats() {
+  document.getElementById('total-kills').textContent = G.kills.total;
+  document.getElementById('elite-kills').textContent = G.kills.elite;
+  document.getElementById('boss-kills').textContent = G.kills.boss;
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMBO & EFFECTS
+// ═══════════════════════════════════════════════════════════
+
+function incrementCombo() {
+  G.combo++;
+  clearTimeout(G.comboTimer);
+  const display = document.getElementById('combo-display');
+  if (G.combo >= 2) {
+    display.classList.add('active');
+    document.getElementById('combo-num').textContent = `x${G.combo}`;
+    G.comboTimer = setTimeout(() => { G.combo = 0; display.classList.remove('active'); }, 3000);
+  }
+}
+
+function showFloatingText(value, color, target) {
+  const el = document.createElement('div');
+  el.className = 'floating-text';
+  el.textContent = (target === 'player' ? '-' : '+') + value;
+  el.style.color = color;
+  el.style.left = (target === 'enemy' ? '55%' : '25%');
+  el.style.top = '40%';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+
+function showLevelUpEffect() {
+  const el = document.createElement('div');
+  el.style.cssText = `position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:32px;font-weight:900;color:var(--gold);text-shadow:0 0 20px var(--gold);animation:float-up 1.5s forwards;z-index:100;pointer-events:none;`;
+  el.textContent = '⬆ LEVEL UP!';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1500);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TOOLTIPS
+// ═══════════════════════════════════════════════════════════
+
+function addTooltip(el, name, type, desc, rarity) {
+  el.addEventListener('mouseenter', (e) => {
+    const tt = document.getElementById('tooltip');
+    document.getElementById('tt-name').textContent = name;
+    document.getElementById('tt-type').textContent = type;
+    document.getElementById('tt-desc').textContent = desc;
+    document.getElementById('tt-stat').textContent = rarity ? rarity.toUpperCase() : '';
+    tt.classList.add('visible');
   });
+  el.addEventListener('mousemove', (e) => {
+    const tt = document.getElementById('tooltip');
+    tt.style.left = (e.clientX + 12) + 'px';
+    tt.style.top = (e.clientY - 10) + 'px';
+  });
+  el.addEventListener('mouseleave', () => {
+    document.getElementById('tooltip').classList.remove('visible');
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOGS
+// ═══════════════════════════════════════════════════════════
+
+function addLog(msg, type) {
+  const log = document.getElementById('game-log');
+  const line = document.createElement('div');
+  line.className = 'log-line ' + (type || '');
+  line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+  if (log.children.length > 100) log.removeChild(log.firstChild);
+}
+
+function addCombatLog(msg, html) {
+  const log = document.getElementById('combat-log');
+  const line = document.createElement('div');
+  line.className = 'log-line';
+  if (html) line.innerHTML = msg;
+  else line.textContent = msg;
+  log.appendChild(line);
+  log.scrollTop = log.scrollHeight;
+  // Mirror to game log
+  addLog(msg.replace(/<[^>]+>/g, ''), '');
+}
+
+// ═══════════════════════════════════════════════════════════
+// MODAL & SCREEN
+// ═══════════════════════════════════════════════════════════
+
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function openMap() {
+  const body = document.getElementById('map-modal-body');
+  const nodeIcons = { combat: '⚔️', elite: '☠️', boss: '🐉', event: '⭐', shop: '🏪', rest: '🛏️', treasure: '💎' };
+  body.innerHTML = `
+    <div style="margin-bottom:16px;font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--text-dim)">
+      当前进度：第 ${G.floor} 层 · 节点 ${G.currentNode + 1}/${G.nodes.length}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+      ${G.nodes.map((n, i) => `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+          <div style="width:44px;height:44px;border:1px solid ${i === G.currentNode ? 'var(--soul-bright)' : n.completed ? 'var(--border)' : n.available ? 'var(--soul)' : 'var(--border)'};
+            background:${n.completed ? 'rgba(255,255,255,0.03)' : 'var(--abyss)'};
+            display:flex;align-items:center;justify-content:center;font-size:20px;
+            opacity:${n.completed ? '0.4' : '1'}">
+            ${n.completed ? '✓' : nodeIcons[n.type] || '?'}
+          </div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim)">${n.type.toUpperCase()}</div>
+        </div>
+      `).join('')}
+    </div>
+    <hr class="divider">
+    <div style="font-size:12px;color:var(--text-dim);line-height:1.8;margin-top:12px">
+      <div>图例：⚔️ 普通战斗 · ☠️ 精英战斗 · 🐉 Boss · ⭐ 随机事件 · 🏪 商店 · 🛏️ 休息室 · 💎 宝藏室</div>
+    </div>
+  `;
+  openModal('map-modal');
+}
+
+function showCodex() {
+  const body = document.getElementById('codex-body');
+  body.innerHTML = `
+    <div style="margin-bottom:20px">
+      <div class="panel-section-title">职业一览</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        ${CLASSES.map(c => `<div style="background:var(--abyss);border:1px solid var(--border);padding:10px">
+          <span style="font-size:24px">${c.icon}</span>
+          <div style="font-weight:700">${c.name}</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--soul-glow)">${c.tagline}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="panel-section-title">回响记忆系统</div>
+      <div style="font-size:13px;color:var(--silver);line-height:1.7;margin-top:8px">
+        每次死亡，你的灵魂会留下一道"回响"。在下一世开始时，你可以继承这些回响，获得对应的被动增益。<br>
+        回响可以叠加，最多积累 ${ECHO_MEMORIES.length} 种记忆。
+      </div>
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="panel-section-title">遗物图鉴（${RELICS.length}个）</div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">
+        ${RELICS.map(r => `<div style="display:flex;gap:10px;align-items:flex-start;background:var(--abyss);padding:8px;border:1px solid var(--border)">
+          <span style="font-size:24px;flex-shrink:0">${r.icon}</span>
+          <div>
+            <div style="font-weight:700">${r.name} <span style="font-family:'Share Tech Mono',monospace;font-size:10px;color:${r.rarity === 'legendary' ? 'var(--gold)' : r.rarity === 'epic' ? 'var(--soul-glow)' : 'var(--ice)'}">${r.rarity.toUpperCase()}</span></div>
+            <div style="font-size:12px;color:var(--silver)">${r.desc}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div>
+      <div class="panel-section-title">怪物图鉴（${ENEMIES.length}种）</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px">
+        ${ENEMIES.map(e => `<div style="background:var(--abyss);border:1px solid var(--border);padding:8px;text-align:center">
+          <div style="font-size:24px">${e.icon}</div>
+          <div style="font-size:12px;font-weight:700">${e.name}</div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:9px;color:${e.type === 'boss' ? 'var(--blood)' : e.type === 'elite' ? 'var(--soul-glow)' : 'var(--text-dim)'}">
+            ${e.type.toUpperCase()}
+          </div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);margin-top:4px">
+            HP:${e.hp} ATK:${e.atk}
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  `;
+  openModal('codex-modal');
+}
+
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD
+// ═══════════════════════════════════════════════════════════
+
+document.addEventListener('keydown', (e) => {
+  if (!G.inCombat) return;
+  switch(e.key.toLowerCase()) {
+    case 'a': combatAction('attack'); break;
+    case 's': combatAction('skill1'); break;
+    case 'd': combatAction('skill2'); break;
+    case 'i': combatAction('item'); break;
+    case 'f': combatAction('flee'); break;
+  }
 });
 
-async function refreshQuote() {
-  if (!state.activeCode) return;
-  const btn = document.getElementById('refreshBtn');
-  btn.classList.add('spinning');
-  try {
-    const q = await fetchQuote(state.activeCode);
-    if (q) {
-      const h = state.holdings.find(x => x.code === state.activeCode);
-      if (h) {
-        Object.assign(h, q);
-        updateStockHeader(h);
-        updateBokuData(h);
-        updatePnlDisplay(h);
-        renderHoldingsList();
-      }
-    }
-  } catch(e) {}
-  btn.classList.remove('spinning');
-}
+// ═══════════════════════════════════════════════════════════
+// WINDOW RESIZE
+// ═══════════════════════════════════════════════════════════
 
-// auto refresh every 15s
-setInterval(() => {
-  if (state.activeCode) refreshQuote();
-}, 15000);
-
-// ═══════════════════════════════════════════════
-// AI ANALYSIS
-// ═══════════════════════════════════════════════
-async function runAnalysis() {
-  const h = state.holdings.find(x => x.code === state.activeCode);
-  if (!h) return;
-
-  // save form values
-  h.cost = parseFloat(document.getElementById('fCost').value) || null;
-  h.shares = parseInt(document.getElementById('fShares').value) || null;
-  h.days = parseInt(document.getElementById('fDays').value) || null;
-  h.mode = document.getElementById('fMode').value;
-  h.desc = document.getElementById('fDesc').value.trim();
-  saveState();
-  updatePnlDisplay(h);
-
-  // UI loading
-  document.getElementById('analyzeBtn').disabled = true;
-  document.getElementById('analyzeBtn').textContent = '分析中...';
-  document.getElementById('analysisLoading').classList.add('show');
-  document.getElementById('analysisResult').classList.remove('show');
-  document.getElementById('analysisError').style.display = 'none';
-  document.getElementById('aiStrip').style.display = 'none';
-  document.getElementById('scoresArea').style.display = 'none';
-
-  const pnlPct = (h.cost && h.price) ? (((h.price - h.cost) / h.cost) * 100).toFixed(2) : null;
-  const modeLabel = { short:'短线', mid:'中线', long:'长线' }[h.mode] || '中线';
-  const amount = h.amount ? (h.amount / 100000000).toFixed(2) + '亿' : '未知';
-  const vol = h.vol ? (h.vol/10000).toFixed(0) + '万手' : '未知';
-
-  const prompt = `你是顶级A股技术分析师，专精量价结构和持仓管理。请对以下持仓做全面分析，严格只输出JSON，无任何其他文字。
-
-## 当前持仓数据
-- 股票：${h.name}（${h.code}）${h.exchange||''}
-- 当前价：${h.price}元  今开：${h.open}  昨收：${h.prevClose}
-- 涨跌幅：${(h.changePct||0).toFixed(2)}%  涨跌额：${(h.change||0).toFixed(2)}元
-- 今日最高：${h.high}  最低：${h.low}
-- 成交量：${vol}  成交额：${amount}
-- 用户成本价：${h.cost || '未提供'}元
-- 用户持仓：${h.shares || '未提供'}股  持仓${h.days||'未知'}天
-- 当前盈亏：${pnlPct ? pnlPct+'%' : '未知'}
-- 分析模式：${modeLabel}
-- 补充描述：${h.desc || '无'}
-
-## 必须输出的JSON格式（严格遵守）
-{
-  "stockName": "${h.name}",
-  "aiDecision": "EXIT_NOW|HOLD|ADD|REDUCE",
-  "decisionLabel": "立即退出|继续持有|可以加仓|减仓观察",
-  "score": 0.62,
-  "sentimentRisk": 0.75,
-  "supportStrength": 0.35,
-  "confidence": 0.80,
-  "aiSummary": "一句话核心判断，直接点出当前最关键信号，不超过40字",
-  "keyLevels": [
-    {"name": "震荡上沿/反弹压力位", "price": 数字, "type": "resistance", "desc": "操作含义说明"},
-    {"name": "下方关键防守位", "price": 数字, "type": "support", "desc": "跌破执行方案"},
-    {"name": "近期摆动低点", "price": 数字, "type": "warning", "desc": "结构意义说明"},
-    {"name": "近期平台压力位", "price": 数字, "type": "resistance", "desc": "站上才算修复"},
-    {"name": "0.382反弹参考位", "price": 数字, "type": "info", "desc": "弱反弹兑现位"}
-  ],
-  "scenarios": [
-    {"trigger": "放量站上X.XX元", "type": "bull", "action": "具体操作建议，含仓位比例"},
-    {"trigger": "冲高至X.XX元附近后回落", "type": "neutral", "action": "减仓方案"},
-    {"trigger": "跌破X.XX元支撑", "type": "bear", "action": "止损执行方案"}
-  ],
-  "donts": ["不要做的操作1", "不要做的操作2", "不要做的操作3"],
-  "rationale": "详细分析理由，120-160字，涵盖趋势结构、量价配合、关键信号、风险提示",
-  "watchpoints": ["明日重点观察事项1", "观察事项2", "观察事项3"]
-}
-
-重要：所有price字段必须是合理的浮点数，基于当前价${h.price}元合理推算。scenarios中trigger必须包含具体价格数字。`;
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }],
-      })
-    });
-
-    const data = await resp.json();
-    const text = data.content.map(i => i.text || '').join('');
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-
-    state.lastAnalysis[state.activeCode] = parsed;
-    saveState();
-    renderAnalysisResult(parsed, h);
-    renderHoldingsList();
-
-    // alert if exit signal
-    if (parsed.aiDecision === 'EXIT_NOW') {
-      showAlert(`⚠️ ${h.name} AI建议立即退出：${parsed.aiSummary}`);
-    }
-
-  } catch(e) {
-    document.getElementById('analysisLoading').classList.remove('show');
-    const errEl = document.getElementById('analysisError');
-    errEl.style.display = 'block';
-    errEl.innerHTML = `<div class="error-box">分析失败：${e.message}<br><br>请检查网络连接后重试。</div>`;
+window.addEventListener('resize', () => {
+  if (document.getElementById('game-screen').classList.contains('active')) {
+    drawDungeon();
   }
+});
 
-  document.getElementById('analyzeBtn').disabled = false;
-  document.getElementById('analyzeBtn').textContent = '🤖 重新分析';
-}
-
-function renderAnalysisResult(d, h) {
-  document.getElementById('analysisLoading').classList.remove('show');
-
-  // AI strip
-  const decisionClass = {
-    'EXIT_NOW': 'dt-exit', 'REDUCE': 'dt-reduce',
-    'HOLD': 'dt-hold', 'ADD': 'dt-add'
-  }[d.aiDecision] || 'dt-hold';
-
-  const confColor = d.confidence > 0.7 ? 'var(--green)' : d.confidence > 0.5 ? 'var(--yellow)' : 'var(--orange)';
-
-  document.getElementById('aiStripInner').innerHTML = `
-    <span class="ai-badge">AI 建议</span>
-    <span class="decision-tag ${decisionClass}">${d.decisionLabel}</span>
-    <span class="ai-summary">${d.aiSummary}</span>
-    <div class="conf-group">
-      <span class="conf-label">置信度</span>
-      <span class="conf-val" style="color:${confColor}">${(d.confidence*100).toFixed(0)}%</span>
-    </div>
-  `;
-  document.getElementById('aiStrip').style.display = 'block';
-
-  // scores
-  function scoreCard(label, value, invert) {
-    // invert: high is good (supportStrength) vs high is bad (sentimentRisk)
-    const v = value || 0;
-    let cls;
-    if (invert) cls = v > 0.6 ? 'ok' : v > 0.4 ? 'caution' : v > 0.25 ? 'warn' : 'danger';
-    else cls = v > 0.7 ? 'danger' : v > 0.5 ? 'warn' : v > 0.3 ? 'caution' : 'ok';
-    return `
-      <div class="score-card ${cls}">
-        <div class="sc-label">${label}</div>
-        <div class="sc-value">${(v*100).toFixed(0)}</div>
-        <div class="sc-sub">/100</div>
-      </div>
-    `;
-  }
-  const scoreColor = d.score > 0.6 ? 'ok' : d.score > 0.4 ? 'caution' : 'danger';
-  document.getElementById('scoresGrid').innerHTML =
-    scoreCard('综合评分', d.score, true) +
-    scoreCard('情绪风险', d.sentimentRisk, false) +
-    scoreCard('支撑强度', d.supportStrength, true) +
-    scoreCard('置信度', d.confidence, true);
-  document.getElementById('scoresArea').style.display = 'block';
-
-  // levels
-  const currentPrice = h.price;
-  document.getElementById('levelsList').innerHTML = (d.keyLevels || []).map(l => {
-    const dist = currentPrice ? ((l.price - currentPrice) / currentPrice * 100).toFixed(1) : null;
-    const distStr = dist ? `${dist > 0 ? '+' : ''}${dist}%` : '';
-    return `
-      <div class="level-row ${l.type}">
-        <div>
-          <div class="level-name">${l.name}</div>
-          <div class="level-desc">${l.desc}</div>
-        </div>
-        <div style="text-align:right">
-          <div class="level-price">${l.price}</div>
-          <div class="level-dist">${distStr}</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  // scenarios
-  document.getElementById('scenariosList').innerHTML = (d.scenarios || []).map(s => `
-    <div class="scenario-row ${s.type}">
-      <div class="sr-trigger">${s.trigger}</div>
-      <div class="sr-action">${s.action}</div>
-    </div>
-  `).join('');
-
-  // donts
-  document.getElementById('dontsTags').innerHTML = (d.donts || []).map(t =>
-    `<span class="dont-tag">${t}</span>`
-  ).join('');
-
-  // rationale
-  document.getElementById('rationaleText').textContent = d.rationale || '';
-  document.getElementById('watchpointsList').innerHTML = (d.watchpoints || []).map(w =>
-    `<div class="wp-item">${w}</div>`
-  ).join('');
-
-  document.getElementById('analysisResult').classList.add('show');
-}
-
-// ═══════════════════════════════════════════════
-// ALERT
-// ═══════════════════════════════════════════════
-function showAlert(msg) {
-  document.getElementById('alertText').textContent = msg;
-  document.getElementById('alertBar').classList.add('show');
-}
-
-// ═══════════════════════════════════════════════
-// SCANNER
-// ═══════════════════════════════════════════════
-async function runScanner() {
-  const raw = document.getElementById('scannerCodes').value;
-  const codes = [...new Set(
-    raw.split(/[\n,，\s]+/).map(c => c.trim().replace(/\D/g,'')).filter(c => c.length === 6)
-  )];
-
-  if (codes.length === 0) { alert('请输入有效的6位股票代码'); return; }
-  if (codes.length > 10) { alert('一次最多扫描10只股票'); return; }
-
-  const btn = document.getElementById('scanBtn');
-  btn.disabled = true;
-  btn.textContent = '扫描中...';
-  document.getElementById('scanCount').textContent = `共 ${codes.length} 只`;
-
-  const resultsEl = document.getElementById('scanResults');
-  resultsEl.innerHTML = `<div style="text-align:center;padding:30px;color:var(--text3)"><div class="spinner" style="margin:0 auto 12px"></div>正在获取行情并分析，请稍候...</div>`;
-
-  const results = [];
-
-  for (const code of codes) {
-    try {
-      const q = await fetchQuote(code);
-      if (!q) continue;
-
-      // AI score
-      const prompt = `你是A股分析师。请对${q.name}（${code}）做快速评估，当前价${q.price}，涨跌${q.changePct?.toFixed(2)}%，今开${q.open}，最高${q.high}，最低${q.low}。严格只返回JSON：{"score":0.65,"decision":"HOLD","label":"继续持有","reason":"一句话关键判断不超过35字","risk":"low|medium|high"}`;
-
-      const resp = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6', max_tokens: 200,
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
-      const data = await resp.json();
-      const text = data.content.map(i=>i.text||'').join('').replace(/```json|```/g,'').trim();
-      const ai = JSON.parse(text);
-      results.push({ ...q, ...ai });
-    } catch(e) {
-      results.push({ code, name: code, price: 0, score: 0, decision: 'HOLD', label: '分析失败', reason: '获取数据失败', risk: 'medium' });
-    }
-  }
-
-  results.sort((a, b) => (b.score||0) - (a.score||0));
-
-  resultsEl.innerHTML = results.map((r, i) => {
-    const isUp = (r.changePct||0) >= 0;
-    const color = isUp ? 'var(--red)' : 'var(--green)';
-    const scoreColor = r.score > 0.6 ? 'var(--green)' : r.score > 0.4 ? 'var(--yellow)' : 'var(--red)';
-    const decClass = { 'EXIT_NOW':'dt-exit','REDUCE':'dt-reduce','HOLD':'dt-hold','ADD':'dt-add' }[r.decision] || 'dt-hold';
-    return `
-      <div class="scan-card">
-        <div class="scan-rank ${i<3?'top':''}">${i+1}</div>
-        <div class="scan-info">
-          <div class="scan-name">${r.name || r.code} <span class="tag ${r.risk==='low'?'tag-ok':r.risk==='high'?'tag-danger':'tag-warn'}" style="margin-left:4px">${r.risk==='low'?'低风险':r.risk==='high'?'高风险':'中风险'}</span></div>
-          <div class="scan-code">${r.code} · <span class="decision-tag ${decClass}" style="font-size:10px;padding:1px 7px">${r.label}</span></div>
-          <div class="scan-reason">${r.reason}</div>
-        </div>
-        <div class="scan-right">
-          <div class="scan-price" style="color:${color}">${r.price?.toFixed(2)||'--'} <span style="font-size:11px">${isUp?'+':''}${(r.changePct||0).toFixed(2)}%</span></div>
-          <div class="scan-score-big" style="color:${scoreColor}">${((r.score||0)*100).toFixed(0)}</div>
-          <div class="scan-score-label">AI评分</div>
-        </div>
-      </div>
-    `;
-  }).join('');
-
-  btn.disabled = false;
-  btn.textContent = '🔍 重新扫描';
-}
-
-// ═══════════════════════════════════════════════
-// DIARY
-// ═══════════════════════════════════════════════
-function addDiaryEntry() {
-  const code = document.getElementById('dCode').value.trim();
-  const type = document.getElementById('dType').value;
-  const price = parseFloat(document.getElementById('dPrice').value);
-  const shares = parseInt(document.getElementById('dShares').value);
-  const note = document.getElementById('dNote').value.trim();
-
-  if (!code || !price) { alert('请填写股票代码和操作价格'); return; }
-
-  const entry = {
-    id: Date.now(),
-    time: new Date().toLocaleString('zh-CN'),
-    code, type, price, shares, note,
-  };
-  state.diary.unshift(entry);
-  saveState();
-  renderDiary();
-
-  document.getElementById('dCode').value = '';
-  document.getElementById('dPrice').value = '';
-  document.getElementById('dShares').value = '';
-  document.getElementById('dNote').value = '';
-}
-
-function renderDiary() {
-  const el = document.getElementById('diaryEntries');
-  if (state.diary.length === 0) {
-    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text3);font-size:12px">暂无交易记录<br>在上方记录你的每一笔操作</div>';
-    return;
-  }
-  const typeColor = { '买入':'var(--green)','加仓':'var(--green)','卖出':'var(--red)','减仓':'var(--orange)','止损':'var(--red)' };
-  el.innerHTML = state.diary.map(e => `
-    <div class="diary-entry">
-      <div class="de-header">
-        <div class="de-stock">
-          ${e.code}
-          <span style="font-size:11px;font-weight:700;color:${typeColor[e.type]||'var(--text2)'};margin-left:6px">${e.type}</span>
-        </div>
-        <div class="de-time">${e.time}</div>
-      </div>
-      <div class="de-row">
-        <div class="de-stat"><div class="de-key">价格</div><div class="de-val">${e.price}元</div></div>
-        ${e.shares ? `<div class="de-stat"><div class="de-key">数量</div><div class="de-val">${e.shares}股</div></div>` : ''}
-        ${e.shares && e.price ? `<div class="de-stat"><div class="de-key">金额</div><div class="de-val">¥${(e.price*e.shares).toFixed(0)}</div></div>` : ''}
-      </div>
-      ${e.note ? `<div class="de-note">${e.note}</div>` : ''}
-    </div>
-  `).join('');
-}
-
-// ═══════════════════════════════════════════════
-// TAB SWITCH
-// ═══════════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.tab-page').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  const tabs = ['analysis','scanner','diary'];
-  document.querySelectorAll('.nav-tab')[tabs.indexOf(tab)]?.classList.add('active');
-}
-
-// ═══════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════
-async function init() {
-  renderDiary();
-
-  if (state.holdings.length === 0) {
-    renderHoldingsList();
-    showEmptyState();
-    return;
-  }
-
-  // reload live quotes for saved holdings
-  const promises = state.holdings.map(async (h) => {
-    try {
-      const q = await fetchQuote(h.code);
-      if (q) Object.assign(h, q);
-    } catch(e) {}
-  });
-  await Promise.all(promises);
-
-  renderHoldingsList();
-
-  if (state.holdings.length > 0) {
-    selectHolding(state.holdings[0].code);
-  } else {
-    showEmptyState();
-  }
-}
+// ═══════════════════════════════════════════════════════════
+// START
+// ═══════════════════════════════════════════════════════════
 
 init();
 </script>
